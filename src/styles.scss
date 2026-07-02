@@ -1,0 +1,28 @@
+@use 'styles/variables';
+
+html,
+body{
+
+    margin:0;
+
+    padding:0;
+
+    width:100%;
+
+    height:100%;
+
+    font-family:'Poppins',sans-serif;
+
+    background:linear-gradient(
+        180deg,
+        #F7FBF4,
+        #EEF8EC
+    );
+
+}
+
+*{
+
+    box-sizing:border-box;
+
+}
