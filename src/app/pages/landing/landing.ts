@@ -1,9 +1,15 @@
 import { Component } from '@angular/core';
 
+import { Navbar } from '../../components/navbar/navbar';
+import { Hero } from '../../components/hero/hero';
+
 @Component({
   selector: 'app-landing',
-  imports: [],
+  standalone: true,
+  imports: [Navbar, Hero],
   templateUrl: './landing.html',
-  styleUrl: './landing.scss',
+  styleUrl: './landing.scss'
 })
-export class Landing {}
+export class Landing {
+
+}

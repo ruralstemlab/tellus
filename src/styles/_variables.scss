@@ -3,15 +3,42 @@
    Variables Globales
    ========================================================== */
 
-:root {
+:root{
 
-  /* Colores principales */
+  /* ===== COLORES ===== */
 
-  --rsl-green: #2E7D32;
-  --rsl-light-green: #66BB6A;
-  --rsl-earth: #8D6E63;
-  --rsl-background: #F7F9F4;
-  --rsl-dark: #263238;
-  --rsl-white: #FFFFFF;
+  --rsl-green:#2E7D32;
+  --rsl-light-green:#66BB6A;
+
+  --rsl-blue:#1976D2;
+  --rsl-cyan:#26C6DA;
+
+  --rsl-gold:#F9A825;
+
+  --rsl-earth:#8D6E63;
+
+  --rsl-night:#071226;
+
+  --rsl-background:#F6F8F5;
+
+  --rsl-dark:#263238;
+
+  --rsl-white:#FFFFFF;
+
+  /* ===== SOMBRAS ===== */
+
+  --shadow-sm:0 4px 10px rgba(0,0,0,.10);
+
+  --shadow-md:0 10px 30px rgba(0,0,0,.15);
+
+  --shadow-lg:0 20px 60px rgba(0,0,0,.20);
+
+  /* ===== BORDES ===== */
+
+  --radius-sm:8px;
+
+  --radius-md:14px;
+
+  --radius-lg:24px;
 
 }
