@@ -1,0 +1,89 @@
+/* ===========================
+   LANDING
+=========================== */
+
+.steam-section{
+
+    width:100%;
+
+    padding:80px 60px;
+
+    background:#f8fbf8;
+
+}
+
+.steam-header{
+
+    text-align:center;
+
+    margin-bottom:60px;
+
+}
+
+.steam-header h2{
+
+    font-size:3rem;
+
+    color:var(--rsl-green);
+
+    margin-bottom:15px;
+
+}
+
+.steam-header p{
+
+    max-width:700px;
+
+    margin:auto;
+
+    font-size:1.15rem;
+
+    color:#555;
+
+    line-height:1.8;
+
+}
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:35px;
+
+    max-width:1400px;
+
+    margin:auto;
+
+    align-items:stretch;
+
+}
+
+.cards app-card{
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:900px){
+
+    .steam-section{
+
+        padding:60px 25px;
+
+    }
+
+    .steam-header h2{
+
+        font-size:2.3rem;
+
+    }
+
+}

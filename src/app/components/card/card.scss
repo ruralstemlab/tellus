@@ -1,0 +1,77 @@
+.card{
+
+    width:320px;
+
+    background:white;
+
+    border-radius:var(--radius-lg);
+
+    padding:30px;
+
+    text-align:center;
+
+    box-shadow:var(--shadow-sm);
+
+    transition:.35s;
+
+    cursor:pointer;
+
+}
+
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:var(--shadow-lg);
+
+}
+
+.icon{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+}
+
+.card h3{
+
+    color:var(--rsl-green);
+
+    margin-bottom:15px;
+
+}
+
+.card p{
+
+    line-height:1.7;
+
+    margin-bottom:25px;
+
+}
+
+.card button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:var(--radius-md);
+
+    background:var(--rsl-green);
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.card button:hover{
+
+    background:var(--rsl-light-green);
+
+}

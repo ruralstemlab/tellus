@@ -1,0 +1,33 @@
+.tellus-btn{
+
+    padding:16px 36px;
+
+    border:none;
+
+    border-radius:var(--radius-md);
+
+    background:var(--rsl-green);
+
+    color:white;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.tellus-btn:hover{
+
+    transform:translateY(-4px);
+
+    background:var(--rsl-light-green);
+
+    box-shadow:var(--shadow-lg);
+
+}

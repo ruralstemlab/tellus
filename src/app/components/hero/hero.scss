@@ -1,25 +1,31 @@
+/* ===================================
+   HERO
+=================================== */
+
 .hero{
 
-    min-height:calc(100vh - 80px);
+    min-height:90vh;
 
     display:flex;
-
-    flex-direction:column;
 
     justify-content:center;
 
     align-items:center;
 
-    text-align:center;
-
-    padding:40px;
+    padding:80px 40px;
 
     background:
-    linear-gradient(
-        180deg,
-        #f6f8f5 0%,
-        #eef7ef 100%
-    );
+    radial-gradient(circle at top left,#dff5e3 0%,transparent 40%),
+    radial-gradient(circle at bottom right,#cfeee5 0%,transparent 35%),
+    linear-gradient(180deg,#f7fcf7 0%,#edf8f1 100%);
+
+}
+
+.hero-content{
+
+    max-width:900px;
+
+    text-align:center;
 
 }
 
@@ -27,17 +33,31 @@
 
     width:180px;
 
-    margin-bottom:30px;
+    margin-bottom:35px;
+
+    filter:drop-shadow(0 10px 25px rgba(0,0,0,.15));
+
+    transition:.4s;
+
+}
+
+.hero-logo:hover{
+
+    transform:scale(1.05);
 
 }
 
 .hero h1{
 
-    font-size:4.5rem;
+    font-size:5rem;
+
+    font-weight:800;
 
     color:var(--rsl-green);
 
-    margin-bottom:10px;
+    letter-spacing:6px;
+
+    margin-bottom:15px;
 
 }
 
@@ -45,52 +65,86 @@
 
     font-size:2rem;
 
-    color:var(--rsl-night);
+    font-weight:500;
 
-    margin-bottom:20px;
+    color:#2d4d3a;
+
+    margin-bottom:30px;
 
 }
 
 .hero p{
 
-    max-width:700px;
+    max-width:720px;
 
-    font-size:1.2rem;
+    margin:auto;
 
-    line-height:1.8;
+    line-height:1.9;
 
-    color:var(--rsl-dark);
+    font-size:1.15rem;
 
-    margin-bottom:40px;
+    color:#4f5d55;
+
+    margin-bottom:45px;
 
 }
 
 .hero button{
 
-    padding:18px 40px;
+    padding:18px 45px;
 
     border:none;
 
-    border-radius:var(--radius-md);
+    border-radius:50px;
 
-    background:var(--rsl-green);
+    background:linear-gradient(135deg,#2d7a46,#46a35d);
 
     color:white;
 
-    font-size:1.1rem;
+    font-size:1rem;
+
+    font-weight:700;
 
     cursor:pointer;
 
-    transition:.3s;
+    transition:.35s;
 
-    box-shadow:var(--shadow-md);
+    box-shadow:0 15px 35px rgba(45,122,70,.25);
 
 }
 
 .hero button:hover{
 
-    transform:translateY(-4px);
+    transform:translateY(-6px);
 
-    background:var(--rsl-light-green);
+    box-shadow:0 20px 45px rgba(45,122,70,.35);
+
+}
+
+@media(max-width:900px){
+
+    .hero{
+
+        padding:70px 25px;
+
+    }
+
+    .hero h1{
+
+        font-size:3.3rem;
+
+    }
+
+    .hero h2{
+
+        font-size:1.5rem;
+
+    }
+
+    .hero p{
+
+        font-size:1rem;
+
+    }
 
 }

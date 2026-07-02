@@ -1,29 +1,35 @@
 <nav class="navbar">
 
-  <div class="logo">
+    <div class="logo">
 
-    <img src="logos/logo.png" alt="Tellus Logo">
+        <img
+            src="logos/logo.png"
+            alt="Rural STEAM Lab">
 
-    <span>Rural STEAM Lab</span>
+        <span (click)="openAbout()">
 
-  </div>
+            Rural STEAM Lab
 
-  <ul>
+        </span>
 
-    <li><a routerLink="/">Inicio</a></li>
+    </div>
 
-    <li><a routerLink="/dashboard">Explorar</a></li>
+    <ul>
 
-    <li><a href="#">IA</a></li>
+        <li><a routerLink="/">Inicio</a></li>
 
-    <li><a href="#">Laboratorios</a></li>
+        <li><a>Explorar</a></li>
 
-    <li><a href="#">Biblioteca</a></li>
+        <li><a>IA</a></li>
 
-  </ul>
+        <li><a>Laboratorios</a></li>
 
-  <button routerLink="/login">
-    Entrar
-  </button>
+        <li><a>Biblioteca</a></li>
+
+    </ul>
+
+    <button>Entrar</button>
 
 </nav>
+
+<app-about-modal></app-about-modal>
