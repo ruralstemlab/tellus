@@ -1,60 +1,56 @@
-/* ==========================================
-   FOOTER
-========================================== */
+/*=================================================
+                FOOTER PREMIUM
+=================================================*/
 
 .footer{
 
-    background:#071226;
+    background:linear-gradient(
+        180deg,
+        #082415,
+        #05160D
+    );
 
-    color:white;
+    color:#F2F8F3;
 
-    padding:70px 60px 25px;
+    padding:45px 60px 20px;
 
-    margin-top:100px;
+    margin-top:80px;
+
+    border-top:1px solid rgba(255,255,255,.08);
 
 }
 
+/*================================================*/
+
 .footer-container{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-
-    gap:50px;
 
     max-width:1400px;
 
     margin:auto;
 
+    display:grid;
+
+    grid-template-columns:1fr 1fr 1fr 1fr;
+
+    gap:60px;
+
+    align-items:flex-start;
+
 }
 
-.footer-column h2{
-
-    color:#66BB6A;
-
-    margin-bottom:20px;
-
-}
+/*================================================*/
 
 .footer-column h3{
 
-    color:#66BB6A;
+    color:#73D67C;
 
-    margin-bottom:18px;
+    margin-bottom:20px;
 
-    font-size:1.2rem;
-
-}
-
-.footer-column p{
-
-    line-height:1.8;
-
-    color:#d7d7d7;
-
-    margin-bottom:12px;
+    font-size:1.25rem;
 
 }
+
+/*================================================*/
 
 .footer-column ul{
 
@@ -62,103 +58,209 @@
 
     padding:0;
 
+    margin:0;
+
 }
+
+/*================================================*/
 
 .footer-column li{
 
-    margin-bottom:12px;
+    margin-bottom:14px;
 
 }
 
+/*================================================*/
+
 .footer-column a{
 
-    color:white;
+    position:relative;
+
+    color:#F3F3F3;
 
     text-decoration:none;
+
+    cursor:pointer;
 
     transition:.3s;
 
 }
 
+/* Línea animada */
+
+.footer-column a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-4px;
+
+    width:0;
+
+    height:2px;
+
+    background:#73D67C;
+
+    transition:.35s;
+
+}
+
 .footer-column a:hover{
 
-    color:#66BB6A;
+    color:#73D67C;
 
 }
 
-.footer-logo{
+.footer-column a:hover::after{
 
-    width:90px;
-
-    margin-bottom:20px;
+    width:100%;
 
 }
+
+/*================================================*/
+
+.footer-column p{
+
+    color:#C9D7CB;
+
+    line-height:1.9;
+
+    margin-bottom:12px;
+
+}
+
+/*================================================*/
 
 .cc-logo{
 
     width:170px;
 
+    display:block;
+
+    margin-bottom:18px;
+
     background:white;
 
-    border-radius:10px;
+    border-radius:12px;
 
     padding:8px;
 
-    margin:18px 0;
+}
+
+/*================================================*/
+
+.footer-brand{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
 
 }
 
+/*================================================*/
+
+.footer-logo{
+
+    width:250px;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    filter:drop-shadow(
+        0 0 20px rgba(67,160,71,.25)
+    );
+
+}
+
+.footer-logo:hover{
+
+    transform:scale(1.05);
+
+    filter:drop-shadow(
+        0 0 28px rgba(90,210,110,.45)
+    );
+
+}
+
+/*================================================*/
+
 .footer-bottom{
 
-    border-top:1px solid rgba(255,255,255,.12);
+    margin-top:40px;
 
-    margin-top:50px;
+    padding-top:20px;
 
-    padding-top:25px;
+    border-top:1px solid rgba(255,255,255,.08);
 
     text-align:center;
 
 }
 
-.footer-bottom p{
+/*================================================*/
 
-    color:#cfcfcf;
+.footer-bottom p{
 
     margin:8px 0;
 
-    line-height:1.7;
+    color:#BDD0BF;
+
+    line-height:1.8;
 
 }
+
+/*================================================*/
 
 .footer-bottom strong{
 
-    color:#66BB6A;
+    color:#73D67C;
 
 }
 
-@media(max-width:900px){
+/*================================================*/
+
+@media(max-width:1000px){
+
+    .footer-container{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:40px;
+
+    }
+
+}
+
+@media(max-width:768px){
 
     .footer{
 
-        padding:50px 25px 20px;
+        padding:40px 25px 20px;
 
     }
 
     .footer-container{
 
-        gap:35px;
+        grid-template-columns:1fr;
+
+        text-align:center;
 
     }
 
     .footer-logo{
 
-        width:75px;
+        width:180px;
 
     }
 
     .cc-logo{
 
-        width:140px;
+        margin:auto auto 20px;
 
     }
 

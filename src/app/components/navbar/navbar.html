@@ -3,32 +3,52 @@
     <div class="logo">
 
         <img
-            src="logos/logo.png"
-            alt="Rural STEAM Lab">
-
-        <span (click)="openAbout()">
-
-            Rural STEAM Lab
-
-        </span>
+            src="assets/logo/logo.png"
+            alt="Rural STEAM Lab"
+            class="logo-img"
+            (click)="openAbout()">
 
     </div>
 
-    <ul>
+    <ul class="nav-menu">
 
-        <li><a routerLink="/">Inicio</a></li>
+        <li>
+            <a routerLink="/" class="active">
+                Inicio
+            </a>
+        </li>
 
-        <li><a>Explorar</a></li>
+        <li>
+            <a>
+                Explorar
+            </a>
+        </li>
 
-        <li><a>IA</a></li>
+        <li>
+            <a>
+                IA
+            </a>
+        </li>
 
-        <li><a>Laboratorios</a></li>
+        <li>
+            <a>
+                Laboratorios
+            </a>
+        </li>
 
-        <li><a>Biblioteca</a></li>
+        <li>
+            <a>
+                Biblioteca
+            </a>
+        </li>
 
     </ul>
 
-    <button>Entrar</button>
+    <button class="login-btn">
+
+        <span>Entrar</span>
+
+    </button>
 
 </nav>
 

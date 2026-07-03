@@ -1,54 +1,104 @@
+/* ==========================================
+   CARD PREMIUM
+========================================== */
+
 .card{
 
-    width:320px;
+    width:240px;
 
-    background:white;
+    min-height:430px;
 
-    border-radius:var(--radius-lg);
+    background:#FFFFFF;
+
+    border:1.5px solid #DDEEDD;
+
+    border-radius:22px;
 
     padding:30px;
 
     text-align:center;
 
-    box-shadow:var(--shadow-sm);
-
-    transition:.35s;
-
     cursor:pointer;
 
+    transition:all .35s ease;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    box-sizing:border-box;
+
+    box-shadow:
+        0 12px 28px rgba(46,125,50,.10);
+
 }
+
+/* ========================================== */
 
 .card:hover{
 
     transform:translateY(-10px);
 
-    box-shadow:var(--shadow-lg);
+    border-color:#43A047;
+
+    box-shadow:
+        0 22px 50px rgba(46,125,50,.28);
 
 }
+
+/* ========================================== */
 
 .icon{
 
-    font-size:4rem;
+    font-size:4.3rem;
 
-    margin-bottom:20px;
+    margin-bottom:22px;
+
+    transition:.35s;
 
 }
+
+.card:hover .icon{
+
+    transform:scale(1.08);
+
+}
+
+/* ========================================== */
 
 .card h3{
 
-    color:var(--rsl-green);
+    color:#2E7D32;
 
-    margin-bottom:15px;
+    font-size:1.45rem;
+
+    margin-bottom:18px;
+
+    font-weight:700;
 
 }
+
+/* ========================================== */
 
 .card p{
 
-    line-height:1.7;
+    flex:1;
 
-    margin-bottom:25px;
+    width:100%;
+
+    color:#5B5B5B;
+
+    line-height:1.8;
+
+    font-size:.97rem;
+
+    margin-bottom:28px;
 
 }
+
+/* ========================================== */
 
 .card button{
 
@@ -58,20 +108,33 @@
 
     border:none;
 
-    border-radius:var(--radius-md);
+    border-radius:14px;
 
-    background:var(--rsl-green);
+    background:linear-gradient(
+        135deg,
+        #2E7D32,
+        #43A047
+    );
 
     color:white;
 
+    font-size:1rem;
+
+    font-weight:600;
+
     cursor:pointer;
 
-    transition:.3s;
+    transition:.35s;
+
+    margin-top:auto;
 
 }
 
 .card button:hover{
 
-    background:var(--rsl-light-green);
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(46,125,50,.35);
 
 }

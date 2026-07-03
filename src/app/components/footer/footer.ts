@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { Modal } from '../../services/modal';
 
 @Component({
   selector: 'app-footer',
@@ -10,8 +12,16 @@ import { RouterLink } from '@angular/router';
 })
 export class Footer {
 
-  year: number = new Date().getFullYear();
+  year = new Date().getFullYear();
 
-  version: string = 'v0.3.6';
+  version = 'v0.3.6';
+
+  modal = inject(Modal);
+
+  openAbout(){
+
+    this.modal.open('about');
+
+  }
 
 }
