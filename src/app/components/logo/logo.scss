@@ -1,0 +1,19 @@
+.tellus-logo{
+
+    display:block;
+
+    height:auto;
+
+    user-select:none;
+
+    pointer-events:none;
+
+    transition:transform .3s ease;
+
+}
+
+.tellus-logo:hover{
+
+    transform:scale(1.02);
+
+}

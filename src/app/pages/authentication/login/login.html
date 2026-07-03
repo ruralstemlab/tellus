@@ -1,0 +1,296 @@
+<div class="login-page">
+
+    <!-- Fondo -->
+
+    <div class="background-gradient"></div>
+
+    <div class="background-glow"></div>
+
+    <!-- Contenedor principal -->
+
+    <div class="login-container">
+
+        <!-- ===================================== -->
+        <!-- PANEL IZQUIERDO -->
+        <!-- ===================================== -->
+
+        <section class="left-panel">
+
+            <div class="brand">
+
+                <app-logo [width]="360"></app-logo>
+
+                <span class="brand-badge">
+
+                    Rural STEAM Lab
+
+                </span>
+
+                <h1>
+
+                    Ecosistema Inteligente de Aprendizaje
+
+                </h1>
+
+                <p>
+
+                    Aprende, explora y crea con inteligencia artificial,
+                    laboratorios interactivos y recursos STEAM diseñados
+                    para transformar la educación.
+
+                </p>
+
+            </div>
+
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        🤖
+
+                    </div>
+
+                    <div>
+
+                        <h3>Gaian IA</h3>
+
+                        <p>
+                            Tu tutor inteligente disponible
+                            en cualquier momento.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        📚
+
+                    </div>
+
+                    <div>
+
+                        <h3>Biblioteca Digital</h3>
+
+                        <p>
+                            Recursos interactivos y
+                            contenido educativo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        🧪
+
+                    </div>
+
+                    <div>
+
+                        <h3>Laboratorios</h3>
+
+                        <p>
+
+                            Experimenta mediante simuladores
+                            y actividades STEAM.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        📈
+
+                    </div>
+
+                    <div>
+
+                        <h3>Analíticas</h3>
+
+                        <p>
+
+                            Visualiza tu progreso y
+                            fortalece tu aprendizaje.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================== -->
+        <!-- PANEL DERECHO -->
+        <!-- ===================================== -->
+
+        <section class="right-panel">
+
+            <div class="login-card">
+
+                <span class="login-badge">
+
+                    Bienvenido nuevamente
+
+                </span>
+
+                <h2>
+
+                    Iniciar sesión
+
+                </h2>
+
+                <p class="subtitle">
+
+                    Accede a tu cuenta para continuar
+                    dentro del ecosistema Tellus.
+
+                </p>
+
+                <form>
+
+                    <div class="field">
+
+                        <label>
+
+                            Correo electrónico
+
+                        </label>
+
+                        <app-input
+                            type="email"
+                            placeholder="correo@ejemplo.com">
+                        </app-input>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+
+                            Contraseña
+
+                        </label>
+
+                        <app-input
+                            [type]="showPassword ? 'text' : 'password'"
+                            placeholder="••••••••">
+                        </app-input>
+
+                    </div>
+
+                    <div class="options">
+
+                        <label class="remember">
+
+                            <input
+                                type="checkbox"
+                                [(ngModel)]="rememberMe"
+                                name="remember">
+
+                            Recordarme
+
+                        </label>
+
+                        <a routerLink="/forgot-password">
+
+                            ¿Olvidaste tu contraseña?
+
+                        </a>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="login-button"
+                        (click)="login()">
+
+                        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+
+                    </button>
+
+                </form>
+
+                <div class="divider">
+
+                    <span>
+
+                        o continúa con
+
+                    </span>
+
+                </div>
+
+                <div class="social-buttons">
+
+                    <button
+                        type="button"
+                        class="social google"
+                        (click)="loginWithGoogle()">
+
+                        Google
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="social microsoft"
+                        (click)="loginWithMicrosoft()">
+
+                        Microsoft
+
+                    </button>
+
+                </div>
+
+                <div class="register">
+
+                    ¿No tienes una cuenta?
+
+                    <a routerLink="/register">
+
+                        Crear cuenta
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <footer class="login-footer">
+
+        <p>
+
+            © 2026 Tellus · Rural STEAM Lab
+
+        </p>
+
+        <small>
+
+            Aprender • Explorar • Transformar
+
+        </small>
+
+    </footer>
+
+</div>

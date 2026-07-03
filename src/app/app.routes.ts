@@ -1,7 +1,12 @@
 import { Routes } from '@angular/router';
 
 import { Landing } from './pages/landing/landing';
-import { Login } from './pages/login/login';
+
+import { Login } from './pages/authentication/login/login';
+import { Register } from './pages/authentication/register/register';
+import { ForgotPassword } from './pages/authentication/forgot-password/forgot-password';
+import { ResetPassword } from './pages/authentication/reset-password/reset-password';
+
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Matematicas } from './pages/matematicas/matematicas';
 import { Ciencias } from './pages/ciencias/ciencias';
@@ -17,6 +22,18 @@ export const routes: Routes = [
   {
     path: 'login',
     component: Login
+  },
+  {
+    path: 'register',
+    component: Register
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: 'reset-password',
+    component: ResetPassword
   },
   {
     path: 'dashboard',
