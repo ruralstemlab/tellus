@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 
 import { Logo } from '../../../components/logo/logo';
 import { InputComponent } from '../../../components/input/input';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,8 +14,6 @@ import { InputComponent } from '../../../components/input/input';
     CommonModule,
     FormsModule,
     RouterLink,
-
-    // ⚠️ Solo mantenlos si realmente los usas en HTML
     Logo,
     InputComponent
   ],
@@ -31,32 +30,55 @@ export class Login {
   showPassword = false;
   error = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
-  login(): void {
+  async login(): Promise<void> {
 
     this.loading = true;
     this.error = '';
 
-    console.log('LOGIN TELLUS');
-    console.log('email:', this.email);
+    if (!this.email || !this.password) {
+      this.loading = false;
+      this.error = 'Completa todos los campos';
+      return;
+    }
 
-    setTimeout(() => {
+    try {
+
+      await this.authService.login(
+        this.email,
+        this.password
+      );
 
       this.loading = false;
 
-      if (!this.email || !this.password) {
-        this.error = 'Completa todos los campos';
-        return;
-      }
-
-      // Simulación auth
-      localStorage.setItem('auth', 'true');
-
-      // 🚀 Ecosistema Tellus
       this.router.navigate(['/tellus']);
 
-    }, 1000);
+    } catch (error: any) {
+
+      this.loading = false;
+
+      switch (error.code) {
+
+        case 'auth/invalid-credential':
+          this.error = 'Correo o contraseña incorrectos.';
+          break;
+
+        case 'auth/invalid-email':
+          this.error = 'Correo electrónico inválido.';
+          break;
+
+        default:
+          this.error = 'No fue posible iniciar sesión.';
+      }
+
+      console.error(error);
+
+    }
+
   }
 
   loginWithGoogle(): void {
@@ -70,4 +92,5 @@ export class Login {
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
+
 }

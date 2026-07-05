@@ -32,8 +32,6 @@ export class Register {
 
   async register(): Promise<void> {
 
-    alert('Entré al método Register');
-
     // Validar contraseñas
     if (this.password !== this.confirmPassword) {
       alert('❌ Las contraseñas no coinciden.');
