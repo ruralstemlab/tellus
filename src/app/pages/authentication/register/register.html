@@ -1,1 +1,158 @@
-<p>register works!</p>
+<div class="register-page">
+
+  <!-- Fondo animado -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <!-- Contenedor principal -->
+  <div class="register-container">
+
+    <!-- ========================================= -->
+    <!-- PANEL IZQUIERDO - MARCA Y FEATURES        -->
+    <!-- ========================================= -->
+    <section class="left-panel">
+
+      <div class="brand">
+        <!-- LOGO – TAMAÑO 350px (igual que en login) -->
+        <img src="/assets/logo/logo.png" alt="Tellus Logo" class="logo" />
+
+        <span class="brand-badge">
+          ✦ Rural STEAM Lab
+        </span>
+
+        <h1>
+          El futuro del<br />
+          <span>aprendizaje</span> está aquí
+        </h1>
+
+        <p>
+          Un ecosistema impulsado por IA, laboratorios inmersivos
+          y recursos interactivos para la nueva generación de creadores.
+        </p>
+      </div>
+
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <div>
+            <h3>Gaian IA</h3>
+            <p>Asistente inteligente 24/7 para resolver tus dudas.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div>
+            <h3>Biblioteca Viva</h3>
+            <p>Contenido dinámico que se adapta a tu ritmo.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div>
+            <h3>Laboratorios STEAM</h3>
+            <p>Simulaciones y experimentos sin límites.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div>
+            <h3>Analítica Predictiva</h3>
+            <p>Visualiza tu progreso y potencia tus habilidades.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- PANEL DERECHO - TARJETA DE REGISTRO       -->
+    <!-- ========================================= -->
+    <section class="right-panel">
+
+      <div class="register-card">
+
+        <div class="card-header">
+          <span class="register-badge">🚀 Comienza ahora</span>
+          <h2>Crear cuenta</h2>
+          <p class="subtitle">Únete a la comunidad Tellus y transforma tu educación.</p>
+        </div>
+
+        <form>
+          <div class="field">
+            <input type="text" id="fullName" placeholder=" " />
+            <label for="fullName">Nombre completo</label>
+          </div>
+
+          <div class="field">
+            <input type="email" id="email" placeholder=" " />
+            <label for="email">Correo electrónico</label>
+          </div>
+
+          <div class="field">
+            <input type="password" id="password" placeholder=" " />
+            <label for="password">Contraseña</label>
+          </div>
+
+          <div class="field">
+            <input type="password" id="confirmPassword" placeholder=" " />
+            <label for="confirmPassword">Confirmar contraseña</label>
+          </div>
+
+          <div class="options">
+            <label class="remember">
+              <input type="checkbox" />
+              Acepto los <a routerLink="/terms">términos y condiciones</a>
+            </label>
+          </div>
+
+          <button type="button" class="register-button">
+            <span>Crear cuenta</span>
+          </button>
+        </form>
+
+        <div class="divider">
+          <span>O continúa con</span>
+        </div>
+
+        <div class="social-buttons">
+          <button class="social google">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Google
+          </button>
+          <button class="social microsoft">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z"/>
+            </svg>
+            Microsoft
+          </button>
+        </div>
+
+        <div class="login-link">
+          ¿Ya eres parte de Tellus?
+          <a routerLink="/login">Iniciar sesión</a>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- FOOTER CON CRÉDITO                        -->
+  <!-- ========================================= -->
+  <footer class="register-footer">
+    <p>© 2026 Tellus · Donde el conocimiento cobra vida</p>
+    <small>Diseñado por Eng. Medina H. A.</small>
+  </footer>
+
+</div>
