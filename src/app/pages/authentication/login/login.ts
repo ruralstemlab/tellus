@@ -53,7 +53,8 @@ export class Login {
 
       this.loading = false;
 
-      this.router.navigate(['/tellus']);
+      // Redirigir al Home de Tellus después del inicio de sesión
+      await this.router.navigate(['/home']);
 
     } catch (error: any) {
 
