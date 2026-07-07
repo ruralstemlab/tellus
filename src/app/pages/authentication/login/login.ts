@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { Logo } from '../../../components/logo/logo';
-import { InputComponent } from '../../../components/input/input';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -14,8 +13,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     CommonModule,
     FormsModule,
     RouterLink,
-    Logo,
-    InputComponent
+    Logo
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']

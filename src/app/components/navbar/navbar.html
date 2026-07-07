@@ -1,54 +1,61 @@
 <nav class="navbar">
 
-    <div class="logo">
+  <!-- Logo -->
+  <div class="logo">
 
-        <img
-            src="assets/logo/logo.png"
-            alt="Rural STEAM Lab"
-            class="logo-img"
-            (click)="openAbout()">
+    <img
+      src="assets/logo/logo.png"
+      alt="Tellus"
+      class="logo-img"
+      (click)="openAbout()">
 
-    </div>
+    <span class="brand-name">Tellus</span>
 
-    <ul class="nav-menu">
+  </div>
 
-        <li>
-            <a routerLink="/" class="active">
-                Inicio
-            </a>
-        </li>
+  <!-- Menú -->
+  <ul class="nav-menu">
 
-        <li>
-            <a>
-                Explorar
-            </a>
-        </li>
+    <li>
+      <a routerLink="/tellus" class="active">
+        Inicio
+      </a>
+    </li>
 
-        <li>
-            <a>
-                IA
-            </a>
-        </li>
+    <li>
+      <a routerLink="/gaian">
+        Gaian
+      </a>
+    </li>
 
-        <li>
-            <a>
-                Laboratorios
-            </a>
-        </li>
+    <li>
+      <a routerLink="/laboratorios">
+        Laboratorios
+      </a>
+    </li>
 
-        <li>
-            <a>
-                Biblioteca
-            </a>
-        </li>
+    <li>
+      <a routerLink="/biblioteca">
+        Biblioteca Viva
+      </a>
+    </li>
 
-    </ul>
+  </ul>
 
-    <button class="login-btn">
+  <!-- Usuario -->
+  <div class="user-area">
 
-        <span>Entrar</span>
+    <span class="user-name">
+      👤 Henson Alberto
+    </span>
+
+    <button class="logout-btn">
+
+      🚪 Cerrar sesión
 
     </button>
+
+  </div>
 
 </nav>
 
