@@ -53,8 +53,8 @@ export class Login {
 
       this.loading = false;
 
-      // Redirigir al Home de Tellus después del inicio de sesión
-      await this.router.navigate(['/home']);
+      // Redirección temporal para probar el flujo
+      window.location.href = 'https://tellus.ruralsteamlab.com/home';
 
     } catch (error: any) {
 

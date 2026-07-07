@@ -21,7 +21,8 @@ export const routes: Routes = [
 
   {
     path: '',
-    component: Landing
+    redirectTo: 'home',
+    pathMatch: 'full'
   },
 
   {
@@ -81,7 +82,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'home'
   }
 
 ];
