@@ -17,28 +17,59 @@ export class AuthService {
 
   constructor(private router: Router) {}
 
+  // ============================
+  // REGISTRO
+  // ============================
   async register(email: string, password: string): Promise<UserCredential> {
     return await createUserWithEmailAndPassword(auth, email, password);
   }
 
+  // ============================
+  // LOGIN
+  // ============================
   async login(email: string, password: string): Promise<UserCredential> {
     return await signInWithEmailAndPassword(auth, email, password);
   }
 
+  // ============================
+  // RECUPERAR CONTRASEÑA
+  // ============================
   async resetPassword(email: string): Promise<void> {
     await sendPasswordResetEmail(auth, email);
   }
 
+  // ============================
+  // CERRAR SESIÓN
+  // ============================
   async logout(): Promise<void> {
-    await signOut(auth);
-    this.router.navigate(['/login']);
+
+    try {
+
+      await signOut(auth);
+
+      // Regresa al portal principal Rural STEAM Lab
+      window.location.href = 'https://ruralsteamlab.com';
+
+    } catch (error) {
+
+      console.error('Error al cerrar sesión:', error);
+
+    }
+
   }
 
+  // ============================
+  // USUARIO AUTENTICADO
+  // ============================
   isAuthenticated(): boolean {
     return auth.currentUser !== null;
   }
 
+  // ============================
+  // USUARIO ACTUAL
+  // ============================
   getCurrentUser() {
     return auth.currentUser;
   }
+
 }

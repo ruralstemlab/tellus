@@ -2,58 +2,100 @@
 
   <!-- Logo -->
   <div class="logo">
-
     <img
       src="assets/logo/logo.png"
       alt="Tellus"
       class="logo-img"
-      (click)="openAbout()">
-
-    <span class="brand-name">Tellus</span>
-
+      (click)="openAbout()"
+    />
   </div>
 
-  <!-- Menú -->
+  <!-- Menú principal -->
   <ul class="nav-menu">
-
     <li>
-      <a routerLink="/tellus" class="active">
-        Inicio
+      <a routerLink="/dashboard" routerLinkActive="active">
+        🏠 Inicio
       </a>
     </li>
 
     <li>
-      <a routerLink="/gaian">
-        Gaian
+      <a routerLink="/gaian" routerLinkActive="active">
+        🤖 Gaian
       </a>
     </li>
 
     <li>
-      <a routerLink="/laboratorios">
-        Laboratorios
+      <a routerLink="/laboratorios" routerLinkActive="active">
+        🧪 Laboratorios
       </a>
     </li>
 
     <li>
-      <a routerLink="/biblioteca">
-        Biblioteca Viva
+      <a routerLink="/biblioteca" routerLinkActive="active">
+        📚 Biblioteca Viva
       </a>
     </li>
-
   </ul>
 
-  <!-- Usuario -->
-  <div class="user-area">
+  <!-- Área de usuario -->
+  <div class="user-area" tabindex="0">
 
-    <span class="user-name">
-      👤 Henson Alberto
-    </span>
+    <div class="user-trigger">
 
-    <button class="logout-btn">
+      <span class="user-name">
+        👤 {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
+      </span>
 
-      🚪 Cerrar sesión
+      <span class="user-arrow">
+        ▼
+      </span>
 
-    </button>
+    </div>
+
+    <div class="user-dropdown">
+
+      <div class="dropdown-header">
+
+        <span class="dropdown-name">
+          {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
+        </span>
+
+        <span class="dropdown-role">
+          Profesor
+        </span>
+
+      </div>
+
+      <div class="dropdown-divider"></div>
+
+      <a
+        class="dropdown-item"
+        routerLink="/perfil">
+
+        👤 Mi perfil
+
+      </a>
+
+      <a
+        class="dropdown-item"
+        routerLink="/configuracion">
+
+        ⚙ Configuración
+
+      </a>
+
+      <div class="dropdown-divider"></div>
+
+      <button
+        type="button"
+        class="dropdown-item logout-btn"
+        (click)="logout()">
+
+        🚪 Cerrar sesión
+
+      </button>
+
+    </div>
 
   </div>
 
