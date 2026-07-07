@@ -318,9 +318,14 @@ form {
   background: rgba(0, 245, 160, 0.03);
   box-shadow: 0 0 0 4px rgba(0, 245, 160, 0.08), inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* --- Ajuste del floating label: ahora sube correctamente --- */
 .field input:focus + label,
-.field input:not(:placeholder-shown) + label {
-  transform: translateY(-8px) scale(0.8);
+.field input:not(:placeholder-shown) + label,
+.field input:-webkit-autofill + label,
+.field input.ng-dirty + label,
+.field input.ng-valid + label {
+  transform: translateY(-28px) scale(0.8);
   color: #00f5a0;
   opacity: 1;
 }
