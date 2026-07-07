@@ -7,60 +7,81 @@ import { Register } from './pages/authentication/register/register';
 import { ForgotPassword } from './pages/authentication/forgot-password/forgot-password';
 import { ResetPassword } from './pages/authentication/reset-password/reset-password';
 
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Matematicas } from './pages/matematicas/matematicas';
-import { Ciencias } from './pages/ciencias/ciencias';
-import { Ingenieria } from './pages/ingenieria/ingenieria';
-import { Arte } from './pages/arte/arte';
-import { Tecnologia } from './pages/tecnologia/tecnologia';
+import { Home } from './pages/home/home';
+
+import { Laboratorios } from './pages/laboratorios/laboratorios';
+
+import { Matematicas } from './pages/laboratorios/matematicas/matematicas';
+import { Ciencias } from './pages/laboratorios/ciencias/ciencias';
+import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
+import { Arte } from './pages/laboratorios/arte/arte';
+import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
 export const routes: Routes = [
+
   {
     path: '',
     component: Landing
   },
+
   {
     path: 'login',
     component: Login
   },
+
   {
     path: 'register',
     component: Register
   },
+
   {
     path: 'forgot-password',
     component: ForgotPassword
   },
+
   {
     path: 'reset-password',
     component: ResetPassword
   },
+
   {
-    path: 'dashboard',
-    component: Dashboard
+    path: 'home',
+    component: Home
   },
+
+  {
+    path: 'laboratorios',
+    component: Laboratorios
+  },
+
   {
     path: 'matematicas',
     component: Matematicas
   },
+
   {
     path: 'ciencias',
     component: Ciencias
   },
+
   {
     path: 'ingenieria',
     component: Ingenieria
   },
+
   {
     path: 'arte',
     component: Arte
   },
+
   {
     path: 'tecnologia',
     component: Tecnologia
   },
+
   {
     path: '**',
     redirectTo: ''
   }
+
 ];

@@ -1,0 +1,280 @@
+.dashboard {
+  padding: 32px;
+  background: #f6f8f7;
+  min-height: calc(100vh - 80px);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  height: 580px;
+
+  padding: 0 90px;
+
+  border-radius: 28px;
+  overflow: hidden;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(7, 20, 14, 0.78) 0%,
+      rgba(7, 20, 14, 0.56) 34%,
+      rgba(7, 20, 14, 0.20) 68%,
+      rgba(7, 20, 14, 0.05) 100%
+    ),
+    url('/assets/backgrounds/banner.png');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .14);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  max-width: 760px;
+
+  color: #ffffff;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 18px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.10);
+
+  backdrop-filter: blur(12px);
+
+  font-size: .95rem;
+
+  font-weight: 500;
+
+  margin-bottom: 28px;
+}
+
+.hero h1 {
+
+  margin: 0;
+
+  font-size: clamp(3.4rem, 5vw, 4.8rem);
+
+  line-height: 1.08;
+
+  letter-spacing: -.04em;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+}
+
+.tellus {
+
+  color: #8FEA58;
+
+}
+
+.subtitle {
+
+  margin-top: 24px;
+
+  max-width: 620px;
+
+  font-size: 1.25rem;
+
+  line-height: 1.6;
+
+  color: rgba(255,255,255,.92);
+
+}
+
+.hero h2 {
+
+  margin-top: 20px;
+
+  margin-bottom: 38px;
+
+  max-width: 650px;
+
+  font-size: 1.9rem;
+
+  line-height: 1.35;
+
+  font-weight: 600;
+
+  color: #9BE15D;
+
+}
+
+.gaian-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 18px 42px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  background: linear-gradient(
+      135deg,
+      #72D44A,
+      #9BE15D
+  );
+
+  color: white;
+
+  font-size: 1.08rem;
+
+  font-weight: 700;
+
+  transition: all .25s ease;
+
+  box-shadow:
+      0 15px 35px rgba(105,194,63,.35);
+
+}
+
+.gaian-btn:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow:
+      0 20px 45px rgba(105,194,63,.45);
+
+}
+
+.description {
+
+  margin-top: 34px;
+
+  max-width: 560px;
+
+  font-size: 1rem;
+
+  line-height: 1.7;
+
+  color: rgba(255,255,255,.86);
+
+}
+
+/* ===========================
+   TABLET
+=========================== */
+
+@media (max-width: 1024px) {
+
+  .dashboard {
+
+    padding: 22px;
+
+  }
+
+  .hero {
+
+    height: auto;
+
+    padding: 70px 50px;
+
+  }
+
+  .hero-content {
+
+    max-width: 100%;
+
+  }
+
+  .hero h1 {
+
+    white-space: normal;
+
+    font-size: 3.3rem;
+
+  }
+
+  .hero h2 {
+
+    font-size: 1.6rem;
+
+  }
+
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+
+  .dashboard {
+
+    padding: 16px;
+
+  }
+
+  .hero {
+
+    padding: 45px 28px;
+
+    border-radius: 22px;
+
+  }
+
+  .badge {
+
+    font-size: .85rem;
+
+  }
+
+  .hero h1 {
+
+    white-space: normal;
+
+    font-size: 2.5rem;
+
+  }
+
+  .subtitle {
+
+    font-size: 1.05rem;
+
+  }
+
+  .hero h2 {
+
+    font-size: 1.4rem;
+
+  }
+
+  .gaian-btn {
+
+    width: 100%;
+
+    justify-content: center;
+
+  }
+
+}

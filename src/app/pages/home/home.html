@@ -1,0 +1,88 @@
+<app-navbar></app-navbar>
+
+<section class="dashboard">
+
+  <!-- Partículas flotantes -->
+  <div class="particles">
+    <span class="leaf l1">🍃</span>
+    <span class="leaf l2">🦋</span>
+    <span class="leaf l3">🌿</span>
+    <span class="leaf l4">🍂</span>
+    <span class="leaf l5">🌱</span>
+    <span class="leaf l6">🦋</span>
+    <span class="leaf l7">🍃</span>
+    <span class="leaf l8">🌿</span>
+    <span class="leaf l9">🦋</span>
+    <span class="leaf l10">🍂</span>
+    <span class="leaf l11">🌱</span>
+    <span class="leaf l12">🍃</span>
+    <span class="leaf l13">🦋</span>
+    <span class="leaf l14">🌿</span>
+    <span class="leaf l15">🍂</span>
+  </div>
+
+  <!-- Iluminación ambiental (radiales detrás de las tarjetas) -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- HERO – con márgenes, borde glass y sombra verde difusa -->
+  <div class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <span class="badge">🌱 Bienvenido a</span>
+      <h1><span class="tellus">Tellus</span>, profesor {{ teacherName }}.</h1>
+      <p class="subtitle">La educación cambia el mundo cuando despierta la curiosidad.</p>
+      <h2>¿Cómo vamos a sorprender a nuestros niños hoy?</h2>
+      <button class="gaian-btn">🤖 Hablar con Gaian</button>
+      <p class="description">✨ Tu asistente inteligente para planear, enseñar y transformar vidas.</p>
+    </div>
+  </div>
+
+  <!-- CENTRO DE CONTROL -->
+  <section class="control-center">
+
+    <div class="section-header">
+      <span class="badge-header">✦ Centro de Control</span>
+      <h2>Todo tu ecosistema al alcance</h2>
+      <p>Accede rápidamente a todas las herramientas del ecosistema Tellus.</p>
+    </div>
+
+    <div class="cards-grid">
+      <!-- FILA 1: 4 tarjetas -->
+      <div class="cards-row row-1">
+        <div class="card" *ngFor="let card of cards.slice(0,4)">
+          <div class="card-icon-wrapper">
+            <div class="card-icon">{{ card.icon }}</div>
+          </div>
+          <h3 class="card-title">{{ card.title }}</h3>
+          <p class="card-desc">{{ card.desc }}</p>
+          <div class="card-footer">
+            <span class="card-arrow">→</span>
+          </div>
+          <!-- Indicador activo tipo cápsula luminosa (se muestra en hover) -->
+          <div class="card-indicator"></div>
+        </div>
+      </div>
+
+      <!-- FILA 2: 3 tarjetas centradas -->
+      <div class="cards-row row-2">
+        <div class="card" *ngFor="let card of cards.slice(4,7)">
+          <div class="card-icon-wrapper">
+            <div class="card-icon">{{ card.icon }}</div>
+          </div>
+          <h3 class="card-title">{{ card.title }}</h3>
+          <p class="card-desc">{{ card.desc }}</p>
+          <div class="card-footer">
+            <span class="card-arrow">→</span>
+          </div>
+          <div class="card-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</section>
+
+<app-footer></app-footer>
