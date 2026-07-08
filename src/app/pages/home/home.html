@@ -1,5 +1,10 @@
 <app-navbar></app-navbar>
 
+<!-- ==========================================================
+     CANVAS DE PARTÍCULAS (fondo dinámico)
+=========================================================== -->
+<canvas id="particles-canvas"></canvas>
+
 <main class="dashboard">
 
   <!-- ==========================================================
@@ -12,13 +17,13 @@
 
       <span class="welcome-badge">
 
-        🌱 Bienvenido a Tellus
+        🌱 Tellus · Ecosistema Educativo Inteligente
 
       </span>
 
       <h1>
 
-        {{ greeting }},
+        Bienvenido,
 
         <br>
 
@@ -63,7 +68,7 @@
     </div>
 
     <!-- ==========================================
-         BANNER
+         BANNER INTELIGENTE
     =========================================== -->
 
     <div class="welcome-image">
@@ -71,6 +76,48 @@
       <img
         [src]="bannerImage"
         alt="Banner Tellus">
+
+      <!-- ======================================
+           TARJETA FLOTANTE
+      ======================================= -->
+
+      <div class="hero-overlay">
+
+        <div class="hero-overlay-card">
+
+          <h3>
+
+            {{ greeting }}
+
+          </h3>
+
+          <p>
+
+            {{ currentDate }}
+
+          </p>
+
+          <p>
+
+            {{ temperature }} · {{ weather }}
+
+          </p>
+
+          <p>
+
+            📍 Chipatá, Santander
+
+          </p>
+
+          <p class="hero-time">
+
+            {{ currentTime }}
+
+          </p>
+
+        </div>
+
+      </div>
 
     </div>
 

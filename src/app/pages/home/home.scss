@@ -14,6 +14,31 @@
 
 
 /*=========================================================
+  CANVAS DE PARTÍCULAS (fondo)
+=========================================================*/
+
+#particles-canvas {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    z-index: -1;                /* Detrás de todo */
+
+    pointer-events: none;       /* Permite interactuar con el contenido */
+
+    display: block;
+
+}
+
+
+/*=========================================================
   BODY
 =========================================================*/
 
@@ -399,6 +424,8 @@ body{
 
 .welcome-image{
 
+    position:relative;
+
     display:flex;
 
     justify-content:center;
@@ -435,7 +462,102 @@ body{
 
 
 /*=========================================================
-  TITULOS
+  TARJETA FLOTANTE SIMPLIFICADA
+=========================================================*/
+
+.hero-overlay {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 380px;
+
+    max-width: 90vw;
+
+    padding: 24px 20px;
+
+    border-radius: 28px;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+
+        0 8px 32px rgba(0, 0, 0, 0.45);
+
+    text-align: center;
+
+    color: white;
+
+    pointer-events: none;
+
+}
+
+.hero-overlay-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+}
+
+.hero-overlay-card h3 {
+
+    margin: 0 0 4px 0;
+
+    font-size: 1.6rem;
+
+    font-weight: 600;
+
+    letter-spacing: -0.5px;
+
+    color: #8FEA58;
+
+}
+
+.hero-overlay-card p {
+
+    margin: 2px 0;
+
+    font-size: 1rem;
+
+    font-weight: 400;
+
+    opacity: 0.95;
+
+    line-height: 1.4;
+
+}
+
+.hero-overlay-card .hero-time {
+
+    font-size: 1.3rem;
+
+    font-weight: 600;
+
+    color: #57D46B;
+
+    letter-spacing: 0.5px;
+
+    margin-top: 6px;
+
+}
+
+
+/*=========================================================
+  TITULOS SECCIONES
 =========================================================*/
 
 .section-title{
@@ -470,7 +592,7 @@ body{
 
 
 /*=========================================================
-  GRID
+  GRID DE CARDS
 =========================================================*/
 
 .cards-grid{
@@ -484,6 +606,8 @@ body{
     gap:30px;
 
 }
+
+
 /*=========================================================
   TARJETAS EMERALD GLASS ULTIMATE
 =========================================================*/
@@ -991,6 +1115,32 @@ body{
 .quick-actions{
 
     padding-bottom:70px;
+
+}
+
+.hero-overlay {
+
+    width: 300px;
+
+    padding: 18px 14px;
+
+}
+
+.hero-overlay-card h3 {
+
+    font-size: 1.3rem;
+
+}
+
+.hero-overlay-card p {
+
+    font-size: 0.9rem;
+
+}
+
+.hero-overlay-card .hero-time {
+
+    font-size: 1.1rem;
 
 }
 
