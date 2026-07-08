@@ -5,9 +5,11 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
-  UserCredential
+  UserCredential,
+  User,
+  onAuthStateChanged
 } from 'firebase/auth';
-
+import { BehaviorSubject, Observable } from 'rxjs';
 import { auth } from '../../../environments/firebase.config';
 
 @Injectable({
@@ -15,7 +17,16 @@ import { auth } from '../../../environments/firebase.config';
 })
 export class AuthService {
 
-  constructor(private router: Router) {}
+  // Observable del usuario autenticado (puede ser null)
+  private userSubject = new BehaviorSubject<User | null>(null);
+  public user$: Observable<User | null> = this.userSubject.asObservable();
+
+  constructor(private router: Router) {
+    // Escuchar cambios de autenticación
+    onAuthStateChanged(auth, (user) => {
+      this.userSubject.next(user);
+    });
+  }
 
   // ============================
   // REGISTRO
@@ -42,34 +53,28 @@ export class AuthService {
   // CERRAR SESIÓN
   // ============================
   async logout(): Promise<void> {
-
     try {
-
       await signOut(auth);
-
       // Regresa al portal principal Rural STEAM Lab
       window.location.href = 'https://ruralsteamlab.com';
-
     } catch (error) {
-
       console.error('Error al cerrar sesión:', error);
-
     }
-
   }
 
   // ============================
-  // USUARIO AUTENTICADO
+  // USUARIO ACTUAL (sincrónico)
   // ============================
-  isAuthenticated(): boolean {
-    return auth.currentUser !== null;
-  }
-
-  // ============================
-  // USUARIO ACTUAL
-  // ============================
-  getCurrentUser() {
+  getCurrentUser(): User | null {
     return auth.currentUser;
   }
 
+  // ============================
+  // OBTENER NOMBRE DEL USUARIO (displayName o email)
+  // ============================
+  getUserDisplayName(): string {
+    const user = auth.currentUser;
+    if (!user) return 'Invitado';
+    return user.displayName || user.email?.split('@')[0] || 'Usuario';
+  }
 }

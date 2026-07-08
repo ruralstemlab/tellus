@@ -14,31 +14,6 @@
 
 
 /*=========================================================
-  CANVAS DE PARTÍCULAS (fondo)
-=========================================================*/
-
-#particles-canvas {
-
-    position: fixed;
-
-    top: 0;
-
-    left: 0;
-
-    width: 100vw;
-
-    height: 100vh;
-
-    z-index: -1;                /* Detrás de todo */
-
-    pointer-events: none;       /* Permite interactuar con el contenido */
-
-    display: block;
-
-}
-
-
-/*=========================================================
   BODY
 =========================================================*/
 
@@ -127,11 +102,105 @@ body{
 
     inset 0 1px 0 rgba(255,255,255,.05);
 
+    /* capa base */
+    z-index: 0;
+
 }
 
 
 /*=========================================================
-  BORDE GLASS
+  PARTÍCULAS (CSS puras, tipo luciérnagas)
+  Capa z-index: 1
+=========================================================*/
+
+.particles {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    border-radius: inherit;
+
+}
+
+.particles span {
+
+    position: absolute;
+
+    bottom: -10px;
+
+    width: 4px;
+
+    height: 4px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    opacity: 0.15;
+
+    box-shadow: 0 0 6px rgba(255,255,255,0.1);
+
+    animation: floatUp linear infinite alternate;
+
+}
+
+.particles span:nth-child(1) { left: 5%;  animation-duration: 22s; animation-delay: 0s;  width: 3px; height: 3px; opacity: 0.18; }
+.particles span:nth-child(2) { left: 12%; animation-duration: 25s; animation-delay: 2s;  width: 5px; height: 5px; opacity: 0.22; }
+.particles span:nth-child(3) { left: 20%; animation-duration: 18s; animation-delay: 4s;  width: 2px; height: 2px; opacity: 0.15; }
+.particles span:nth-child(4) { left: 28%; animation-duration: 21s; animation-delay: 1s;  width: 4px; height: 4px; opacity: 0.20; }
+.particles span:nth-child(5) { left: 35%; animation-duration: 19s; animation-delay: 3s;  width: 3px; height: 3px; opacity: 0.16; }
+.particles span:nth-child(6) { left: 42%; animation-duration: 24s; animation-delay: 5s;  width: 5px; height: 5px; opacity: 0.25; }
+.particles span:nth-child(7) { left: 50%; animation-duration: 20s; animation-delay: 0.5s; width: 2px; height: 2px; opacity: 0.14; }
+.particles span:nth-child(8) { left: 58%; animation-duration: 23s; animation-delay: 2.5s; width: 4px; height: 4px; opacity: 0.19; }
+.particles span:nth-child(9) { left: 65%; animation-duration: 17s; animation-delay: 4.5s; width: 3px; height: 3px; opacity: 0.17; }
+.particles span:nth-child(10){ left: 72%; animation-duration: 26s; animation-delay: 1.5s; width: 5px; height: 5px; opacity: 0.23; }
+.particles span:nth-child(11){ left: 80%; animation-duration: 19s; animation-delay: 3.5s; width: 2px; height: 2px; opacity: 0.15; }
+.particles span:nth-child(12){ left: 88%; animation-duration: 22s; animation-delay: 0.8s; width: 4px; height: 4px; opacity: 0.21; }
+.particles span:nth-child(13){ left: 95%; animation-duration: 20s; animation-delay: 2.2s; width: 3px; height: 3px; opacity: 0.16; }
+.particles span:nth-child(14){ left: 15%; animation-duration: 24s; animation-delay: 4.8s; width: 5px; height: 5px; opacity: 0.24; }
+.particles span:nth-child(15){ left: 45%; animation-duration: 18s; animation-delay: 1.8s; width: 2px; height: 2px; opacity: 0.15; }
+.particles span:nth-child(16){ left: 75%; animation-duration: 21s; animation-delay: 3.2s; width: 4px; height: 4px; opacity: 0.20; }
+.particles span:nth-child(17){ left: 32%; animation-duration: 23s; animation-delay: 0.3s; width: 3px; height: 3px; opacity: 0.18; }
+.particles span:nth-child(18){ left: 62%; animation-duration: 25s; animation-delay: 4.2s; width: 5px; height: 5px; opacity: 0.22; }
+
+@keyframes floatUp {
+
+    0% {
+
+        transform: translateY(0) scale(0.8);
+
+        opacity: 0.1;
+
+    }
+
+    50% {
+
+        opacity: 0.25;
+
+        transform: translateY(-40vh) scale(1.2);
+
+    }
+
+    100% {
+
+        transform: translateY(-80vh) scale(0.9);
+
+        opacity: 0.1;
+
+    }
+
+}
+
+
+/*=========================================================
+  BORDE GLASS (capa 4)
 =========================================================*/
 
 .welcome-panel::before{
@@ -178,14 +247,20 @@ body{
 
     pointer-events:none;
 
+    z-index: 4;
+
 }
 
 
 /*=========================================================
-  CONTENIDO
+  CONTENIDO (capa 2)
 =========================================================*/
 
 .welcome-content{
+
+    position: relative;
+
+    z-index: 2;
 
     display:flex;
 
@@ -419,12 +494,14 @@ body{
 
 
 /*=========================================================
-  IMAGEN
+  IMAGEN (capa 2)
 =========================================================*/
 
 .welcome-image{
 
     position:relative;
+
+    z-index: 2;
 
     display:flex;
 
@@ -462,12 +539,14 @@ body{
 
 
 /*=========================================================
-  TARJETA FLOTANTE SIMPLIFICADA
+  TARJETA FLOTANTE (capa 3)
 =========================================================*/
 
 .hero-overlay {
 
     position: absolute;
+
+    z-index: 3;
 
     top: 50%;
 
