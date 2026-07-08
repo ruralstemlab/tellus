@@ -1,88 +1,353 @@
 <app-navbar></app-navbar>
 
-<section class="dashboard">
+<main class="dashboard">
 
-  <!-- Partículas flotantes -->
-  <div class="particles">
-    <span class="leaf l1">🍃</span>
-    <span class="leaf l2">🦋</span>
-    <span class="leaf l3">🌿</span>
-    <span class="leaf l4">🍂</span>
-    <span class="leaf l5">🌱</span>
-    <span class="leaf l6">🦋</span>
-    <span class="leaf l7">🍃</span>
-    <span class="leaf l8">🌿</span>
-    <span class="leaf l9">🦋</span>
-    <span class="leaf l10">🍂</span>
-    <span class="leaf l11">🌱</span>
-    <span class="leaf l12">🍃</span>
-    <span class="leaf l13">🦋</span>
-    <span class="leaf l14">🌿</span>
-    <span class="leaf l15">🍂</span>
-  </div>
+  <!-- ==========================================================
+       HERO
+  =========================================================== -->
 
-  <!-- Iluminación ambiental (radiales detrás de las tarjetas) -->
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
-  <div class="ambient-glow glow-3"></div>
+  <section class="welcome-panel">
 
-  <!-- HERO – con márgenes, borde glass y sombra verde difusa -->
-  <div class="hero">
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <span class="badge">🌱 Bienvenido a</span>
-      <h1><span class="tellus">Tellus</span>, profesor {{ teacherName }}.</h1>
-      <p class="subtitle">La educación cambia el mundo cuando despierta la curiosidad.</p>
-      <h2>¿Cómo vamos a sorprender a nuestros niños hoy?</h2>
-      <button class="gaian-btn">🤖 Hablar con Gaian</button>
-      <p class="description">✨ Tu asistente inteligente para planear, enseñar y transformar vidas.</p>
-    </div>
-  </div>
+    <div class="welcome-content">
 
-  <!-- CENTRO DE CONTROL -->
-  <section class="control-center">
+      <span class="welcome-badge">
 
-    <div class="section-header">
-      <span class="badge-header">✦ Centro de Control</span>
-      <h2>Todo tu ecosistema al alcance</h2>
-      <p>Accede rápidamente a todas las herramientas del ecosistema Tellus.</p>
-    </div>
+        🌱 Bienvenido a Tellus
 
-    <div class="cards-grid">
-      <!-- FILA 1: 4 tarjetas -->
-      <div class="cards-row row-1">
-        <div class="card" *ngFor="let card of cards.slice(0,4)">
-          <div class="card-icon-wrapper">
-            <div class="card-icon">{{ card.icon }}</div>
-          </div>
-          <h3 class="card-title">{{ card.title }}</h3>
-          <p class="card-desc">{{ card.desc }}</p>
-          <div class="card-footer">
-            <span class="card-arrow">→</span>
-          </div>
-          <!-- Indicador activo tipo cápsula luminosa (se muestra en hover) -->
-          <div class="card-indicator"></div>
-        </div>
+      </span>
+
+      <h1>
+
+        {{ greeting }},
+
+        <br>
+
+        Profesor
+
+        <span class="teacher-name">
+
+          {{ teacherName }}
+
+        </span>
+
+      </h1>
+
+      <p class="welcome-subtitle">
+
+        {{ dailyQuote }}
+
+      </p>
+
+      <h2 class="welcome-question">
+
+        ¿Cómo vamos a sorprender a nuestros niños hoy?
+
+      </h2>
+
+      <div class="welcome-actions">
+
+        <button class="primary-btn">
+
+          🤖 Hablar con Gaian
+
+        </button>
+
+        <button class="secondary-btn">
+
+          📅 Mi Agenda
+
+        </button>
+
       </div>
 
-      <!-- FILA 2: 3 tarjetas centradas -->
-      <div class="cards-row row-2">
-        <div class="card" *ngFor="let card of cards.slice(4,7)">
-          <div class="card-icon-wrapper">
-            <div class="card-icon">{{ card.icon }}</div>
-          </div>
-          <h3 class="card-title">{{ card.title }}</h3>
-          <p class="card-desc">{{ card.desc }}</p>
-          <div class="card-footer">
-            <span class="card-arrow">→</span>
-          </div>
-          <div class="card-indicator"></div>
-        </div>
-      </div>
+    </div>
+
+    <!-- ==========================================
+         BANNER
+    =========================================== -->
+
+    <div class="welcome-image">
+
+      <img
+        [src]="bannerImage"
+        alt="Banner Tellus">
+
     </div>
 
   </section>
 
-</section>
+  <!-- ==========================================================
+       MI ECOSISTEMA
+  =========================================================== -->
+
+  <section class="ecosystem">
+
+    <div class="section-title">
+
+      <h2>
+
+        Mi Ecosistema
+
+      </h2>
+
+      <p>
+
+        Todas las herramientas del ecosistema Tellus reunidas en un solo lugar.
+
+      </p>
+
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          🤖
+
+        </div>
+
+        <h3>
+
+          Gaian
+
+        </h3>
+
+        <p>
+
+          Tu asistente inteligente para crear clases, resolver dudas y potenciar la enseñanza.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          👨‍🏫
+
+        </div>
+
+        <h3>
+
+          Mi Aula
+
+        </h3>
+
+        <p>
+
+          Administra estudiantes, grupos, asistencia y el desarrollo de tus cursos.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          🧪
+
+        </div>
+
+        <h3>
+
+          Laboratorios
+
+        </h3>
+
+        <p>
+
+          Accede a simuladores interactivos y experiencias STEAM para tus estudiantes.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          📚
+
+        </div>
+
+        <h3>
+
+          Biblioteca Viva
+
+        </h3>
+
+        <p>
+
+          Recursos digitales, guías, libros y material educativo organizado por áreas.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          📝
+
+        </div>
+
+        <h3>
+
+          Planeación
+
+        </h3>
+
+        <p>
+
+          Diseña clases, proyectos, secuencias didácticas y planes de aula.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          📋
+
+        </div>
+
+        <h3>
+
+          Evaluaciones
+
+        </h3>
+
+        <p>
+
+          Construye evaluaciones, rúbricas, cuestionarios y actividades inteligentes.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          📊
+
+        </div>
+
+        <h3>
+
+          Analíticas
+
+        </h3>
+
+        <p>
+
+          Consulta indicadores académicos y el progreso de estudiantes y grupos.
+
+        </p>
+
+      </div>
+
+      <!-- ====================================== -->
+
+      <div class="dashboard-card">
+
+        <div class="card-icon">
+
+          ⚙
+
+        </div>
+
+        <h3>
+
+          Configuración
+
+        </h3>
+
+        <p>
+
+          Personaliza Tellus, administra tu cuenta y configura el ecosistema.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ==========================================================
+       ACCESOS RÁPIDOS
+  =========================================================== -->
+
+  <section class="quick-actions">
+
+    <div class="section-title">
+
+      <h2>
+
+        Accesos rápidos
+
+      </h2>
+
+      <p>
+
+        Comienza una tarea en un solo clic.
+
+      </p>
+
+    </div>
+
+    <div class="quick-grid">
+
+      <button>
+
+        ➕ Nueva Clase
+
+      </button>
+
+      <button>
+
+        📝 Nueva Evaluación
+
+      </button>
+
+      <button>
+
+        🧪 Nuevo Laboratorio
+
+      </button>
+
+      <button>
+
+        📚 Nuevo Recurso
+
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
 
 <app-footer></app-footer>

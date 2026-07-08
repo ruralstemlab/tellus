@@ -1,44 +1,92 @@
 /* ==========================================================
-   RURAL STEAM LAB DESIGN SYSTEM
+   TELLUS DESIGN SYSTEM
    Variables Globales
-   ========================================================== */
+========================================================== */
 
 :root{
 
-  /* ===== COLORES ===== */
+  /*=========================================================
+    COLORES PRINCIPALES
+  =========================================================*/
 
   --rsl-green:#2E7D32;
+
   --rsl-light-green:#66BB6A;
 
+  --rsl-emerald:#57D46B;
+
+  --rsl-emerald-light:#8FEA58;
+
   --rsl-blue:#1976D2;
+
   --rsl-cyan:#26C6DA;
 
   --rsl-gold:#F9A825;
 
   --rsl-earth:#8D6E63;
 
+  /*=========================================================
+    PALETA TELLUS
+  =========================================================*/
+
   --rsl-night:#071226;
 
-  --rsl-background:#F6F8F5;
+  --rsl-background:#07120D;
+
+  --rsl-surface:#0C1E15;
+
+  --rsl-surface-light:#133021;
 
   --rsl-dark:#263238;
 
   --rsl-white:#FFFFFF;
 
-  /* ===== SOMBRAS ===== */
+  --rsl-text:#F2F8F3;
 
-  --shadow-sm:0 4px 10px rgba(0,0,0,.10);
+  --rsl-text-secondary:rgba(255,255,255,.72);
 
-  --shadow-md:0 10px 30px rgba(0,0,0,.15);
+  --rsl-border:rgba(255,255,255,.08);
 
-  --shadow-lg:0 20px 60px rgba(0,0,0,.20);
+  /*=========================================================
+    SOMBRAS
+  =========================================================*/
 
-  /* ===== BORDES ===== */
+  --shadow-sm:
+
+    0 4px 10px rgba(0,0,0,.10);
+
+  --shadow-md:
+
+    0 10px 30px rgba(0,0,0,.18);
+
+  --shadow-lg:
+
+    0 20px 60px rgba(0,0,0,.30);
+
+  --shadow-glow:
+
+    0 0 35px rgba(87,212,107,.20);
+
+  /*=========================================================
+    BORDES
+  =========================================================*/
 
   --radius-sm:8px;
 
   --radius-md:14px;
 
   --radius-lg:24px;
+
+  --radius-xl:32px;
+
+  /*=========================================================
+    TRANSICIONES
+  =========================================================*/
+
+  --transition-fast:.25s;
+
+  --transition-normal:.35s;
+
+  --transition-slow:.50s;
 
 }

@@ -1,16 +1,30 @@
 <nav class="navbar">
 
-  <!-- Logo -->
-  <div class="logo">
+  <!-- ======================================================
+       LOGO
+  ======================================================= -->
+
+  <div
+    class="navbar-brand"
+    (click)="openAbout()">
+
     <img
       src="assets/logo/logo.png"
-      alt="Tellus"
-      class="logo-img"
-      (click)="openAbout()"
-    />
+      alt="Rural STEAM Lab"
+      class="logo-img">
+
+    <span class="brand-name">
+
+      Tellus
+
+    </span>
+
   </div>
 
-  <!-- Menú principal -->
+  <!-- ======================================================
+       MENÚ PRINCIPAL
+  ======================================================= -->
+
   <ul class="nav-menu">
 
     @for (item of menuItems; track item.route) {
@@ -21,7 +35,17 @@
           [routerLink]="item.route"
           routerLinkActive="active">
 
-          {{ item.icon }} {{ item.label }}
+          <span class="menu-icon">
+
+            {{ item.icon }}
+
+          </span>
+
+          <span class="menu-text">
+
+            {{ item.label }}
+
+          </span>
 
         </a>
 
@@ -31,50 +55,131 @@
 
   </ul>
 
-  <!-- Área de usuario -->
-  <div class="user-area" tabindex="0">
+  <!-- ======================================================
+       USUARIO
+  ======================================================= -->
+
+  <div
+    class="user-area"
+    tabindex="0">
 
     <div class="user-trigger">
 
-      <span class="user-name">
-        👤 {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
-      </span>
+      <div class="user-avatar">
+
+        👤
+
+      </div>
+
+      <div class="user-data">
+
+        <span class="user-name">
+
+          {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
+
+        </span>
+
+        <span class="user-role">
+
+          Profesor
+
+        </span>
+
+      </div>
 
       <span class="user-arrow">
+
         ▼
+
       </span>
 
     </div>
+
+    <!-- ==========================================
+         DROPDOWN
+    =========================================== -->
 
     <div class="user-dropdown">
 
       <div class="dropdown-header">
 
-        <span class="dropdown-name">
-          {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
-        </span>
+        <div class="dropdown-avatar">
 
-        <span class="dropdown-role">
-          Profesor
-        </span>
+          👤
+
+        </div>
+
+        <div class="dropdown-user">
+
+          <span class="dropdown-name">
+
+            {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
+
+          </span>
+
+          <span class="dropdown-role">
+
+            Profesor
+
+          </span>
+
+        </div>
 
       </div>
 
       <div class="dropdown-divider"></div>
 
       <a
-        class="dropdown-item"
-        routerLink="/perfil">
+        routerLink="/perfil"
+        class="dropdown-item">
 
-        👤 Mi perfil
+        <span>
+
+          👤
+
+        </span>
+
+        <span>
+
+          Mi Perfil
+
+        </span>
 
       </a>
 
       <a
-        class="dropdown-item"
-        routerLink="/configuracion">
+        routerLink="/configuracion"
+        class="dropdown-item">
 
-        ⚙ Configuración
+        <span>
+
+          ⚙
+
+        </span>
+
+        <span>
+
+          Configuración
+
+        </span>
+
+      </a>
+
+      <a
+        routerLink="/ayuda"
+        class="dropdown-item">
+
+        <span>
+
+          💬
+
+        </span>
+
+        <span>
+
+          Centro de Ayuda
+
+        </span>
 
       </a>
 
@@ -85,7 +190,17 @@
         class="dropdown-item logout-btn"
         (click)="logout()">
 
-        🚪 Cerrar sesión
+        <span>
+
+          🚪
+
+        </span>
+
+        <span>
+
+          Cerrar sesión
+
+        </span>
 
       </button>
 
@@ -94,5 +209,15 @@
   </div>
 
 </nav>
+
+<!-- ======================================================
+     LÍNEA INFERIOR ANIMADA
+======================================================= -->
+
+<div class="navbar-line">
+
+  <span class="navbar-glow"></span>
+
+</div>
 
 <app-about-modal></app-about-modal>
