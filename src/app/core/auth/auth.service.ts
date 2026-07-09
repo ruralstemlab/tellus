@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,50 +11,152 @@ import {
   onAuthStateChanged,
   updateProfile
 } from 'firebase/auth';
+
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from 'firebase/firestore';
+
 import { BehaviorSubject, Observable } from 'rxjs';
-import { auth } from '../../../environments/firebase.config';
+
+import { auth, db } from '../../../environments/firebase.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  // Observable del usuario autenticado (puede ser null)
   private userSubject = new BehaviorSubject<User | null>(null);
-  public user$: Observable<User | null> = this.userSubject.asObservable();
 
-  constructor(private router: Router) {
-    // Escuchar cambios de autenticación
+  public user$: Observable<User | null> =
+    this.userSubject.asObservable();
+
+  constructor(
+    private router: Router
+  ) {
+
     onAuthStateChanged(auth, (user) => {
+
       this.userSubject.next(user);
+
     });
+
   }
 
-  // ============================
-  // REGISTRO (con displayName)
-  // ============================
-  async register(email: string, password: string, displayName: string): Promise<UserCredential> {
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
-    // Guardar el nombre en el perfil de Firebase Auth
-    await updateProfile(credential.user, { displayName });
-    // El observable se actualizará automáticamente por onAuthStateChanged
+  // ==========================================================
+  // REGISTRO
+  // ==========================================================
+
+  async register(
+
+    email: string,
+
+    password: string,
+
+    displayName: string,
+
+    role: 'teacher' | 'student' | 'admin'
+
+  ): Promise<UserCredential> {
+
+    const credential =
+      await createUserWithEmailAndPassword(
+
+        auth,
+
+        email,
+
+        password
+
+      );
+
+    await updateProfile(
+
+      credential.user,
+
+      {
+
+        displayName
+
+      }
+
+    );
+
+    // Cambio 1: Recargar y emitir usuario inmediatamente
+    await credential.user.reload();
+    this.userSubject.next(credential.user);
+
+    await setDoc(
+
+      doc(db, 'users', credential.user.uid),
+
+      {
+
+        uid: credential.user.uid,
+
+        name: displayName,
+
+        email: email,
+
+        role: role,
+
+        photoURL: credential.user.photoURL || '',
+
+        active: true,
+
+        createdAt: serverTimestamp()
+
+      }
+
+    );
+
     return credential;
+
   }
 
-  // ============================
+  // ==========================================================
   // LOGIN
-  // ============================
-  async login(email: string, password: string): Promise<UserCredential> {
-    return await signInWithEmailAndPassword(auth, email, password);
+  // ==========================================================
+
+  async login(
+
+    email: string,
+
+    password: string
+
+  ): Promise<UserCredential> {
+
+    // Cambio 2: Obtener credencial y emitir usuario
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    this.userSubject.next(credential.user);
+    return credential;
+
   }
 
-  // ============================
+  // ==========================================================
   // RECUPERAR CONTRASEÑA
-  // ============================
-  async resetPassword(email: string): Promise<void> {
-    await sendPasswordResetEmail(auth, email);
-  }
+  // ==========================================================
 
+  async resetPassword(
+
+    email: string
+
+  ): Promise<void> {
+
+    await sendPasswordResetEmail(
+
+      auth,
+
+      email
+
+    );
+
+  }
   // ============================
   // CERRAR SESIÓN
   // ============================

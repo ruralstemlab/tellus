@@ -1,9 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
+
+import {
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
 
 import { AboutModal } from '../about-modal/about-modal';
 import { Modal } from '../../services/modal';
+
 import { AuthService } from '../../core/auth/auth.service';
+import { UserService } from '../../core/services/user.service';
 
 interface MenuItem {
   icon: string;
@@ -22,9 +33,13 @@ interface MenuItem {
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
+export class Navbar implements OnInit {
 
   modal = inject(Modal);
+
+  private cdr = inject(ChangeDetectorRef);
+
+  profile: any = null;
 
   menuItems: MenuItem[] = [
 
@@ -61,11 +76,36 @@ export class Navbar {
   ];
 
   constructor(
-    private authService: AuthService
+
+    private authService: AuthService,
+
+    private userService: UserService
+
   ) {}
 
+  async ngOnInit(): Promise<void> {
+
+    try {
+
+      this.profile = await this.userService.getCurrentProfile();
+
+      console.log('===== PERFIL FIRESTORE =====');
+      console.log(this.profile);
+
+      this.cdr.detectChanges();
+
+    } catch (error) {
+
+      console.error('Error cargando perfil:', error);
+
+    }
+
+  }
+
   openAbout(): void {
+
     this.modal.open('about');
+
   }
 
   async logout(): Promise<void> {
@@ -76,14 +116,68 @@ export class Navbar {
 
     } catch (error) {
 
-      console.error('Error al cerrar sesión:', error);
+      console.error(error);
 
     }
 
   }
 
   get currentUser() {
+
     return this.authService.getCurrentUser();
+
+  }
+
+  get userName(): string {
+
+    if (this.profile?.name) {
+
+      return this.profile.name;
+
+    }
+
+    const user = this.currentUser;
+
+    if (!user) {
+
+      return 'Invitado';
+
+    }
+
+    return user.displayName
+      || user.email
+      || 'Usuario';
+
+  }
+
+  get userRole(): string {
+
+    if (!this.profile) {
+
+      return 'Usuario';
+
+    }
+
+    const role = String(this.profile.role ?? '')
+      .trim()
+      .toLowerCase();
+
+    switch (role) {
+
+      case 'teacher':
+        return 'Profesor';
+
+      case 'student':
+        return 'Estudiante';
+
+      case 'admin':
+        return 'Administrador';
+
+      default:
+        return 'Usuario';
+
+    }
+
   }
 
 }

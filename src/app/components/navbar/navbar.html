@@ -14,9 +14,7 @@
       class="logo-img">
 
     <span class="brand-name">
-
       Tellus
-
     </span>
 
   </div>
@@ -36,15 +34,11 @@
           routerLinkActive="active">
 
           <span class="menu-icon">
-
             {{ item.icon }}
-
           </span>
 
           <span class="menu-text">
-
             {{ item.label }}
-
           </span>
 
         </a>
@@ -66,31 +60,23 @@
     <div class="user-trigger">
 
       <div class="user-avatar">
-
         👤
-
       </div>
 
       <div class="user-data">
 
         <span class="user-name">
-
-          {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
-
+          {{ userName }}
         </span>
 
         <span class="user-role">
-
-          Profesor
-
+          {{ userRole }}
         </span>
 
       </div>
 
       <span class="user-arrow">
-
         ▼
-
       </span>
 
     </div>
@@ -104,23 +90,17 @@
       <div class="dropdown-header">
 
         <div class="dropdown-avatar">
-
           👤
-
         </div>
 
         <div class="dropdown-user">
 
           <span class="dropdown-name">
-
-            {{ currentUser?.displayName || currentUser?.email || 'Henson Alberto' }}
-
+            {{ userName }}
           </span>
 
           <span class="dropdown-role">
-
-            Profesor
-
+            {{ userRole }}
           </span>
 
         </div>
@@ -133,17 +113,8 @@
         routerLink="/perfil"
         class="dropdown-item">
 
-        <span>
-
-          👤
-
-        </span>
-
-        <span>
-
-          Mi Perfil
-
-        </span>
+        <span>👤</span>
+        <span>Mi Perfil</span>
 
       </a>
 
@@ -151,17 +122,8 @@
         routerLink="/configuracion"
         class="dropdown-item">
 
-        <span>
-
-          ⚙
-
-        </span>
-
-        <span>
-
-          Configuración
-
-        </span>
+        <span>⚙</span>
+        <span>Configuración</span>
 
       </a>
 
@@ -169,17 +131,8 @@
         routerLink="/ayuda"
         class="dropdown-item">
 
-        <span>
-
-          💬
-
-        </span>
-
-        <span>
-
-          Centro de Ayuda
-
-        </span>
+        <span>💬</span>
+        <span>Centro de Ayuda</span>
 
       </a>
 
@@ -190,17 +143,8 @@
         class="dropdown-item logout-btn"
         (click)="logout()">
 
-        <span>
-
-          🚪
-
-        </span>
-
-        <span>
-
-          Cerrar sesión
-
-        </span>
+        <span>🚪</span>
+        <span>Cerrar sesión</span>
 
       </button>
 
@@ -215,9 +159,7 @@
 ======================================================= -->
 
 <div class="navbar-line">
-
   <span class="navbar-glow"></span>
-
 </div>
 
 <app-about-modal></app-about-modal>
