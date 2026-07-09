@@ -5,7 +5,9 @@ import { takeUntil, Subject } from 'rxjs';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
-import { AuthService } from '../../core/auth/auth.service';
+// --- IMPORTS CORREGIDOS ---
+import { ProfileService } from '../../core/services/profile.service';
+import { UserProfile } from '../../core/models/user-profile.model';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,8 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class Home implements OnInit, OnDestroy {
 
-  teacherName = '';
+  userName = '';
+  roleLabel = '';
 
   greeting = '';
   currentTime = '';
@@ -33,38 +36,40 @@ export class Home implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
+  private profileService = inject(ProfileService);  // Inyectamos ProfileService
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
 
     // ============================================================
-    // SUSCRIPCIÓN CON LOGS (para depuración)
+    // SUSCRIPCIÓN AL PERFIL
     // ============================================================
-    this.authService.user$
+    this.profileService.profile$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((user) => {
+      .subscribe((profile: UserProfile | null) => {
 
-        console.log('USER EN HOME:', user);
+        console.log('PERFIL EN HOME:', profile);
 
-        if (user) {
-          console.log('DISPLAY NAME:', user.displayName);
-          console.log('EMAIL:', user.email);
+        if (profile) {
+          this.userName = profile.name;
 
-          this.teacherName =
-            user.displayName ||
-            user.email?.split('@')[0] ||
-            '';
+          // Asignar roleLabel según el rol (usando mapa para simplificar)
+          const roles: Record<string, string> = {
+            teacher: 'Docente',
+            student: 'Estudiante',
+            admin: 'Administrador'
+          };
+          this.roleLabel = roles[profile.role] ?? '';
         } else {
-          this.teacherName = '';
+          this.userName = '';
+          this.roleLabel = '';
         }
 
         this.cdr.detectChanges();
-
       });
 
     // ============================================================
-    // UBICACIÓN, CLIMA, RELOJ, ETC.
+    // UBICACIÓN, CLIMA, RELOJ, ETC. (TODO IGUAL)
     // ============================================================
     this.getUserLocation();
 
