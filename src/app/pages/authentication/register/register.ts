@@ -46,9 +46,11 @@ export class Register {
 
     try {
 
+      // Pasamos el fullName al método register
       await this.authService.register(
         this.email,
-        this.password
+        this.password,
+        this.fullName
       );
 
       alert('✅ ¡Cuenta creada exitosamente!');
@@ -77,7 +79,6 @@ export class Register {
           alert('❌ Error al crear la cuenta.');
           console.error(error);
       }
-
     }
 
   }

@@ -102,18 +102,17 @@ body{
 
     inset 0 1px 0 rgba(255,255,255,.05);
 
-    /* capa base */
     z-index: 0;
 
 }
 
 
 /*=========================================================
-  PARTÍCULAS (CSS puras, tipo luciérnagas)
-  Capa z-index: 1
+  LUCIÉRNAGAS (NUEVO SISTEMA)
+  Capa z-index: 1 – detrás de todo el contenido
 =========================================================*/
 
-.particles {
+.fireflies {
 
     position: absolute;
 
@@ -129,72 +128,107 @@ body{
 
 }
 
-.particles span {
+.fireflies span {
 
     position: absolute;
 
-    bottom: -10px;
+    width: 6px;
 
-    width: 4px;
-
-    height: 4px;
-
-    background: white;
+    height: 6px;
 
     border-radius: 50%;
 
-    opacity: 0.15;
+    background: radial-gradient(circle, rgba(87,212,107,0.9) 0%, rgba(87,212,107,0) 70%);
 
-    box-shadow: 0 0 6px rgba(255,255,255,0.1);
+    box-shadow:
 
-    animation: floatUp linear infinite alternate;
+        0 0 12px 2px rgba(87,212,107,0.6),
+
+        0 0 24px 6px rgba(143,234,88,0.3),
+
+        0 0 40px 12px rgba(182,255,138,0.1);
+
+    animation: floatGlow linear infinite alternate;
+
+    will-change: transform, opacity, box-shadow;
 
 }
 
-.particles span:nth-child(1) { left: 5%;  animation-duration: 22s; animation-delay: 0s;  width: 3px; height: 3px; opacity: 0.18; }
-.particles span:nth-child(2) { left: 12%; animation-duration: 25s; animation-delay: 2s;  width: 5px; height: 5px; opacity: 0.22; }
-.particles span:nth-child(3) { left: 20%; animation-duration: 18s; animation-delay: 4s;  width: 2px; height: 2px; opacity: 0.15; }
-.particles span:nth-child(4) { left: 28%; animation-duration: 21s; animation-delay: 1s;  width: 4px; height: 4px; opacity: 0.20; }
-.particles span:nth-child(5) { left: 35%; animation-duration: 19s; animation-delay: 3s;  width: 3px; height: 3px; opacity: 0.16; }
-.particles span:nth-child(6) { left: 42%; animation-duration: 24s; animation-delay: 5s;  width: 5px; height: 5px; opacity: 0.25; }
-.particles span:nth-child(7) { left: 50%; animation-duration: 20s; animation-delay: 0.5s; width: 2px; height: 2px; opacity: 0.14; }
-.particles span:nth-child(8) { left: 58%; animation-duration: 23s; animation-delay: 2.5s; width: 4px; height: 4px; opacity: 0.19; }
-.particles span:nth-child(9) { left: 65%; animation-duration: 17s; animation-delay: 4.5s; width: 3px; height: 3px; opacity: 0.17; }
-.particles span:nth-child(10){ left: 72%; animation-duration: 26s; animation-delay: 1.5s; width: 5px; height: 5px; opacity: 0.23; }
-.particles span:nth-child(11){ left: 80%; animation-duration: 19s; animation-delay: 3.5s; width: 2px; height: 2px; opacity: 0.15; }
-.particles span:nth-child(12){ left: 88%; animation-duration: 22s; animation-delay: 0.8s; width: 4px; height: 4px; opacity: 0.21; }
-.particles span:nth-child(13){ left: 95%; animation-duration: 20s; animation-delay: 2.2s; width: 3px; height: 3px; opacity: 0.16; }
-.particles span:nth-child(14){ left: 15%; animation-duration: 24s; animation-delay: 4.8s; width: 5px; height: 5px; opacity: 0.24; }
-.particles span:nth-child(15){ left: 45%; animation-duration: 18s; animation-delay: 1.8s; width: 2px; height: 2px; opacity: 0.15; }
-.particles span:nth-child(16){ left: 75%; animation-duration: 21s; animation-delay: 3.2s; width: 4px; height: 4px; opacity: 0.20; }
-.particles span:nth-child(17){ left: 32%; animation-duration: 23s; animation-delay: 0.3s; width: 3px; height: 3px; opacity: 0.18; }
-.particles span:nth-child(18){ left: 62%; animation-duration: 25s; animation-delay: 4.2s; width: 5px; height: 5px; opacity: 0.22; }
+/* ---------- Posiciones y animaciones personalizadas ---------- */
 
-@keyframes floatUp {
+.fireflies span:nth-child(1) { left: 5%;  top: 10%; animation-duration: 22s; animation-delay: 0s;  animation-name: float1; }
+.fireflies span:nth-child(2) { left: 15%; top: 70%; animation-duration: 28s; animation-delay: 2s;  animation-name: float2; }
+.fireflies span:nth-child(3) { left: 25%; top: 30%; animation-duration: 18s; animation-delay: 4s;  animation-name: float3; }
+.fireflies span:nth-child(4) { left: 35%; top: 80%; animation-duration: 25s; animation-delay: 1s;  animation-name: float1; }
+.fireflies span:nth-child(5) { left: 45%; top: 15%; animation-duration: 20s; animation-delay: 3s;  animation-name: float2; }
+.fireflies span:nth-child(6) { left: 55%; top: 60%; animation-duration: 30s; animation-delay: 5s;  animation-name: float3; }
+.fireflies span:nth-child(7) { left: 65%; top: 25%; animation-duration: 24s; animation-delay: 0.5s; animation-name: float1; }
+.fireflies span:nth-child(8) { left: 75%; top: 75%; animation-duration: 27s; animation-delay: 2.5s; animation-name: float2; }
+.fireflies span:nth-child(9) { left: 85%; top: 40%; animation-duration: 19s; animation-delay: 4.5s; animation-name: float3; }
+.fireflies span:nth-child(10){ left: 92%; top: 85%; animation-duration: 26s; animation-delay: 1.5s; animation-name: float1; }
 
-    0% {
+.fireflies span:nth-child(11){ left: 8%;  top: 50%; animation-duration: 21s; animation-delay: 3.2s; animation-name: float2; }
+.fireflies span:nth-child(12){ left: 18%; top: 5%;  animation-duration: 29s; animation-delay: 0.8s; animation-name: float3; }
+.fireflies span:nth-child(13){ left: 30%; top: 90%; animation-duration: 17s; animation-delay: 4.8s; animation-name: float1; }
+.fireflies span:nth-child(14){ left: 42%; top: 35%; animation-duration: 23s; animation-delay: 2.2s; animation-name: float2; }
+.fireflies span:nth-child(15){ left: 52%; top: 20%; animation-duration: 20s; animation-delay: 3.8s; animation-name: float3; }
+.fireflies span:nth-child(16){ left: 62%; top: 65%; animation-duration: 26s; animation-delay: 1.2s; animation-name: float1; }
+.fireflies span:nth-child(17){ left: 72%; top: 10%; animation-duration: 22s; animation-delay: 4.2s; animation-name: float2; }
+.fireflies span:nth-child(18){ left: 82%; top: 55%; animation-duration: 28s; animation-delay: 0.3s; animation-name: float3; }
+.fireflies span:nth-child(19){ left: 90%; top: 30%; animation-duration: 18s; animation-delay: 2.8s; animation-name: float1; }
+.fireflies span:nth-child(20){ left: 95%; top: 70%; animation-duration: 24s; animation-delay: 4.5s; animation-name: float2; }
 
-        transform: translateY(0) scale(0.8);
+/* ---------- Tamaños variables ---------- */
+.fireflies span:nth-child(1)  { width: 5px; height: 5px; }
+.fireflies span:nth-child(2)  { width: 8px; height: 8px; }
+.fireflies span:nth-child(3)  { width: 4px; height: 4px; }
+.fireflies span:nth-child(4)  { width: 7px; height: 7px; }
+.fireflies span:nth-child(5)  { width: 6px; height: 6px; }
+.fireflies span:nth-child(6)  { width: 9px; height: 9px; }
+.fireflies span:nth-child(7)  { width: 5px; height: 5px; }
+.fireflies span:nth-child(8)  { width: 6px; height: 6px; }
+.fireflies span:nth-child(9)  { width: 4px; height: 4px; }
+.fireflies span:nth-child(10) { width: 7px; height: 7px; }
+.fireflies span:nth-child(11) { width: 8px; height: 8px; }
+.fireflies span:nth-child(12) { width: 5px; height: 5px; }
+.fireflies span:nth-child(13) { width: 6px; height: 6px; }
+.fireflies span:nth-child(14) { width: 4px; height: 4px; }
+.fireflies span:nth-child(15) { width: 7px; height: 7px; }
+.fireflies span:nth-child(16) { width: 9px; height: 9px; }
+.fireflies span:nth-child(17) { width: 5px; height: 5px; }
+.fireflies span:nth-child(18) { width: 6px; height: 6px; }
+.fireflies span:nth-child(19) { width: 8px; height: 8px; }
+.fireflies span:nth-child(20) { width: 4px; height: 4px; }
 
-        opacity: 0.1;
+/* ---------- Keyframes con movimientos orgánicos ---------- */
 
-    }
+@keyframes float1 {
 
-    50% {
+    0%   { transform: translate(0, 0) scale(0.9); opacity: 0.4; box-shadow: 0 0 12px 2px rgba(87,212,107,0.6); }
+    25%  { transform: translate(-15px, -20px) scale(1.2); opacity: 0.9; box-shadow: 0 0 20px 4px rgba(143,234,88,0.8); }
+    50%  { transform: translate(10px, -40px) scale(1.0); opacity: 0.7; box-shadow: 0 0 15px 3px rgba(87,212,107,0.7); }
+    75%  { transform: translate(-20px, -10px) scale(1.1); opacity: 0.8; box-shadow: 0 0 25px 5px rgba(182,255,138,0.5); }
+    100% { transform: translate(5px, -50px) scale(0.95); opacity: 0.5; box-shadow: 0 0 10px 2px rgba(87,212,107,0.4); }
 
-        opacity: 0.25;
+}
 
-        transform: translateY(-40vh) scale(1.2);
+@keyframes float2 {
 
-    }
+    0%   { transform: translate(0, 0) scale(1.1); opacity: 0.5; box-shadow: 0 0 15px 3px rgba(87,212,107,0.5); }
+    30%  { transform: translate(18px, -15px) scale(0.9); opacity: 0.8; box-shadow: 0 0 22px 5px rgba(143,234,88,0.7); }
+    60%  { transform: translate(-10px, -35px) scale(1.2); opacity: 0.9; box-shadow: 0 0 28px 6px rgba(182,255,138,0.6); }
+    90%  { transform: translate(12px, -45px) scale(1.0); opacity: 0.6; box-shadow: 0 0 18px 4px rgba(87,212,107,0.6); }
+    100% { transform: translate(-5px, -20px) scale(0.95); opacity: 0.4; box-shadow: 0 0 12px 2px rgba(87,212,107,0.3); }
 
-    100% {
+}
 
-        transform: translateY(-80vh) scale(0.9);
+@keyframes float3 {
 
-        opacity: 0.1;
-
-    }
+    0%   { transform: translate(0, 0) scale(1.0); opacity: 0.6; box-shadow: 0 0 18px 4px rgba(87,212,107,0.6); }
+    20%  { transform: translate(-25px, -10px) scale(0.8); opacity: 0.7; box-shadow: 0 0 14px 3px rgba(143,234,88,0.5); }
+    45%  { transform: translate(15px, -30px) scale(1.3); opacity: 0.9; box-shadow: 0 0 30px 8px rgba(182,255,138,0.7); }
+    70%  { transform: translate(-8px, -50px) scale(1.1); opacity: 0.8; box-shadow: 0 0 24px 5px rgba(87,212,107,0.8); }
+    100% { transform: translate(8px, -25px) scale(0.9); opacity: 0.5; box-shadow: 0 0 16px 3px rgba(87,212,107,0.4); }
 
 }
 

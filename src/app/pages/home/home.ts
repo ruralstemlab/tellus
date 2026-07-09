@@ -5,8 +5,6 @@ import { takeUntil, Subject } from 'rxjs';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
-
-// Ruta correcta hacia el AuthService
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
@@ -23,20 +21,14 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class Home implements OnInit, OnDestroy {
 
-  teacherName = 'Profesor'; // valor por defecto mientras carga
+  teacherName = ''; // Inicialmente vacío para evitar duplicar "Profesor"
 
   greeting = '';
-
   currentTime = '';
-
   currentDate = '';
-
   weather = '--';
-
   temperature = '--°';
-
   dailyQuote = '';
-
   bannerImage = '';
 
   private timer!: ReturnType<typeof setInterval>;
@@ -48,117 +40,73 @@ export class Home implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    // 1. Obtener el nombre del usuario logueado desde Firebase
+    // Obtener nombre del usuario autenticado
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         if (user) {
-          // Usar displayName o el email como fallback
-          const name = user.displayName || user.email?.split('@')[0] || 'Profesor';
+          // Priorizar displayName; si no existe, usar la primera parte del email
+          const name = user.displayName || user.email?.split('@')[0] || '';
           this.teacherName = name;
         } else {
-          this.teacherName = 'Profesor';
+          // No hay usuario autenticado, mostrar solo "Profesor" (sin nombre)
+          this.teacherName = '';
         }
       });
 
-    // 2. Resto de la inicialización
     this.dailyQuote = this.getDailyQuote();
-
     this.updateDashboardInfo();
 
     this.timer = setInterval(() => {
-
       this.updateDashboardInfo();
-
     }, 1000);
 
     this.fetchWeather();
     this.weatherTimer = setInterval(() => {
-
       this.fetchWeather();
-
     }, 5 * 60 * 1000);
-
   }
 
   ngOnDestroy(): void {
-
     this.destroy$.next();
     this.destroy$.complete();
-
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-
-    if (this.weatherTimer) {
-      clearInterval(this.weatherTimer);
-    }
-
+    clearInterval(this.timer);
+    clearInterval(this.weatherTimer);
   }
 
   private updateDashboardInfo(): void {
-
     const now = new Date();
-
     this.greeting = this.getGreeting(now);
-
     this.currentTime = now.toLocaleTimeString('es-CO', {
-
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
-
     });
-
     this.currentDate = now.toLocaleDateString('es-CO', {
-
       weekday: 'long',
       day: 'numeric',
       month: 'long',
       year: 'numeric'
-
     });
-
     this.bannerImage = this.getBanner(now);
-
   }
 
   private getGreeting(date: Date): string {
-
     const hour = date.getHours();
-
-    if (hour >= 5 && hour < 12) {
-      return 'Buenos días';
-    }
-
-    if (hour >= 12 && hour < 19) {
-      return 'Buenas tardes';
-    }
-
+    if (hour >= 5 && hour < 12) return 'Buenos días';
+    if (hour >= 12 && hour < 19) return 'Buenas tardes';
     return 'Buenas noches';
-
   }
 
   private getBanner(date: Date): string {
-
     const hour = date.getHours();
-
-    if (hour >= 5 && hour < 12) {
-      return 'assets/backgrounds/morning-banner.png';
-    }
-
-    if (hour >= 12 && hour < 19) {
-      return 'assets/backgrounds/afternoon-banner.png';
-    }
-
+    if (hour >= 5 && hour < 12) return 'assets/backgrounds/morning-banner.png';
+    if (hour >= 12 && hour < 19) return 'assets/backgrounds/afternoon-banner.png';
     return 'assets/backgrounds/night-banner.png';
-
   }
 
   private getDailyQuote(): string {
-
     const quotes = [
-
       'Cada clase puede cambiar una vida.',
       'La curiosidad es el inicio del aprendizaje.',
       'Educar es sembrar futuro.',
@@ -167,52 +115,32 @@ export class Home implements OnInit, OnDestroy {
       'Cada estudiante aprende de una forma diferente. Inspíralo.',
       'El conocimiento florece cuando existe pasión por enseñar.',
       'Hoy sembramos las ideas que transformarán el mañana.'
-
     ];
-
     const index = new Date().getDate() % quotes.length;
-
     return quotes[index];
-
   }
 
   private fetchWeather(): void {
-
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=6.06&longitude=-73.64&current_weather=true';
-
     this.http.get<any>(url).subscribe({
-
       next: (data) => {
-
         const current = data.current_weather;
-
         if (current) {
-
           const temp = current.temperature;
           const code = current.weathercode;
-
           this.temperature = `${Math.round(temp)}°C`;
           this.weather = this.mapWeatherCode(code);
-
         }
-
       },
-
       error: () => {
-
         this.temperature = '--°';
         this.weather = '--';
-
       }
-
     });
-
   }
 
   private mapWeatherCode(code: number): string {
-
     const map: { [key: number]: string } = {
-
       0: '☀️ Despejado',
       1: '🌤 Mayormente despejado',
       2: '⛅ Parcialmente nublado',
@@ -241,11 +169,7 @@ export class Home implements OnInit, OnDestroy {
       95: '⛈ Tormenta eléctrica',
       96: '⛈ Tormenta con granizo ligero',
       99: '⛈ Tormenta con granizo intenso'
-
     };
-
     return map[code] || '🌡 Sin datos';
-
   }
-
 }

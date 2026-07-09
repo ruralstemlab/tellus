@@ -7,7 +7,8 @@ import {
   sendPasswordResetEmail,
   UserCredential,
   User,
-  onAuthStateChanged
+  onAuthStateChanged,
+  updateProfile
 } from 'firebase/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { auth } from '../../../environments/firebase.config';
@@ -29,10 +30,14 @@ export class AuthService {
   }
 
   // ============================
-  // REGISTRO
+  // REGISTRO (con displayName)
   // ============================
-  async register(email: string, password: string): Promise<UserCredential> {
-    return await createUserWithEmailAndPassword(auth, email, password);
+  async register(email: string, password: string, displayName: string): Promise<UserCredential> {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    // Guardar el nombre en el perfil de Firebase Auth
+    await updateProfile(credential.user, { displayName });
+    // El observable se actualizará automáticamente por onAuthStateChanged
+    return credential;
   }
 
   // ============================
