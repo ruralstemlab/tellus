@@ -18,11 +18,19 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class Register {
 
   fullName = '';
+
   email = '';
+
+  role: 'teacher' | 'student' | 'admin' = 'teacher';
+
   password = '';
+
   confirmPassword = '';
+
   acceptTerms = false;
+
   showPassword = false;
+
   showConfirmPassword = false;
 
   constructor(
@@ -32,25 +40,34 @@ export class Register {
 
   async register(): Promise<void> {
 
-    // Validar contraseñas
     if (this.password !== this.confirmPassword) {
+
       alert('❌ Las contraseñas no coinciden.');
+
       return;
+
     }
 
-    // Validar términos
     if (!this.acceptTerms) {
+
       alert('❌ Debes aceptar los términos y condiciones.');
+
       return;
+
     }
 
     try {
 
-      // Pasamos el fullName al método register
       await this.authService.register(
+
         this.email,
+
         this.password,
-        this.fullName
+
+        this.fullName,
+
+        this.role
+
       );
 
       alert('✅ ¡Cuenta creada exitosamente!');
@@ -64,21 +81,31 @@ export class Register {
       switch (error.code) {
 
         case 'auth/email-already-in-use':
+
           alert('❌ Este correo ya está registrado.');
+
           break;
 
         case 'auth/weak-password':
+
           alert('❌ La contraseña debe tener mínimo 6 caracteres.');
+
           break;
 
         case 'auth/invalid-email':
+
           alert('❌ El correo electrónico no es válido.');
+
           break;
 
         default:
+
           alert('❌ Error al crear la cuenta.');
+
           console.error(error);
+
       }
+
     }
 
   }

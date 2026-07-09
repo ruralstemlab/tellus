@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { takeUntil, Subject } from 'rxjs';
@@ -26,7 +26,6 @@ export class Home implements OnInit, OnDestroy {
   dailyQuote = '';
   bannerImage = '';
 
-  // Ubicación dinámica (geolocalización real)
   userLocation = 'Obteniendo ubicación…';
 
   private timer!: ReturnType<typeof setInterval>;
@@ -35,21 +34,38 @@ export class Home implements OnInit, OnDestroy {
 
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-    // Obtener nombre del profesor (desde Auth, sin Firestore)
+
+    // ============================================================
+    // SUSCRIPCIÓN CON LOGS (para depuración)
+    // ============================================================
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
+
+        console.log('USER EN HOME:', user);
+
         if (user) {
-          const name = user.displayName || user.email?.split('@')[0] || '';
-          this.teacherName = name;
+          console.log('DISPLAY NAME:', user.displayName);
+          console.log('EMAIL:', user.email);
+
+          this.teacherName =
+            user.displayName ||
+            user.email?.split('@')[0] ||
+            '';
         } else {
           this.teacherName = '';
         }
+
+        this.cdr.detectChanges();
+
       });
 
-    // Obtener ubicación real
+    // ============================================================
+    // UBICACIÓN, CLIMA, RELOJ, ETC.
+    // ============================================================
     this.getUserLocation();
 
     this.dailyQuote = this.getDailyQuote();
@@ -68,7 +84,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   // ============================
-  // UBICACIÓN DINÁMICA (Geolocalización + Nominatim)
+  // UBICACIÓN DINÁMICA
   // ============================
   private getUserLocation(): void {
     if (!navigator.geolocation) {
@@ -82,8 +98,8 @@ export class Home implements OnInit, OnDestroy {
         this.reverseGeocode(latitude, longitude);
       },
       () => {
-        // Fallback si falla la geolocalización
         this.userLocation = 'Chipatá, Santander';
+        this.cdr.detectChanges();
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -100,9 +116,11 @@ export class Home implements OnInit, OnDestroy {
         } else {
           this.userLocation = 'Ubicación no disponible';
         }
+        this.cdr.detectChanges();
       },
       error: () => {
-        this.userLocation = 'Chipatá, Santander'; // fallback si falla la API
+        this.userLocation = 'Chipatá, Santander';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -157,7 +175,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   // ============================
-  // CLIMA (Open-Meteo)
+  // CLIMA
   // ============================
   private fetchWeather(): void {
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=6.06&longitude=-73.64&current_weather=true';
@@ -170,10 +188,12 @@ export class Home implements OnInit, OnDestroy {
           this.temperature = `${Math.round(temp)}°C`;
           this.weather = this.mapWeatherCode(code);
         }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.temperature = '--°';
         this.weather = '--';
+        this.cdr.detectChanges();
       }
     });
   }
