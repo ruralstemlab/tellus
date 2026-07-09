@@ -18,19 +18,36 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable
+} from 'rxjs';
 
-import { auth, db } from '../../../environments/firebase.config';
+import {
+  auth,
+  db
+} from '../../../environments/firebase.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  /**
+   * Usuario autenticado de Firebase Authentication.
+   */
   private userSubject = new BehaviorSubject<User | null>(null);
 
-  public user$: Observable<User | null> =
+  readonly user$: Observable<User | null> =
     this.userSubject.asObservable();
+
+  /**
+   * Indica cuándo Firebase terminó de restaurar la sesión.
+   */
+  private authReadySubject = new BehaviorSubject<boolean>(false);
+
+  readonly authReady$: Observable<boolean> =
+    this.authReadySubject.asObservable();
 
   constructor(
     private router: Router
@@ -39,6 +56,8 @@ export class AuthService {
     onAuthStateChanged(auth, (user) => {
 
       this.userSubject.next(user);
+
+      this.authReadySubject.next(true);
 
     });
 
@@ -83,8 +102,8 @@ export class AuthService {
 
     );
 
-    // Cambio 1: Recargar y emitir usuario inmediatamente
     await credential.user.reload();
+
     this.userSubject.next(credential.user);
 
     await setDoc(
@@ -97,9 +116,9 @@ export class AuthService {
 
         name: displayName,
 
-        email: email,
+        email,
 
-        role: role,
+        role,
 
         photoURL: credential.user.photoURL || '',
 
@@ -127,13 +146,19 @@ export class AuthService {
 
   ): Promise<UserCredential> {
 
-    // Cambio 2: Obtener credencial y emitir usuario
-    const credential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const credential =
+      await signInWithEmailAndPassword(
+
+        auth,
+
+        email,
+
+        password
+
+      );
+
     this.userSubject.next(credential.user);
+
     return credential;
 
   }
@@ -157,32 +182,29 @@ export class AuthService {
     );
 
   }
-  // ============================
+
+  // ==========================================================
   // CERRAR SESIÓN
-  // ============================
+  // ==========================================================
+
   async logout(): Promise<void> {
+
     try {
+
       await signOut(auth);
-      // Regresa al portal principal Rural STEAM Lab
+
+      this.userSubject.next(null);
+
       window.location.href = 'https://ruralsteamlab.com';
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
+
     }
+
+    catch (error) {
+
+      console.error('Error al cerrar sesión:', error);
+
+    }
+
   }
 
-  // ============================
-  // USUARIO ACTUAL (sincrónico)
-  // ============================
-  getCurrentUser(): User | null {
-    return auth.currentUser;
-  }
-
-  // ============================
-  // OBTENER NOMBRE DEL USUARIO (displayName o email)
-  // ============================
-  getUserDisplayName(): string {
-    const user = auth.currentUser;
-    if (!user) return 'Invitado';
-    return user.displayName || user.email?.split('@')[0] || 'Usuario';
-  }
 }

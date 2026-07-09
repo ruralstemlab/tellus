@@ -6,34 +6,21 @@ import {
 } from 'firebase/firestore';
 
 import {
-  auth,
   db
 } from '../../../environments/firebase.config';
+
+import { UserProfile } from '../models/user-profile.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  async getCurrentProfile(): Promise<any> {
+  constructor() {}
 
-    const user = auth.currentUser;
+  async getUser(uid: string): Promise<UserProfile | null> {
 
-    if (!user) {
-
-      return null;
-
-    }
-
-    const ref = doc(
-
-      db,
-
-      'users',
-
-      user.uid
-
-    );
+    const ref = doc(db, 'users', uid);
 
     const snapshot = await getDoc(ref);
 
@@ -43,7 +30,7 @@ export class UserService {
 
     }
 
-    return snapshot.data();
+    return snapshot.data() as UserProfile;
 
   }
 

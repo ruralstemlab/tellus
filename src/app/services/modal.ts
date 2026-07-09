@@ -5,15 +5,27 @@ import { Injectable, signal } from '@angular/core';
 })
 export class Modal {
 
+  /**
+   * Modal actualmente abierto.
+   */
   private currentModal = signal<string | null>(null);
 
-  modal = this.currentModal.asReadonly();
+  /**
+   * Signal de solo lectura para los componentes.
+   */
+  readonly modal = this.currentModal.asReadonly();
 
-  open(name: string) {
+  /**
+   * Abre un modal por nombre.
+   */
+  open(name: string): void {
     this.currentModal.set(name);
   }
 
-  close() {
+  /**
+   * Cierra cualquier modal.
+   */
+  close(): void {
     this.currentModal.set(null);
   }
 

@@ -14,10 +14,8 @@ export class AboutModal {
 
   modalService = inject(Modal);
 
-  close() {
-
+  close(): void {
     this.modalService.close();
-
   }
 
 }
