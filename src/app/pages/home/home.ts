@@ -10,18 +10,13 @@ import { AuthService } from '../../core/auth/auth.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    Navbar,
-    Footer
-  ],
+  imports: [CommonModule, HttpClientModule, Navbar, Footer],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
 export class Home implements OnInit, OnDestroy {
 
-  teacherName = ''; // Inicialmente vacío para evitar duplicar "Profesor"
+  teacherName = '';
 
   greeting = '';
   currentTime = '';
@@ -31,6 +26,9 @@ export class Home implements OnInit, OnDestroy {
   dailyQuote = '';
   bannerImage = '';
 
+  // Ubicación dinámica (geolocalización real)
+  userLocation = 'Obteniendo ubicación…';
+
   private timer!: ReturnType<typeof setInterval>;
   private weatherTimer!: ReturnType<typeof setInterval>;
   private destroy$ = new Subject<void>();
@@ -39,32 +37,27 @@ export class Home implements OnInit, OnDestroy {
   private authService = inject(AuthService);
 
   ngOnInit(): void {
-
-    // Obtener nombre del usuario autenticado
+    // Obtener nombre del profesor (desde Auth, sin Firestore)
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         if (user) {
-          // Priorizar displayName; si no existe, usar la primera parte del email
           const name = user.displayName || user.email?.split('@')[0] || '';
           this.teacherName = name;
         } else {
-          // No hay usuario autenticado, mostrar solo "Profesor" (sin nombre)
           this.teacherName = '';
         }
       });
 
+    // Obtener ubicación real
+    this.getUserLocation();
+
     this.dailyQuote = this.getDailyQuote();
     this.updateDashboardInfo();
 
-    this.timer = setInterval(() => {
-      this.updateDashboardInfo();
-    }, 1000);
-
+    this.timer = setInterval(() => this.updateDashboardInfo(), 1000);
     this.fetchWeather();
-    this.weatherTimer = setInterval(() => {
-      this.fetchWeather();
-    }, 5 * 60 * 1000);
+    this.weatherTimer = setInterval(() => this.fetchWeather(), 5 * 60 * 1000);
   }
 
   ngOnDestroy(): void {
@@ -74,6 +67,49 @@ export class Home implements OnInit, OnDestroy {
     clearInterval(this.weatherTimer);
   }
 
+  // ============================
+  // UBICACIÓN DINÁMICA (Geolocalización + Nominatim)
+  // ============================
+  private getUserLocation(): void {
+    if (!navigator.geolocation) {
+      this.userLocation = 'Ubicación no disponible';
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        this.reverseGeocode(latitude, longitude);
+      },
+      () => {
+        // Fallback si falla la geolocalización
+        this.userLocation = 'Chipatá, Santander';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  private reverseGeocode(lat: number, lon: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=es`;
+    this.http.get<any>(url).subscribe({
+      next: (data) => {
+        if (data && data.address) {
+          const city = data.address.city || data.address.town || data.address.village || data.address.state || '';
+          const country = data.address.country || '';
+          this.userLocation = city && country ? `${city}, ${country}` : (city || country || 'Ubicación desconocida');
+        } else {
+          this.userLocation = 'Ubicación no disponible';
+        }
+      },
+      error: () => {
+        this.userLocation = 'Chipatá, Santander'; // fallback si falla la API
+      }
+    });
+  }
+
+  // ============================
+  // RELOJ, FECHA, BANNER
+  // ============================
   private updateDashboardInfo(): void {
     const now = new Date();
     this.greeting = this.getGreeting(now);
@@ -120,6 +156,9 @@ export class Home implements OnInit, OnDestroy {
     return quotes[index];
   }
 
+  // ============================
+  // CLIMA (Open-Meteo)
+  // ============================
   private fetchWeather(): void {
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=6.06&longitude=-73.64&current_weather=true';
     this.http.get<any>(url).subscribe({
