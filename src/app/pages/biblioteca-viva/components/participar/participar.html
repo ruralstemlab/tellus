@@ -1,0 +1,98 @@
+<div class="participar-container">
+  <h1>Participar en el Concurso</h1>
+  <form (ngSubmit)="onSubmit()">
+    <div class="campo">
+      <label>Nombre del proyecto *</label>
+      <input type="text" [(ngModel)]="project.title" name="title" required />
+    </div>
+
+    <div class="campo">
+      <label>Descripción (máx 500 caracteres) *</label>
+      <textarea
+        [(ngModel)]="project.description"
+        name="description"
+        rows="4"
+        maxlength="500"
+      ></textarea>
+    </div>
+
+    <!-- Selector visual de categorías -->
+    <div class="campo">
+      <label>Categoría *</label>
+      <div class="categorias-grid">
+        <div
+          *ngFor="let cat of categories"
+          class="categoria-card"
+          [class.seleccionada]="project.category === cat.name"
+          (click)="project.category = cat.name"
+        >
+          <span class="icono">{{ cat.icon }}</span>
+          <span class="nombre">{{ cat.name }}</span>
+          <span class="check" *ngIf="project.category === cat.name">✔</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Nombre del estudiante *</label>
+      <input type="text" [(ngModel)]="project.studentName" name="studentName" required />
+    </div>
+
+    <div class="campo">
+      <label>Correo electrónico *</label>
+      <input
+        type="email"
+        [(ngModel)]="project.studentEmail"
+        name="studentEmail"
+        required
+      />
+    </div>
+
+    <div class="campo">
+      <label>Grado *</label>
+      <input type="text" [(ngModel)]="project.grade" name="grade" required />
+    </div>
+
+    <div class="campo">
+      <label>Institución</label>
+      <input
+        type="text"
+        [(ngModel)]="project.institution"
+        name="institution"
+        disabled
+      />
+    </div>
+
+    <!-- Archivo -->
+    <div class="campo file-upload">
+      <label>Subir archivo index.html *</label>
+      <input type="file" accept=".html" (change)="onFileSelected($event)" #fileInput />
+      <span *ngIf="selectedFile">✅ {{ selectedFile.name }}</span>
+    </div>
+
+    <!-- Vista previa del archivo -->
+    <div *ngIf="fileInfo" class="file-preview">
+      <h4>Vista previa del archivo</h4>
+      <ul>
+        <li><strong>Nombre:</strong> {{ fileInfo.name }}</li>
+        <li><strong>Tamaño:</strong> {{ (fileInfo.size / 1024).toFixed(2) }} KB</li>
+        <li><strong>Fecha:</strong> {{ fileInfo.lastModified | date : 'medium' }}</li>
+        <li><strong>Líneas:</strong> {{ fileInfo.lines }}</li>
+        <li><strong>Caracteres:</strong> {{ fileInfo.chars }}</li>
+      </ul>
+      <div class="code-preview">
+        <pre>{{ fileInfo.content }}</pre>
+      </div>
+      <div *ngIf="warnings.length" class="warnings">
+        <p class="warning-title">⚠️ Advertencias:</p>
+        <ul>
+          <li *ngFor="let warn of warnings">{{ warn }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Enviando...' : 'Enviar proyecto' }}
+    </button>
+  </form>
+</div>

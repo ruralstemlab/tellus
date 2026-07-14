@@ -1,0 +1,25 @@
+<div class="galeria-container">
+  <h2>Proyectos publicados</h2>
+  <div class="grid" *ngIf="projects.length > 0; else sinProyectos">
+    <div class="card" *ngFor="let p of projects">
+      <div class="thumbnail" [style.backgroundImage]="'url(https://picsum.photos/seed/' + (p.id || 'default') + '/300/200)'">
+        <span class="categoria">{{ p.category }}</span>
+      </div>
+      <div class="info">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.studentName }} · {{ p.institution }}</p>
+        <div class="stats">
+          <span>❤️ {{ p.votes }}</span>
+          <span>👁️ {{ p.views }}</span>
+        </div>
+        <!-- Enlace corregido usando el método del componente -->
+        <a [href]="getHtmlUrl(p.htmlContent)" target="_blank" class="ver">
+          Ver proyecto
+        </a>
+      </div>
+    </div>
+  </div>
+  <ng-template #sinProyectos>
+    <p class="empty">No hay proyectos publicados aún.</p>
+  </ng-template>
+</div>

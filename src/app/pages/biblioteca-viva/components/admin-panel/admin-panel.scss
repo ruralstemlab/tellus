@@ -1,0 +1,256 @@
+.admin-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  color: #fff;
+
+  .admin-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin: 0;
+      background: linear-gradient(135deg, #fff 60%, #4cff9c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      color: #aaa;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .admin-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 0.5rem;
+
+    button {
+      padding: 0.6rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: 0.2s;
+
+      &:hover {
+        color: #ddd;
+      }
+
+      &.active {
+        background: rgba(76, 255, 156, 0.1);
+        color: #4cff9c;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+
+    span {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: #ddd;
+      margin: 0;
+    }
+  }
+
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: 0.2s;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .project-info {
+      margin-bottom: 1rem;
+
+      h3 {
+        font-size: 1.3rem;
+        margin: 0 0 0.5rem;
+        color: #fff;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        color: #aaa;
+        margin-bottom: 0.5rem;
+
+        strong {
+          color: #ddd;
+        }
+      }
+
+      .description {
+        color: #b0b0b0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+    }
+
+    .project-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+
+      .notes {
+        flex: 1;
+        min-width: 200px;
+
+        label {
+          display: block;
+          font-size: 0.75rem;
+          color: #888;
+          margin-bottom: 0.2rem;
+        }
+
+        input {
+          width: 100%;
+          padding: 0.5rem 0.8rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 8px;
+          color: #fff;
+          font-size: 0.9rem;
+
+          &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #4cff9c;
+          }
+        }
+      }
+
+      .buttons {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+
+        button {
+          padding: 0.4rem 1.2rem;
+          border: none;
+          border-radius: 30px;
+          font-weight: 600;
+          font-size: 0.85rem;
+          cursor: pointer;
+          transition: 0.2s;
+
+          &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+          }
+
+          &:hover:not(:disabled) {
+            transform: scale(1.04);
+          }
+        }
+
+        .btn-approve {
+          background: #2ecc71;
+          color: #fff;
+
+          &:hover:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3);
+          }
+        }
+
+        .btn-publish {
+          background: #3498db;
+          color: #fff;
+
+          &:hover:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+          }
+        }
+
+        .btn-reject {
+          background: #e74c3c;
+          color: #fff;
+
+          &:hover:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+          }
+        }
+      }
+
+      .btn-view {
+        padding: 0.4rem 1.2rem;
+        border: 1px solid #4cff9c;
+        border-radius: 30px;
+        color: #4cff9c;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.2s;
+
+        &:hover {
+          background: #4cff9c;
+          color: #04140d;
+        }
+      }
+    }
+  }
+}
+
+.status-pending { color: #f39c12; }
+.status-approved { color: #3498db; }
+.status-published { color: #2ecc71; }
+.status-rejected { color: #e74c3c; }
+
+@media (max-width: 768px) {
+  .project-actions {
+    flex-direction: column;
+    align-items: stretch !important;
+
+    .notes {
+      min-width: auto !important;
+    }
+
+    .buttons {
+      justify-content: center;
+    }
+  }
+}

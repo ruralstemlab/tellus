@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-biblioteca-viva',
   standalone: true,
-  imports: [CommonModule, Navbar, Footer],
+  imports: [CommonModule, RouterModule, Navbar, Footer],
   templateUrl: './biblioteca-viva.html',
   styleUrl: './biblioteca-viva.scss'
 })
