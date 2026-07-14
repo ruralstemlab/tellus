@@ -155,13 +155,19 @@
         <p>Administra estudiantes, grupos, asistencia y el desarrollo de tus cursos.</p>
       </div>
 
-      <div class="dashboard-card">
+      <!-- Laboratorios → navega a /laboratorios -->
+      <div class="dashboard-card" 
+           [routerLink]="['/laboratorios']" 
+           style="cursor: pointer;">
         <div class="card-icon">🧪</div>
         <h3>Laboratorios</h3>
         <p>Accede a simuladores interactivos y experiencias STEAM para tus estudiantes.</p>
       </div>
 
-      <div class="dashboard-card">
+      <!-- Biblioteca Viva → navega a /biblioteca-viva -->
+      <div class="dashboard-card" 
+           [routerLink]="['/biblioteca-viva']" 
+           style="cursor: pointer;">
         <div class="card-icon">📚</div>
         <h3>Biblioteca Viva</h3>
         <p>Recursos digitales, guías, libros y material educativo organizado por áreas.</p>

@@ -17,6 +17,8 @@ import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
 import { Arte } from './pages/laboratorios/arte/arte';
 import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
+import { BibliotecaViva } from './pages/biblioteca-viva/biblioteca-viva';
+
 export const routes: Routes = [
 
   {
@@ -48,6 +50,11 @@ export const routes: Routes = [
   {
     path: 'home',
     component: Home
+  },
+
+  {
+    path: 'biblioteca-viva',
+    component: BibliotecaViva
   },
 
   {

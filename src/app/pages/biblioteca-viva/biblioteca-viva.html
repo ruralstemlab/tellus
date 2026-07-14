@@ -1,0 +1,488 @@
+<app-navbar></app-navbar>
+
+<!-- ==========================================================
+     HERO – MEJORADO
+=========================================================== -->
+<section class="hero">
+
+  <div class="hero-background"></div>
+  <div class="particles" aria-hidden="true">
+    <span *ngFor="let p of [].constructor(40)"></span>
+  </div>
+
+  <div class="hero-container">
+
+    <!-- Columna izquierda -->
+    <div class="hero-content">
+
+      <span class="badge">
+        🏆 Convocatoria 001 · 2026
+      </span>
+
+      <h1>
+        Concurso de
+        <span>Aplicaciones Web</span>
+        HTML 2026
+      </h1>
+
+      <p>
+        Diseña una aplicación web utilizando
+        <strong>HTML, CSS y JavaScript.</strong>
+        Puedes crear juegos, simuladores, aplicaciones educativas,
+        herramientas financieras, proyectos de emprendimiento,
+        sistemas administrativos o cualquier idea innovadora.
+        Los mejores proyectos harán parte de la
+        Biblioteca Viva de Tellus.
+      </p>
+
+      <div class="buttons">
+        <button class="primary">🚀 Participar</button>
+        <button class="secondary">📂 Ver proyectos</button>
+        <button class="secondary">🎥 Tutorial desde cero</button>
+      </div>
+
+      <div class="chips">
+        <span class="chip">🏆 Concurso 2026</span>
+        <span class="chip">💻 HTML + CSS + JavaScript</span>
+        <span class="chip">🎁 Premios</span>
+        <span class="chip">🎮 Juegos • Apps • Simuladores</span>
+        <span class="chip">🏫 I.E. Tierra Negra</span>
+      </div>
+
+      <div class="countdown">
+        <div class="box"><h2>{{ days }}</h2><span>Días</span></div>
+        <div class="box"><h2>{{ hours }}</h2><span>Horas</span></div>
+        <div class="box"><h2>{{ minutes }}</h2><span>Minutos</span></div>
+        <div class="box"><h2>{{ seconds }}</h2><span>Segundos</span></div>
+      </div>
+
+    </div>
+
+    <!-- Columna derecha – DASHBOARD PROFESIONAL -->
+    <div class="hero-image">
+
+      <div class="dashboard-glass">
+
+        <div class="dashboard-header">
+          <div class="dots">
+            <span class="red"></span><span class="yellow"></span><span class="green"></span>
+          </div>
+          <h4>📊 Panel de control · Biblioteca Viva</h4>
+          <span class="live">● En vivo</span>
+        </div>
+
+        <div class="dashboard-grid">
+
+          <!-- Estadísticas rápidas -->
+          <div class="stat-card">
+            <span class="icon">📁</span>
+            <div class="info">
+              <h3>125</h3>
+              <p>Proyectos</p>
+            </div>
+            <div class="trend up">+12%</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="icon">👥</span>
+            <div class="info">
+              <h3>540</h3>
+              <p>Developers</p>
+            </div>
+            <div class="trend up">+8%</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="icon">🏫</span>
+            <div class="info">
+              <h3>15</h3>
+              <p>Instituciones</p>
+            </div>
+            <div class="trend up">+3</div>
+          </div>
+
+          <div class="stat-card">
+            <span class="icon">⭐</span>
+            <div class="info">
+              <h3>9.2k</h3>
+              <p>Votos</p>
+            </div>
+            <div class="trend up">+18%</div>
+          </div>
+
+          <!-- Mini gráfica de actividad -->
+          <div class="chart-card">
+            <h4>Actividad reciente</h4>
+            <div class="mini-chart">
+              <span style="height: 40%"></span>
+              <span style="height: 70%"></span>
+              <span style="height: 50%"></span>
+              <span style="height: 90%"></span>
+              <span style="height: 60%"></span>
+              <span style="height: 80%"></span>
+              <span style="height: 45%"></span>
+            </div>
+          </div>
+
+          <!-- Proyecto destacado en dashboard -->
+          <div class="top-card">
+            <h4>🏆 Proyecto destacado</h4>
+            <p>“EcoSim” – Simulador de reciclaje</p>
+            <div class="meta">👤 Ana García · I.E. Tierra Negra</div>
+            <div class="badge-premium">⭐ 4.8</div>
+          </div>
+
+          <!-- Mini actividad reciente -->
+          <div class="activity-card">
+            <h4>⚡ Últimas publicaciones</h4>
+            <ul>
+              <li><span>Juego de memoria</span><span class="time">hace 2h</span></li>
+              <li><span>App de finanzas</span><span class="time">hace 4h</span></li>
+              <li><span>Simulador de circuito</span><span class="time">hace 6h</span></li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     ESTADÍSTICAS – NUEVA SECCIÓN
+=========================================================== -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item" *ngFor="let stat of stats">
+      <h2>{{ stat.number }}</h2>
+      <p>{{ stat.label }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     QUÉ PUEDES CONSTRUIR – MEJORADO
+=========================================================== -->
+<section class="build-section">
+
+  <div class="section-header">
+    <span class="label">✨ Tu imaginación</span>
+    <h2>¿Qué puedes construir?</h2>
+    <p>Crea cualquier aplicación web con HTML, CSS y JavaScript. Sin límites.</p>
+  </div>
+
+  <div class="build-grid">
+    <div class="build-card" *ngFor="let item of buildItems">
+      <span class="icon">{{ item.icon }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.desc }}</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     APRENDE DESDE CERO – MEJORADO
+=========================================================== -->
+<section class="learn-section">
+
+  <div class="section-header">
+    <span class="label">📘 Aprende desde cero</span>
+    <h2>Conviértete en Developer</h2>
+    <p>Domina las herramientas que necesitas para crear tus aplicaciones.</p>
+  </div>
+
+  <div class="learn-grid">
+    <div class="learn-card" *ngFor="let tech of technologies">
+      <div class="icon">{{ tech.icon }}</div>
+      <h3>{{ tech.name }}</h3>
+      <div class="progress-bar">
+        <div class="progress" [style.width]="tech.progress + '%'"></div>
+      </div>
+      <span class="level">{{ tech.level }}</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     CÓMO PARTICIPAR – TIMELINE PREMIUM
+=========================================================== -->
+<section class="steps-section">
+
+  <div class="section-header">
+    <span class="label">📋 Participa</span>
+    <h2>¿Cómo participar?</h2>
+    <p>Sigue estos pasos y conviértete en desarrollador.</p>
+  </div>
+
+  <div class="steps-timeline">
+    <div class="step" *ngFor="let step of steps; let i = index">
+      <div class="step-marker">
+        <div class="circle">{{ i + 1 }}</div>
+        <div class="line" *ngIf="i < steps.length - 1"></div>
+      </div>
+      <div class="step-content">
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.desc }}</p>
+        <span class="step-status" [class.active]="i < 3">● {{ i < 3 ? 'En progreso' : 'Pendiente' }}</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     CRONOGRAMA – MEJORADO
+=========================================================== -->
+<section class="schedule-section">
+
+  <div class="section-header">
+    <span class="label">📅 Cronograma</span>
+    <h2>Fechas importantes</h2>
+  </div>
+
+  <div class="schedule-timeline">
+    <div class="schedule-item" *ngFor="let item of schedule; let i = index">
+      <div class="date-badge">{{ item.date }}</div>
+      <div class="info">
+        <h4>{{ item.title }}</h4>
+        <p>{{ item.desc }}</p>
+      </div>
+      <span class="status" [class.active]="i === 0">● {{ i === 0 ? 'Activo' : 'Próximo' }}</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     PREMIOS – MEJORADO
+=========================================================== -->
+<section class="prizes-section">
+
+  <div class="section-header">
+    <span class="label">🏅 Premios</span>
+    <h2>Recompensas exclusivas</h2>
+  </div>
+
+  <div class="prizes-grid">
+    <div class="prize-card gold" *ngFor="let prize of prizes">
+      <div class="medal">{{ prize.icon }}</div>
+      <h3>{{ prize.title }}</h3>
+      <p class="amount">{{ prize.amount }}</p>
+      <ul>
+        <li *ngFor="let benefit of prize.benefits">{{ benefit }}</li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     VIDEO – MEJORADO
+=========================================================== -->
+<section class="video-section">
+
+  <div class="section-header">
+    <span class="label">🎬 Inspírate</span>
+    <h2>Videos destacados</h2>
+  </div>
+
+  <div class="video-grid">
+    <div class="video-card" *ngFor="let video of videos">
+      <div class="thumbnail">
+        <div class="play-btn">▶</div>
+        <span class="duration">{{ video.duration }}</span>
+      </div>
+      <h4>{{ video.title }}</h4>
+      <p>{{ video.desc }}</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     GALERÍA – MEJORADA
+=========================================================== -->
+<section class="gallery-section">
+
+  <div class="section-header">
+    <span class="label">📸 Proyectos</span>
+    <h2>Galería de creaciones</h2>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-item" *ngFor="let item of gallery">
+      <div class="image-placeholder">
+        <span class="emoji">{{ item.emoji }}</span>
+      </div>
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.author }}</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     TARJETAS PRINCIPALES – MEJORADAS
+=========================================================== -->
+<section class="main-cards-section">
+
+  <div class="section-header">
+    <span class="label">🔗 Acceso directo</span>
+    <h2>Explora la Biblioteca Viva</h2>
+  </div>
+
+  <div class="main-cards-grid">
+    <div class="main-card" *ngFor="let card of mainCards">
+      <div class="icon">{{ card.icon }}</div>
+      <h3>{{ card.title }}</h3>
+      <p>{{ card.desc }}</p>
+      <button class="primary small">Ir →</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     PROYECTO DESTACADO – NUEVA SECCIÓN
+=========================================================== -->
+<section class="featured-section">
+
+  <div class="section-header">
+    <span class="label">🌟 Proyecto de la semana</span>
+    <h2>Destacado</h2>
+  </div>
+
+  <div class="featured-card">
+    <div class="featured-image">🖼️</div>
+    <div class="featured-info">
+      <h3>EcoSim – Simulador de reciclaje</h3>
+      <p>Una aplicación interactiva que enseña a reciclar mediante simulación 3D.</p>
+      <div class="author">👤 Ana García · I.E. Tierra Negra</div>
+      <button class="primary small">Ver proyecto →</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     CONVOCATORIAS – MEJORADAS
+=========================================================== -->
+<section class="calls-section">
+
+  <div class="section-header">
+    <span class="label">🏫 Multi‑institucional</span>
+    <h2>Convocatorias activas</h2>
+  </div>
+
+  <div class="calls-grid">
+    <div class="call-card" *ngFor="let call of calls">
+      <div class="call-header">
+        <span class="logo">🏛️</span>
+        <h4>{{ call.name }}</h4>
+      </div>
+      <p>{{ call.location }}</p>
+      <div class="call-meta">
+        <span class="status" [class.active]="call.active">{{ call.active ? '● Activa' : '○ Próxima' }}</span>
+        <span class="participants">👥 {{ call.participants || 0 }} participantes</span>
+      </div>
+      <button class="secondary small">Ver más</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     TESTIMONIOS – NUEVA SECCIÓN
+=========================================================== -->
+<section class="testimonials-section">
+
+  <div class="section-header">
+    <span class="label">💬 Testimonios</span>
+    <h2>Lo que dicen de Tellus</h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card" *ngFor="let t of testimonials">
+      <p>“{{ t.text }}”</p>
+      <div class="author">
+        <span class="avatar">{{ t.avatar }}</span>
+        <div>
+          <strong>{{ t.name }}</strong>
+          <span>{{ t.role }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     HALL OF FAME – NUEVA SECCIÓN
+=========================================================== -->
+<section class="hall-of-fame-section">
+
+  <div class="section-header">
+    <span class="label">🏆 Hall of Fame</span>
+    <h2>Ganadores históricos</h2>
+  </div>
+
+  <div class="hall-grid">
+    <div class="hall-item" *ngFor="let winner of hallOfFame">
+      <div class="avatar">{{ winner.avatar }}</div>
+      <h4>{{ winner.name }}</h4>
+      <p>{{ winner.project }}</p>
+      <span class="year">{{ winner.year }}</span>
+      <span class="prize">{{ winner.prize }}</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     FAQ – MEJORADO
+=========================================================== -->
+<section class="faq-section">
+
+  <div class="section-header">
+    <span class="label">❓ Preguntas</span>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq-search">
+      <input type="text" placeholder="Buscar pregunta..." (input)="filterFaqs($event)">
+    </div>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of filteredFaqs; let i = index">
+      <div class="faq-question" (click)="toggleFaq(faq)">
+        <span>{{ faq.question }}</span>
+        <span class="arrow">{{ faq.open ? '−' : '+' }}</span>
+      </div>
+      <div class="faq-answer" [class.open]="faq.open">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
+     CTA FINAL – ESPECTACULAR
+=========================================================== -->
+<section class="cta-section">
+
+  <div class="cta-glow"></div>
+  <div class="cta-container">
+    <h2>¿Listo para crear tu primera aplicación web?</h2>
+    <p>Únete a la comunidad de desarrolladores de Tellus y gana premios increíbles.</p>
+    <button class="primary large">🚀 ¡Participa ahora!</button>
+  </div>
+
+</section>
+
+<app-footer></app-footer>

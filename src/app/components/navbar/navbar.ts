@@ -52,7 +52,7 @@ export class Navbar implements OnInit, OnDestroy {
     { icon: '🤖', label: 'Gaian', route: '/gaian' },
     { icon: '👨‍🏫', label: 'Mi Aula', route: '/mi-aula' },
     { icon: '🧪', label: 'Laboratorios', route: '/laboratorios' },
-    { icon: '📚', label: 'Biblioteca Viva', route: '/biblioteca' }
+    { icon: '📚', label: 'Biblioteca Viva', route: '/biblioteca-viva' }
   ];
 
   // Para limpiar suscripciones
