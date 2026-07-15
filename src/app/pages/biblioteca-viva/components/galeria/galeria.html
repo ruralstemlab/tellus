@@ -1,25 +1,23 @@
 <div class="galeria-container">
-  <h2>Proyectos publicados</h2>
-  <div class="grid" *ngIf="projects.length > 0; else sinProyectos">
-    <div class="card" *ngFor="let p of projects">
-      <div class="thumbnail" [style.backgroundImage]="'url(https://picsum.photos/seed/' + (p.id || 'default') + '/300/200)'">
-        <span class="categoria">{{ p.category }}</span>
-      </div>
-      <div class="info">
-        <h3>{{ p.title }}</h3>
-        <p>{{ p.studentName }} · {{ p.institution }}</p>
-        <div class="stats">
-          <span>❤️ {{ p.votes }}</span>
-          <span>👁️ {{ p.views }}</span>
-        </div>
-        <!-- Enlace corregido usando el método del componente -->
-        <a [href]="getHtmlUrl(p.htmlContent)" target="_blank" class="ver">
-          Ver proyecto
-        </a>
-      </div>
+  <h2>Galería de Proyectos</h2>
+  
+  <div *ngIf="loading" class="loading">
+    Cargando proyectos...
+  </div>
+
+  <div *ngIf="!loading && projects.length === 0" class="empty">
+    No hay proyectos publicados aún.
+  </div>
+
+  <div class="proyectos-grid" *ngIf="!loading && projects.length > 0">
+    <div *ngFor="let project of projects" class="proyecto-card">
+      <h3>{{ project.title }}</h3>
+      <p><strong>Categoría:</strong> {{ project.category }}</p>
+      <p><strong>Estudiante:</strong> {{ project.studentName }}</p>
+      <p><strong>Institución:</strong> {{ project.institution }}</p>
+      <button (click)="openProject(project)" class="btn-ver">
+        Ver proyecto
+      </button>
     </div>
   </div>
-  <ng-template #sinProyectos>
-    <p class="empty">No hay proyectos publicados aún.</p>
-  </ng-template>
 </div>

@@ -8,24 +8,40 @@ import { Project } from '../../models/project.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './galeria.html',
-  styleUrl: './galeria.scss'
+  styleUrls: ['./galeria.scss']
 })
 export class GaleriaComponent implements OnInit {
   projects: Project[] = [];
+  loading = false;
 
   constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
-    this.projectService.getPublished().subscribe(data => {
-      this.projects = data;
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
+    this.loading = true;
+    this.projectService.getPublished().subscribe({
+      next: (data: Project[]) => {
+        this.projects = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar proyectos:', err);
+        this.loading = false;
+      }
     });
   }
 
-  // Método para generar la URL de vista previa del HTML
-  getHtmlUrl(htmlContent: string | undefined): string {
-    if (!htmlContent) {
-      return 'about:blank';
+  // Abrir el proyecto usando htmlContent
+  openProject(project: Project): void {
+    if (project.htmlContent) {
+      const blob = new Blob([project.htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } else {
+      alert('Este proyecto no tiene contenido HTML.');
     }
-    return 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
   }
 }

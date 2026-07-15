@@ -9,15 +9,20 @@ import { Project } from '../../models/project.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-panel.html',
-  styleUrl: './admin-panel.scss'
+  styleUrls: ['./admin-panel.scss']
 })
 export class AdminPanelComponent implements OnInit {
-  // ---------- Propiedades ----------
-  pendingProjects: Project[] = [];
-  allProjects: Project[] = [];
-  reviewNotes: { [id: string]: string } = {};
+  // Propiedades para la vista
   activeTab: 'pending' | 'all' = 'pending';
   loading = false;
+  
+  // Listas de proyectos
+  projects: Project[] = [];
+  pendingProjects: Project[] = [];
+  allProjects: Project[] = [];
+
+  // Notas de revisión por proyecto (objeto con id como clave)
+  reviewNotes: { [key: string]: string } = {};
 
   constructor(private projectService: ProjectService) {}
 
@@ -25,88 +30,105 @@ export class AdminPanelComponent implements OnInit {
     this.loadProjects();
   }
 
-  // ---------- Cargar datos ----------
   loadProjects(): void {
     this.loading = true;
     this.projectService.getProjects().subscribe({
-      next: (data) => {
+      next: (data: Project[]) => {
         this.allProjects = data;
         this.pendingProjects = data.filter(p => p.status === 'pending');
         this.loading = false;
       },
-      error: (err: any) => {
-        console.error('Error al cargar proyectos', err);
+      error: (err) => {
+        console.error('Error al cargar proyectos:', err);
         this.loading = false;
       }
     });
   }
 
-  // ---------- Acciones ----------
-  approve(project: Project): void {
-    if (project.status === 'published') return;
-    const notes = this.reviewNotes[project.id!] || 'Aprobado por administrador.';
-    this.projectService.updateStatus(project.id!, 'approved', notes).subscribe({
-      next: () => {
-        alert('✅ Proyecto aprobado. Ahora puede publicarse.');
-        this.loadProjects();
-      },
-      error: (err: any) => alert('Error al aprobar: ' + err.message)
-    });
+  // Cambiar pestaña
+  setTab(tab: 'pending' | 'all'): void {
+    this.activeTab = tab;
   }
 
-  reject(project: Project): void {
-    if (project.status === 'published') return;
-    const notes = this.reviewNotes[project.id!] || 'Rechazado por incumplir reglas.';
-    this.projectService.updateStatus(project.id!, 'rejected', notes).subscribe({
-      next: () => {
-        alert('❌ Proyecto rechazado.');
-        this.loadProjects();
-      },
-      error: (err: any) => alert('Error al rechazar: ' + err.message)
-    });
-  }
-
-  publish(project: Project): void {
-    if (project.status === 'published' || project.status === 'rejected') return;
-    this.projectService.updateStatus(project.id!, 'published', this.reviewNotes[project.id!] || '').subscribe({
-      next: () => {
-        alert('🚀 Proyecto publicado en Biblioteca Viva.');
-        this.loadProjects();
-      },
-      error: (err: any) => alert('Error al publicar: ' + err.message)
-    });
-  }
-
-  // ---------- Helpers para el template ----------
+  // Obtener clase CSS para el estado
   getStatusClass(status: string): string {
-    const map: Record<string, string> = {
-      pending: 'status-pending',
-      approved: 'status-approved',
-      published: 'status-published',
-      rejected: 'status-rejected'
-    };
-    return map[status] || '';
+    switch (status) {
+      case 'pending': return 'status-pending';
+      case 'approved': return 'status-approved';
+      case 'rejected': return 'status-rejected';
+      case 'published': return 'status-published';
+      default: return '';
+    }
   }
 
+  // Obtener etiqueta legible del estado
   getStatusLabel(status: string): string {
-    const map: Record<string, string> = {
-      pending: 'Pendiente',
-      approved: 'Aprobado',
-      published: 'Publicado',
-      rejected: 'Rechazado'
-    };
-    return map[status] || status;
+    switch (status) {
+      case 'pending': return 'Pendiente';
+      case 'approved': return 'Aprobado';
+      case 'rejected': return 'Rechazado';
+      case 'published': return 'Publicado';
+      default: return status;
+    }
   }
 
-  // ---------- Método para codificar HTML a Base64 ----------
-  getHtmlBase64(htmlContent: string | undefined): string {
-    if (!htmlContent) {
-      return '#';
+  // Ver el HTML del proyecto en una nueva ventana
+  viewProject(project: Project): void {
+    if (project.htmlContent) {
+      const blob = new Blob([project.htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } else {
+      alert('Este proyecto no tiene contenido HTML.');
     }
-    try {
-      return 'data:text/html;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(htmlContent)));
-    } catch (e) {
-      return '#';
-    }
+  }
+
+  // Aprobar proyecto (cambia a 'approved')
+  approve(project: Project): void {
+    if (!project.id) return;
+    const note = this.reviewNotes[project.id] || '';
+    this.projectService.updateStatus(project.id, 'approved', note).subscribe({
+      next: () => {
+        alert('Proyecto aprobado');
+        this.loadProjects();
+        delete this.reviewNotes[project.id!];
+      },
+      error: (err) => {
+        console.error('Error al aprobar:', err);
+        alert('Error al aprobar el proyecto');
+      }
+    });
+  }
+
+  // Publicar proyecto (cambia a 'published')
+  publish(project: Project): void {
+    if (!project.id) return;
+    this.projectService.updateStatus(project.id, 'published').subscribe({
+      next: () => {
+        alert('Proyecto publicado');
+        this.loadProjects();
+      },
+      error: (err) => {
+        console.error('Error al publicar:', err);
+        alert('Error al publicar el proyecto');
+      }
+    });
+  }
+
+  // Rechazar proyecto
+  reject(project: Project): void {
+    if (!project.id) return;
+    const note = this.reviewNotes[project.id] || '';
+    this.projectService.updateStatus(project.id, 'rejected', note).subscribe({
+      next: () => {
+        alert('Proyecto rechazado');
+        this.loadProjects();
+        delete this.reviewNotes[project.id!];
+      },
+      error: (err) => {
+        console.error('Error al rechazar:', err);
+        alert('Error al rechazar el proyecto');
+      }
+    });
   }
 }

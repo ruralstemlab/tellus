@@ -1,97 +1,66 @@
-<div class="admin-container">
-  <div class="admin-header">
-    <h1>⚙️ Panel de Administración</h1>
-    <p>Gestiona los proyectos del concurso HTML 2026</p>
-  </div>
+<div class="admin-panel">
+  <h2>Panel de Administración</h2>
 
-  <div class="admin-tabs">
-    <button 
-      [class.active]="activeTab === 'pending'" 
-      (click)="activeTab = 'pending'">
+  <div class="tabs">
+    <button
+      class="tab"
+      [class.active]="activeTab === 'pending'"
+      (click)="activeTab = 'pending'"
+    >
       Pendientes ({{ pendingProjects.length }})
     </button>
-    <button 
-      [class.active]="activeTab === 'all'" 
-      (click)="activeTab = 'all'">
+    <button
+      class="tab"
+      [class.active]="activeTab === 'all'"
+      (click)="activeTab = 'all'"
+    >
       Todos los proyectos ({{ allProjects.length }})
     </button>
   </div>
 
   <div *ngIf="loading" class="loading">
-    Cargando proyectos...
+    Cargando...
   </div>
 
+  <!-- Proyectos pendientes -->
   <div *ngIf="!loading && activeTab === 'pending'" class="projects-list">
     <div *ngIf="pendingProjects.length === 0" class="empty">
-      <span>🎉</span>
-      <h3>No hay proyectos pendientes</h3>
-      <p>Todos los proyectos han sido revisados.</p>
+      No hay proyectos pendientes.
     </div>
-
     <div class="project-card" *ngFor="let p of pendingProjects">
-      <div class="project-info">
-        <h3>{{ p.title }}</h3>
-        <div class="meta">
-          <span><strong>Estudiante:</strong> {{ p.studentName }}</span>
-          <span><strong>Email:</strong> {{ p.studentEmail }}</span>
-          <span><strong>Grado:</strong> {{ p.grade }}</span>
-          <span><strong>Categoría:</strong> {{ p.category }}</span>
-          <span><strong>Estado:</strong> <span [class]="getStatusClass(p.status)">{{ getStatusLabel(p.status) }}</span></span>
-        </div>
-        <p class="description">{{ p.description }}</p>
-      </div>
+      <h3>{{ p.title }}</h3>
+      <p><strong>Estudiante:</strong> {{ p.studentName }}</p>
+      <p><strong>Correo:</strong> {{ p.studentEmail }}</p>
+      <p><strong>Categoría:</strong> {{ p.category }}</p>
+      <p><strong>Grado:</strong> {{ p.grade }}</p>
+      <p><strong>Institución:</strong> {{ p.institution }}</p>
+      <p><strong>Estado:</strong> <span [class]="getStatusClass(p.status)">{{ getStatusLabel(p.status) }}</span></p>
+      <p><strong>Fecha:</strong> {{ p.uploadedAt | date:'dd/MM/yyyy' }}</p>
 
-      <div class="project-actions">
-        <div class="notes">
-          <label>Notas de revisión:</label>
-          <input 
-            type="text" 
-            [(ngModel)]="reviewNotes[p.id!]" 
-            placeholder="Escribe un comentario..."
-            [disabled]="p.status === 'published'">
-        </div>
-
-        <div class="buttons">
-          <button 
-            class="btn-approve" 
-            (click)="approve(p)"
-            [disabled]="p.status === 'published'">
-            ✅ Aprobar
-          </button>
-          <button 
-            class="btn-publish" 
-            (click)="publish(p)"
-            [disabled]="p.status === 'published' || p.status === 'rejected'">
-            🚀 Publicar
-          </button>
-          <button 
-            class="btn-reject" 
-            (click)="reject(p)"
-            [disabled]="p.status === 'published'">
-            ❌ Rechazar
-          </button>
+      <div class="actions">
+        <button (click)="viewProject(p)" class="btn-view">Ver HTML</button>
+        <textarea
+          placeholder="Nota de revisión (opcional)"
+          [(ngModel)]="reviewNotes[p.id!]"
+          rows="2"
+        ></textarea>
+        <div class="btn-group">
+          <button (click)="approve(p)" class="btn-approve">Aprobar</button>
+          <button (click)="publish(p)" class="btn-publish">Publicar</button>
+          <button (click)="reject(p)" class="btn-reject">Rechazar</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Todos los proyectos -->
   <div *ngIf="!loading && activeTab === 'all'" class="projects-list">
     <div class="project-card" *ngFor="let p of allProjects">
-      <div class="project-info">
-        <h3>{{ p.title }}</h3>
-        <div class="meta">
-          <span><strong>Estudiante:</strong> {{ p.studentName }}</span>
-          <span><strong>Estado:</strong> <span [class]="getStatusClass(p.status)">{{ getStatusLabel(p.status) }}</span></span>
-          <span><strong>Fecha:</strong> {{ p.submittedAt | date:'dd/MM/yyyy' }}</span>
-        </div>
-        <p class="description">{{ p.description }}</p>
-      </div>
-      <div class="project-actions" *ngIf="p.status === 'published'">
-        <!-- Corregido: usa el método getHtmlBase64 -->
-        <a [href]="getHtmlBase64(p.htmlContent)" target="_blank" class="btn-view">
-          👁️ Ver proyecto
-        </a>
-      </div>
+      <h3>{{ p.title }}</h3>
+      <p><strong>Estudiante:</strong> {{ p.studentName }}</p>
+      <p><strong>Estado:</strong> <span [class]="getStatusClass(p.status)">{{ getStatusLabel(p.status) }}</span></p>
+      <p><strong>Fecha:</strong> {{ p.uploadedAt | date:'dd/MM/yyyy' }}</p>
+      <button (click)="viewProject(p)" class="btn-view">Ver HTML</button>
     </div>
   </div>
 </div>

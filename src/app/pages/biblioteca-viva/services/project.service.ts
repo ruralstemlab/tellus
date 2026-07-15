@@ -12,7 +12,6 @@ import {
   DocumentReference,
   DocumentData,
   QueryDocumentSnapshot,
-  deleteDoc,
 } from 'firebase/firestore';
 import { Observable, from, map } from 'rxjs';
 import { Project } from '../models/project.model';
@@ -26,6 +25,7 @@ export class ProjectService {
     return collection(db, this.collectionName);
   }
 
+  // Crear proyecto con htmlContent
   createProject(project: Omit<Project, 'id' | 'uploadedAt' | 'updatedAt'>): Observable<DocumentReference> {
     const now = new Date();
     const data = {
@@ -35,8 +35,8 @@ export class ProjectService {
       status: project.status || 'pending',
       votes: 0,
       views: 0,
-      // Asignamos submittedAt igual a uploadedAt si no viene
-      submittedAt: project.submittedAt || now,
+      // Aseguramos que htmlContent esté presente
+      htmlContent: project.htmlContent || '',
     };
     const col = this.getCollection();
     return from(addDoc(col, data));
@@ -47,7 +47,7 @@ export class ProjectService {
     return from(updateDoc(ref, { ...data, updatedAt: new Date() }));
   }
 
-  // Nuevo método: actualizar el estado del proyecto (aprobado, rechazado, publicado)
+  // Método para actualizar el estado (usado en admin-panel)
   updateStatus(id: string, status: 'pending' | 'approved' | 'rejected' | 'published', reviewNotes?: string): Observable<void> {
     const ref = doc(db, this.collectionName, id);
     const updateData: any = { status, updatedAt: new Date() };
@@ -57,7 +57,7 @@ export class ProjectService {
     return from(updateDoc(ref, updateData));
   }
 
-  // Obtener proyectos publicados (para la galería)
+  // Obtener proyectos publicados (para galería)
   getPublished(): Observable<Project[]> {
     const col = this.getCollection();
     const q = query(col, where('status', '==', 'published'), orderBy('updatedAt', 'desc'));
@@ -71,14 +71,7 @@ export class ProjectService {
     );
   }
 
-  // Método adicional para obtener HTML en base64 (para vista previa en admin-panel)
-  // Este método no usa Firestore, solo devuelve el contenido que ya está en el objeto Project
-  // Si necesitas cargar el contenido desde Storage, tendrías que usar StorageService.
-  // Pero aquí lo dejamos como un helper.
-  getHtmlBase64(htmlContent: string): string {
-    return `data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`;
-  }
-
+  // Obtener un proyecto por ID
   getProject(id: string): Observable<Project | undefined> {
     const ref = doc(db, this.collectionName, id);
     return from(getDoc(ref)).pipe(
@@ -92,6 +85,7 @@ export class ProjectService {
     );
   }
 
+  // Obtener proyectos por estado (para admin)
   getProjects(status?: string): Observable<Project[]> {
     const col = this.getCollection();
     const constraints = status

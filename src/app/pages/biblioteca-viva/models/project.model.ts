@@ -7,17 +7,16 @@ export interface Project {
   studentEmail: string;
   grade: string;
   institution: string;
+  // Ya no usamos storagePath ni htmlFileName (pero los mantenemos por compatibilidad)
   htmlFileName: string;
   htmlSize: number;
   htmlLines: number;
-  storagePath: string;
+  htmlContent: string; // ← NUEVO: contenido completo del HTML
+  storagePath?: string; // Opcional, ya no se usa
   uploadedAt: Date;
   updatedAt: Date;
   status: 'pending' | 'approved' | 'rejected' | 'published';
   reviewNotes?: string;
   votes?: number;
   views?: number;
-  // Propiedades que pide admin-panel y galeria:
-  submittedAt?: Date; // Si no está en Firestore, lo podemos calcular a partir de uploadedAt
-  htmlContent?: string; // No se guarda en Firestore, se usa para vista previa en base64
 }

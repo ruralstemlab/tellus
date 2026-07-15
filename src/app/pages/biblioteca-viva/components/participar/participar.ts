@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
-import { StorageService } from '../../services/storage.service';
 import { Project } from '../../models/project.model';
 
 @Component({
@@ -22,6 +21,7 @@ export class ParticiparComponent {
     | 'htmlFileName'
     | 'htmlSize'
     | 'htmlLines'
+    | 'htmlContent'
     | 'storagePath'
     | 'status'
     | 'votes'
@@ -58,11 +58,10 @@ export class ParticiparComponent {
 
   warnings: string[] = [];
   isSubmitting = false;
-  maxFileSize = 2 * 1024 * 1024;
+  maxFileSize = 2 * 1024 * 1024; // 2 MB
 
   constructor(
     private projectService: ProjectService,
-    private storageService: StorageService,
     private router: Router
   ) {}
 
@@ -116,7 +115,7 @@ export class ParticiparComponent {
         lines,
         chars,
         content: content.slice(0, 500) + (chars > 500 ? '...' : ''),
-        fullContent: content
+        fullContent: content // Guardamos el contenido completo
       };
 
       this.validateHTML(content);
@@ -149,36 +148,16 @@ export class ParticiparComponent {
       htmlFileName: this.selectedFile.name,
       htmlSize: this.selectedFile.size,
       htmlLines: this.fileInfo.lines,
-      storagePath: '',
+      htmlContent: this.fileInfo.fullContent, // ← Guardamos el contenido completo en Firestore
+      storagePath: '', // Ya no se usa, pero lo mantenemos por compatibilidad
       status: 'pending' as const
     };
 
     this.projectService.createProject(projectData).subscribe({
-      next: (docRef) => {
-        const projectId = docRef.id;
-        this.storageService.uploadHTMLFile(projectId, this.selectedFile!).subscribe({
-          next: () => {
-            this.projectService.updateProject(projectId, {
-              storagePath: `projects/${projectId}/index.html`
-            }).subscribe({
-              next: () => {
-                this.isSubmitting = false;
-                alert('Proyecto enviado correctamente. Queda pendiente de revisión.');
-                this.router.navigate(['/biblioteca-viva']);
-              },
-              error: (err: Error) => {
-                console.error('Error al actualizar proyecto:', err);
-                this.isSubmitting = false;
-                alert('Error al guardar la información del proyecto');
-              }
-            });
-          },
-          error: (err: Error) => {
-            console.error('Error al subir archivo a Storage:', err);
-            this.isSubmitting = false;
-            alert('Error al subir el archivo HTML. Inténtalo de nuevo.');
-          }
-        });
+      next: () => {
+        this.isSubmitting = false;
+        alert('Proyecto enviado correctamente. Queda pendiente de revisión.');
+        this.router.navigate(['/biblioteca-viva']);
       },
       error: (err: Error) => {
         console.error('Error al crear proyecto en Firestore:', err);
