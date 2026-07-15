@@ -1,134 +1,257 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project.model';
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './admin-panel.html',
   styleUrls: ['./admin-panel.scss']
 })
 export class AdminPanelComponent implements OnInit {
-  // Propiedades para la vista
+
+  /**
+   * Pestaña activa
+   */
   activeTab: 'pending' | 'all' = 'pending';
+
+  /**
+   * Estado de carga
+   */
   loading = false;
-  
-  // Listas de proyectos
-  projects: Project[] = [];
-  pendingProjects: Project[] = [];
+
+  /**
+   * Todos los proyectos
+   */
   allProjects: Project[] = [];
 
-  // Notas de revisión por proyecto (objeto con id como clave)
-  reviewNotes: { [key: string]: string } = {};
+  /**
+   * Solo proyectos pendientes
+   */
+  pendingProjects: Project[] = [];
 
-  constructor(private projectService: ProjectService) {}
+  /**
+   * Notas de revisión
+   */
+  reviewNotes: Record<string, string> = {};
+
+  constructor(
+    private readonly projectService: ProjectService
+  ) {}
 
   ngOnInit(): void {
     this.loadProjects();
   }
 
+  /**
+   * Carga todos los proyectos
+   */
   loadProjects(): void {
+
     this.loading = true;
+
     this.projectService.getProjects().subscribe({
-      next: (data: Project[]) => {
-        this.allProjects = data;
-        this.pendingProjects = data.filter(p => p.status === 'pending');
+
+      next: (projects) => {
+
+        this.allProjects = projects;
+
+        this.pendingProjects = projects.filter(
+          project => project.status === 'pending'
+        );
+
         this.loading = false;
+
       },
-      error: (err) => {
-        console.error('Error al cargar proyectos:', err);
+
+      error: (error) => {
+
+        console.error('Error cargando proyectos:', error);
+
         this.loading = false;
+
       }
+
     });
+
   }
 
-  // Cambiar pestaña
+  /**
+   * Cambiar pestaña
+   */
   setTab(tab: 'pending' | 'all'): void {
     this.activeTab = tab;
   }
 
-  // Obtener clase CSS para el estado
+  /**
+   * Clase CSS según estado
+   */
   getStatusClass(status: string): string {
+
     switch (status) {
-      case 'pending': return 'status-pending';
-      case 'approved': return 'status-approved';
-      case 'rejected': return 'status-rejected';
-      case 'published': return 'status-published';
-      default: return '';
+
+      case 'pending':
+        return 'status-pending';
+
+      case 'approved':
+        return 'status-approved';
+
+      case 'published':
+        return 'status-published';
+
+      case 'rejected':
+        return 'status-rejected';
+
+      default:
+        return '';
+
     }
+
   }
 
-  // Obtener etiqueta legible del estado
+  /**
+   * Texto del estado
+   */
   getStatusLabel(status: string): string {
+
     switch (status) {
-      case 'pending': return 'Pendiente';
-      case 'approved': return 'Aprobado';
-      case 'rejected': return 'Rechazado';
-      case 'published': return 'Publicado';
-      default: return status;
+
+      case 'pending':
+        return 'Pendiente';
+
+      case 'approved':
+        return 'Aprobado';
+
+      case 'published':
+        return 'Publicado';
+
+      case 'rejected':
+        return 'Rechazado';
+
+      default:
+        return status;
+
     }
+
   }
 
-  // Ver el HTML del proyecto en una nueva ventana
+  /**
+   * Visualizar aplicación HTML
+   */
   viewProject(project: Project): void {
-    if (project.htmlContent) {
-      const blob = new Blob([project.htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    } else {
+
+    if (!project.htmlContent) {
+
       alert('Este proyecto no tiene contenido HTML.');
+
+      return;
+
     }
+
+    const blob = new Blob(
+      [project.htmlContent],
+      { type: 'text/html' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    window.open(url, '_blank');
+
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
   }
 
-  // Aprobar proyecto (cambia a 'approved')
+  /**
+   * Aprobar proyecto
+   */
   approve(project: Project): void {
-    if (!project.id) return;
-    const note = this.reviewNotes[project.id] || '';
-    this.projectService.updateStatus(project.id, 'approved', note).subscribe({
-      next: () => {
-        alert('Proyecto aprobado');
-        this.loadProjects();
-        delete this.reviewNotes[project.id!];
-      },
-      error: (err) => {
-        console.error('Error al aprobar:', err);
-        alert('Error al aprobar el proyecto');
-      }
-    });
+
+    this.updateProjectStatus(
+      project,
+      'approved',
+      'Proyecto aprobado'
+    );
+
   }
 
-  // Publicar proyecto (cambia a 'published')
+  /**
+   * Publicar proyecto
+   */
   publish(project: Project): void {
-    if (!project.id) return;
-    this.projectService.updateStatus(project.id, 'published').subscribe({
-      next: () => {
-        alert('Proyecto publicado');
-        this.loadProjects();
-      },
-      error: (err) => {
-        console.error('Error al publicar:', err);
-        alert('Error al publicar el proyecto');
-      }
-    });
+
+    this.updateProjectStatus(
+      project,
+      'published',
+      'Proyecto publicado'
+    );
+
   }
 
-  // Rechazar proyecto
+  /**
+   * Rechazar proyecto
+   */
   reject(project: Project): void {
-    if (!project.id) return;
-    const note = this.reviewNotes[project.id] || '';
-    this.projectService.updateStatus(project.id, 'rejected', note).subscribe({
-      next: () => {
-        alert('Proyecto rechazado');
-        this.loadProjects();
-        delete this.reviewNotes[project.id!];
-      },
-      error: (err) => {
-        console.error('Error al rechazar:', err);
-        alert('Error al rechazar el proyecto');
-      }
-    });
+
+    this.updateProjectStatus(
+      project,
+      'rejected',
+      'Proyecto rechazado'
+    );
+
   }
+
+  /**
+   * Actualiza el estado del proyecto
+   */
+  private updateProjectStatus(
+
+    project: Project,
+
+    status: 'approved' | 'published' | 'rejected',
+
+    successMessage: string
+
+  ): void {
+
+    if (!project.id) {
+      return;
+    }
+
+    const note = this.reviewNotes[project.id] || '';
+
+    this.projectService.updateStatus(
+      project.id,
+      status,
+      note
+    ).subscribe({
+
+      next: () => {
+
+        alert(successMessage);
+
+        delete this.reviewNotes[project.id!];
+
+        this.loadProjects();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        alert('Ocurrió un error al actualizar el proyecto.');
+
+      }
+
+    });
+
+  }
+
 }
