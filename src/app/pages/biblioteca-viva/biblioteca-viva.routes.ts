@@ -5,8 +5,6 @@ import { ParticiparComponent } from './components/participar/participar';
 import { GaleriaComponent } from './components/galeria/galeria';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel';
 
-import { adminGuard } from '../../core/guards/admin.guard';
-
 export const routes: Routes = [
   {
     path: '',
@@ -22,7 +20,6 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminPanelComponent,
-    canActivate: [adminGuard]
+    component: AdminPanelComponent
   }
 ];

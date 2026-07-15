@@ -1,5 +1,4 @@
 <div class="admin-panel">
-
   <!-- Encabezado -->
   <header class="panel-header">
     <h1>🛡 Centro de Revisión de Apps</h1>
@@ -13,20 +12,18 @@
       [class.active]="activeTab === 'pending'"
       (click)="setTab('pending')"
     >
-      <span class="tab-icon">🟡</span> En revisión
-      <span class="badge-count">{{ pendingProjects.length }}</span>
+      🟡 En revisión <span class="badge">{{ pendingProjects.length }}</span>
     </button>
     <button
       class="tab"
       [class.active]="activeTab === 'all'"
       (click)="setTab('all')"
     >
-      <span class="tab-icon">📚</span> Todas las Apps
-      <span class="badge-count">{{ allProjects.length }}</span>
+      📚 Todas las Apps <span class="badge">{{ allProjects.length }}</span>
     </button>
   </div>
 
-  <!-- Carga -->
+  <!-- Spinner -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
     <p>Cargando aplicaciones…</p>
@@ -34,8 +31,7 @@
 
   <!-- Contenido -->
   <div *ngIf="!loading">
-
-    <!-- Pestaña: Pendientes -->
+    <!-- Pendientes -->
     <div *ngIf="activeTab === 'pending'">
       <div *ngIf="pendingProjects.length === 0" class="empty-state">
         <span class="empty-icon">🎉</span>
@@ -45,64 +41,40 @@
 
       <div class="cards-grid">
         <div class="app-card" *ngFor="let p of pendingProjects">
-          <!-- Imagen / Placeholder -->
           <div class="card-image">
             <div class="app-icon">📱</div>
-            <span class="card-status-badge" [class]="getStatusClass(p.status)">
+            <span class="status-badge" [class]="getStatusClass(p.status)">
               {{ getStatusLabel(p.status) }}
             </span>
           </div>
-
-          <!-- Contenido -->
           <div class="card-body">
             <h3 class="app-title">{{ p.title }}</h3>
             <div class="app-meta">
-              <span class="meta-item">
-                <span class="meta-icon">👨‍💻</span> {{ p.studentName }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">📂</span> {{ p.category }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">🏫</span> {{ p.institution }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">📅</span> {{ p.uploadedAt | date:'dd/MM/yyyy' }}
-              </span>
+              <span>👨‍💻 {{ p.studentName }}</span>
+              <span>📂 {{ p.category }}</span>
+              <span>🏫 {{ p.institution }}</span>
+              <span>📅 {{ p.uploadedAt | date:'dd/MM/yyyy' }}</span>
             </div>
-
-            <!-- Comentario -->
             <div class="review-note">
-              <label for="note-{{ p.id }}">💬 Comentario para el desarrollador</label>
+              <label>💬 Comentario para el desarrollador</label>
               <textarea
-                id="note-{{ p.id }}"
-                placeholder="Escribe aquí tus observaciones…"
                 [(ngModel)]="reviewNotes[p.id!]"
+                placeholder="Escribe aquí tus observaciones…"
                 rows="2"
               ></textarea>
             </div>
-
-            <!-- Acciones -->
             <div class="card-actions">
-              <button class="btn btn-view" (click)="viewProject(p)">
-                👀 Vista previa
-              </button>
-              <button class="btn btn-approve" (click)="approve(p)">
-                ✅ Aprobar
-              </button>
-              <button class="btn btn-publish" (click)="publish(p)">
-                🚀 Publicar
-              </button>
-              <button class="btn btn-reject" (click)="reject(p)">
-                🔄 Solicitar cambios
-              </button>
+              <button class="btn btn-view" (click)="viewProject(p)">👀 Vista previa</button>
+              <button class="btn btn-approve" (click)="approve(p)">✅ Aprobar</button>
+              <button class="btn btn-publish" (click)="publish(p)">🚀 Publicar</button>
+              <button class="btn btn-reject" (click)="reject(p)">🔄 Solicitar cambios</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Pestaña: Todas las Apps -->
+    <!-- Todas -->
     <div *ngIf="activeTab === 'all'">
       <div *ngIf="allProjects.length === 0" class="empty-state">
         <span class="empty-icon">📭</span>
@@ -113,47 +85,27 @@
         <div class="app-card" *ngFor="let p of allProjects">
           <div class="card-image">
             <div class="app-icon">📱</div>
-            <span class="card-status-badge" [class]="getStatusClass(p.status)">
+            <span class="status-badge" [class]="getStatusClass(p.status)">
               {{ getStatusLabel(p.status) }}
             </span>
           </div>
-
           <div class="card-body">
             <h3 class="app-title">{{ p.title }}</h3>
             <div class="app-meta">
-              <span class="meta-item">
-                <span class="meta-icon">👨‍💻</span> {{ p.studentName }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">📂</span> {{ p.category }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">🏫</span> {{ p.institution }}
-              </span>
-              <span class="meta-item">
-                <span class="meta-icon">📅</span> {{ p.uploadedAt | date:'dd/MM/yyyy' }}
-              </span>
+              <span>👨‍💻 {{ p.studentName }}</span>
+              <span>📂 {{ p.category }}</span>
+              <span>🏫 {{ p.institution }}</span>
+              <span>📅 {{ p.uploadedAt | date:'dd/MM/yyyy' }}</span>
             </div>
-
             <div class="card-actions">
-              <button class="btn btn-view" (click)="viewProject(p)">
-                👀 Vista previa
-              </button>
-              <!-- Solo mostrar acciones adicionales si está pendiente o aprobado, pero mantenemos igual -->
-              <button *ngIf="p.status === 'pending'" class="btn btn-approve" (click)="approve(p)">
-                ✅ Aprobar
-              </button>
-              <button *ngIf="p.status === 'pending'" class="btn btn-publish" (click)="publish(p)">
-                🚀 Publicar
-              </button>
-              <button *ngIf="p.status === 'pending'" class="btn btn-reject" (click)="reject(p)">
-                🔄 Solicitar cambios
-              </button>
+              <button class="btn btn-view" (click)="viewProject(p)">👀 Vista previa</button>
+              <button *ngIf="p.status === 'pending'" class="btn btn-approve" (click)="approve(p)">✅ Aprobar</button>
+              <button *ngIf="p.status === 'pending'" class="btn btn-publish" (click)="publish(p)">🚀 Publicar</button>
+              <button *ngIf="p.status === 'pending'" class="btn btn-reject" (click)="reject(p)">🔄 Solicitar cambios</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>

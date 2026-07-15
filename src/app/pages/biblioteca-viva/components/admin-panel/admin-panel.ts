@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,250 +8,123 @@ import { Project } from '../../models/project.model';
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-panel.html',
   styleUrls: ['./admin-panel.scss']
 })
 export class AdminPanelComponent implements OnInit {
-
-  /**
-   * Pestaña activa
-   */
   activeTab: 'pending' | 'all' = 'pending';
-
-  /**
-   * Estado de carga
-   */
-  loading = false;
-
-  /**
-   * Todos los proyectos
-   */
+  loading = true;
   allProjects: Project[] = [];
-
-  /**
-   * Solo proyectos pendientes
-   */
   pendingProjects: Project[] = [];
-
-  /**
-   * Notas de revisión
-   */
   reviewNotes: Record<string, string> = {};
 
   constructor(
-    private readonly projectService: ProjectService
+    private projectService: ProjectService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadProjects();
   }
 
-  /**
-   * Carga todos los proyectos
-   */
   loadProjects(): void {
-
     this.loading = true;
+    this.cdr.detectChanges();
 
     this.projectService.getProjects().subscribe({
-
       next: (projects) => {
+        // Convertir Timestamps a Date manualmente
+        const converted = projects.map(p => ({
+          ...p,
+          uploadedAt: this.toDate(p.uploadedAt),
+          updatedAt: this.toDate(p.updatedAt)
+        }));
 
-        this.allProjects = projects;
-
-        this.pendingProjects = projects.filter(
-          project => project.status === 'pending'
-        );
-
+        this.allProjects = converted;
+        this.pendingProjects = converted.filter(p => p.status === 'pending');
         this.loading = false;
-
+        this.cdr.detectChanges();
       },
-
-      error: (error) => {
-
-        console.error('Error cargando proyectos:', error);
-
+      error: (err) => {
+        console.error('Error:', err);
         this.loading = false;
-
+        this.cdr.detectChanges();
       }
-
     });
-
   }
 
-  /**
-   * Cambiar pestaña
-   */
+  private toDate(value: any): Date | any {
+    if (value && typeof value === 'object' && typeof value.toDate === 'function') {
+      return value.toDate();
+    }
+    return value;
+  }
+
   setTab(tab: 'pending' | 'all'): void {
     this.activeTab = tab;
   }
 
-  /**
-   * Clase CSS según estado
-   */
   getStatusClass(status: string): string {
-
-    switch (status) {
-
-      case 'pending':
-        return 'status-pending';
-
-      case 'approved':
-        return 'status-approved';
-
-      case 'published':
-        return 'status-published';
-
-      case 'rejected':
-        return 'status-rejected';
-
-      default:
-        return '';
-
-    }
-
+    const classes: Record<string, string> = {
+      pending: 'status-pending',
+      approved: 'status-approved',
+      published: 'status-published',
+      rejected: 'status-rejected'
+    };
+    return classes[status] || '';
   }
 
-  /**
-   * Texto del estado
-   */
   getStatusLabel(status: string): string {
-
-    switch (status) {
-
-      case 'pending':
-        return 'Pendiente';
-
-      case 'approved':
-        return 'Aprobado';
-
-      case 'published':
-        return 'Publicado';
-
-      case 'rejected':
-        return 'Rechazado';
-
-      default:
-        return status;
-
-    }
-
+    const labels: Record<string, string> = {
+      pending: 'Pendiente',
+      approved: 'Aprobado',
+      published: 'Publicado',
+      rejected: 'Rechazado'
+    };
+    return labels[status] || status;
   }
 
-  /**
-   * Visualizar aplicación HTML
-   */
   viewProject(project: Project): void {
-
     if (!project.htmlContent) {
-
-      alert('Este proyecto no tiene contenido HTML.');
-
+      alert('Este proyecto no tiene contenido.');
       return;
-
     }
-
-    const blob = new Blob(
-      [project.htmlContent],
-      { type: 'text/html' }
-    );
-
+    const blob = new Blob([project.htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-
     window.open(url, '_blank');
-
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-
   }
 
-  /**
-   * Aprobar proyecto
-   */
   approve(project: Project): void {
-
-    this.updateProjectStatus(
-      project,
-      'approved',
-      'Proyecto aprobado'
-    );
-
+    this.updateStatus(project, 'approved', 'Proyecto aprobado');
   }
 
-  /**
-   * Publicar proyecto
-   */
   publish(project: Project): void {
-
-    this.updateProjectStatus(
-      project,
-      'published',
-      'Proyecto publicado'
-    );
-
+    this.updateStatus(project, 'published', 'Proyecto publicado');
   }
 
-  /**
-   * Rechazar proyecto
-   */
   reject(project: Project): void {
-
-    this.updateProjectStatus(
-      project,
-      'rejected',
-      'Proyecto rechazado'
-    );
-
+    this.updateStatus(project, 'rejected', 'Proyecto rechazado');
   }
 
-  /**
-   * Actualiza el estado del proyecto
-   */
-  private updateProjectStatus(
-
+  private updateStatus(
     project: Project,
-
     status: 'approved' | 'published' | 'rejected',
-
-    successMessage: string
-
+    message: string
   ): void {
-
-    if (!project.id) {
-      return;
-    }
-
+    if (!project.id) return;
     const note = this.reviewNotes[project.id] || '';
-
-    this.projectService.updateStatus(
-      project.id,
-      status,
-      note
-    ).subscribe({
-
+    this.projectService.updateStatus(project.id, status, note).subscribe({
       next: () => {
-
-        alert(successMessage);
-
+        alert(message);
         delete this.reviewNotes[project.id!];
-
         this.loadProjects();
-
       },
-
-      error: (error) => {
-
-        console.error(error);
-
-        alert('Ocurrió un error al actualizar el proyecto.');
-
+      error: (err) => {
+        console.error(err);
+        alert('Error al actualizar.');
       }
-
     });
-
   }
-
 }
