@@ -1,8 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Observable } from 'rxjs';
+
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
+import { ProfileService } from '../../core/services/profile.service';
+import { UserProfile } from '../../core/models/user-profile.model';
 
 @Component({
   selector: 'app-biblioteca-viva',
@@ -12,6 +16,9 @@ import { Footer } from '../../components/footer/footer';
   styleUrl: './biblioteca-viva.scss'
 })
 export class BibliotecaViva implements OnInit, OnDestroy {
+
+  // Observable del perfil (NUEVO)
+  profile$: Observable<UserProfile | null>;
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -178,6 +185,11 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   ];
 
   filteredFaqs = this.faqs;
+
+  // ---------- CONSTRUCTOR MODIFICADO (NUEVO) ----------
+  constructor(private readonly profileService: ProfileService) {
+    this.profile$ = this.profileService.profile$;
+  }
 
   // ---------- LIFECYCLE ----------
   ngOnInit(): void {
