@@ -4,7 +4,7 @@
 <app-admin-dashboard *ngIf="(profile$ | async)?.role === 'admin'"></app-admin-dashboard>
 
 <!-- ==========================================================
-     HERO – MEJORADO
+     HERO – CON DATOS REALES
 =========================================================== -->
 <section class="hero">
 
@@ -61,7 +61,7 @@
 
     </div>
 
-    <!-- Columna derecha – DASHBOARD PROFESIONAL -->
+    <!-- Columna derecha – DASHBOARD PROFESIONAL (CON DATOS REALES) -->
     <div class="hero-image">
 
       <div class="dashboard-glass">
@@ -76,41 +76,41 @@
 
         <div class="dashboard-grid">
 
-          <!-- Estadísticas rápidas -->
+          <!-- Estadísticas rápidas REALES -->
           <div class="stat-card">
             <span class="icon">📁</span>
             <div class="info">
-              <h3>125</h3>
+              <h3>{{ (stats$ | async)?.projects || 0 }}</h3>
               <p>Proyectos</p>
             </div>
-            <div class="trend up">+12%</div>
+            <div class="trend up">+{{ (stats$ | async)?.projects || 0 }}%</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">👥</span>
             <div class="info">
-              <h3>540</h3>
+              <h3>{{ (stats$ | async)?.developers || 0 }}</h3>
               <p>Developers</p>
             </div>
-            <div class="trend up">+8%</div>
+            <div class="trend up">+{{ (stats$ | async)?.developers || 0 }}%</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">🏫</span>
             <div class="info">
-              <h3>15</h3>
+              <h3>{{ (stats$ | async)?.institutions || 0 }}</h3>
               <p>Instituciones</p>
             </div>
-            <div class="trend up">+3</div>
+            <div class="trend up">+{{ (stats$ | async)?.institutions || 0 }}</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">⭐</span>
             <div class="info">
-              <h3>9.2k</h3>
+              <h3>{{ (stats$ | async)?.votes || 0 }}</h3>
               <p>Votos</p>
             </div>
-            <div class="trend up">+18%</div>
+            <div class="trend up">+0%</div>
           </div>
 
           <!-- Mini gráfica de actividad -->
@@ -127,12 +127,12 @@
             </div>
           </div>
 
-          <!-- Proyecto destacado en dashboard -->
-          <div class="top-card">
+          <!-- Proyecto destacado DINÁMICO -->
+          <div class="top-card" *ngIf="(featuredProject$ | async) as featured">
             <h4>🏆 Proyecto destacado</h4>
-            <p>“EcoSim” – Simulador de reciclaje</p>
-            <div class="meta">👤 Ana García · I.E. Tierra Negra</div>
-            <div class="badge-premium">⭐ 4.8</div>
+            <p>“{{ featured.title }}”</p>
+            <div class="meta">👤 {{ featured.studentName }} · {{ featured.institution }}</div>
+            <div class="badge-premium">⭐ {{ (featured.rating || 0).toFixed(1) }}</div>
           </div>
 
           <!-- Mini actividad reciente -->
@@ -156,7 +156,7 @@
 </section>
 
 <!-- ==========================================================
-     ESTADÍSTICAS – NUEVA SECCIÓN
+     ESTADÍSTICAS – NUEVA SECCIÓN (estáticas por ahora)
 =========================================================== -->
 <section class="stats-section">
   <div class="stats-grid">

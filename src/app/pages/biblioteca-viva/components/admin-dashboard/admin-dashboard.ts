@@ -5,13 +5,13 @@ import { Observable, combineLatest } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ProfileService } from '../../../../core/services/profile.service';
 import { UserProfile } from '../../../../core/models/user-profile.model';
-import { ProjectService } from '../../services/project.service';
+import { ProjectService } from '../../../../core/services/project.service';
 import { UserService } from '../../../../core/services/user.service';
 
 interface DashboardStats {
   pending: number;
   published: number;
-  users: number;          // ← Cambiado de 'developers' a 'users'
+  users: number;
   institutions: number;
 }
 
@@ -66,7 +66,7 @@ export class AdminDashboardComponent {
   private loadDevelopersList(): Observable<DeveloperInfo[]> {
     return combineLatest([
       this.userService.getUsers(),
-      this.projectService.getProjects()
+      this.projectService.getAllProjects() // ✅ ahora existe
     ]).pipe(
       map(([users, projects]) => {
         const developers = users.filter(u => u.role === 'student' || u.role === 'teacher');
