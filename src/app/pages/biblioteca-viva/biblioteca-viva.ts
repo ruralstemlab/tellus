@@ -7,17 +7,17 @@ import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
 import { ProfileService } from '../../core/services/profile.service';
 import { UserProfile } from '../../core/models/user-profile.model';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 
 @Component({
   selector: 'app-biblioteca-viva',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, Footer],
+  imports: [CommonModule, RouterModule, Navbar, Footer, AdminDashboardComponent],
   templateUrl: './biblioteca-viva.html',
   styleUrl: './biblioteca-viva.scss'
 })
 export class BibliotecaViva implements OnInit, OnDestroy {
 
-  // Observable del perfil (NUEVO)
   profile$: Observable<UserProfile | null>;
 
   // ---------- CONTADOR ----------
@@ -186,8 +186,8 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
   filteredFaqs = this.faqs;
 
-  // ---------- CONSTRUCTOR MODIFICADO (NUEVO) ----------
   constructor(private readonly profileService: ProfileService) {
+    // Exponer observable del perfil para el template
     this.profile$ = this.profileService.profile$;
   }
 

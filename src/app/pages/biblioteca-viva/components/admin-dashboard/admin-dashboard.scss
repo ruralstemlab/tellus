@@ -1,0 +1,219 @@
+$glass-bg: rgba(255, 255, 255, 0.06);
+$glass-border: rgba(255, 255, 255, 0.10);
+$glass-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+$border-radius: 20px;
+$transition: 0.25s ease;
+$primary: #4cff9c;
+$secondary: #6495ed;
+$accent: #ffc107;
+
+.admin-dashboard {
+  margin: 1.5rem 1.5rem 2.5rem;
+  padding: 1.5rem 2rem;
+  background: $glass-bg;
+  backdrop-filter: blur(16px);
+  border: 1px solid $glass-border;
+  border-radius: $border-radius;
+  box-shadow: $glass-shadow;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+
+      .shield {
+        font-size: 2.2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+        color: #fff;
+        letter-spacing: -0.3px;
+      }
+
+      .admin-name {
+        margin: 0;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.7);
+
+        strong {
+          color: #fff;
+        }
+      }
+    }
+
+    .header-right {
+      .badge-admin {
+        background: rgba($primary, 0.15);
+        color: $primary;
+        padding: 0.3rem 1rem;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1px solid rgba($primary, 0.2);
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: all $transition;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .stat-icon {
+        font-size: 1.8rem;
+        opacity: 0.8;
+      }
+
+      .stat-info {
+        flex: 1;
+
+        h3 {
+          font-size: 1.8rem;
+          font-weight: 700;
+          margin: 0;
+          color: #fff;
+          line-height: 1.2;
+        }
+
+        p {
+          margin: 0;
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.6);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all $transition;
+      border: 1px solid transparent;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      span {
+        font-size: 1.1rem;
+      }
+
+      &.primary {
+        background: rgba($primary, 0.15);
+        color: $primary;
+        border-color: rgba($primary, 0.2);
+
+        &:hover {
+          background: rgba($primary, 0.25);
+          border-color: rgba($primary, 0.3);
+        }
+      }
+
+      &.secondary {
+        background: rgba($secondary, 0.12);
+        color: #8ab4ff;
+        border-color: rgba($secondary, 0.15);
+
+        &:hover {
+          background: rgba($secondary, 0.22);
+          border-color: rgba($secondary, 0.25);
+        }
+      }
+
+      &.accent {
+        background: rgba($accent, 0.12);
+        color: #ffd54f;
+        border-color: rgba($accent, 0.15);
+
+        &:hover {
+          background: rgba($accent, 0.22);
+          border-color: rgba($accent, 0.25);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin: 1rem 0.8rem;
+    padding: 1rem 1.2rem;
+
+    .dashboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .header-left {
+        .shield {
+          font-size: 1.8rem;
+        }
+        h2 {
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+
+      .stat-card {
+        padding: 0.8rem;
+
+        .stat-info h3 {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .quick-actions {
+      .action-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+<div class="admin-dashboard">
+  <!-- Encabezado -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <span class="shield">🛡️</span>
+      <div>
+        <h2>Centro de Control Tellus</h2>
+        <p class="admin-name" *ngIf="(profile$ | async) as profile">
+          Administrador: <strong>{{ profile.name || profile.email || 'Sin nombre' }}</strong>
+        </p>
+        <p class="admin-name" *ngIf="!(profile$ | async)">
+          <span style="color: #ffaa00;">⏳ Cargando perfil...</span>
+        </p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge-admin">● Administrador</span>
+    </div>
+  </div>
+
+  <!-- Estadísticas reales desde Firestore -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-info">
+        <h3>{{ (stats$ | async)?.pending || 0 }}</h3>
+        <p>Apps pendientes</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📱</div>
+      <div class="stat-info">
+        <h3>{{ (stats$ | async)?.published || 0 }}</h3>
+        <p>Apps publicadas</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👨‍💻</div>
+      <div class="stat-info">
+        <h3>{{ (stats$ | async)?.developers || 0 }}</h3>
+        <p>Developers</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🏫</div>
+      <div class="stat-info">
+        <h3>{{ (stats$ | async)?.institutions || 0 }}</h3>
+        <p>Instituciones</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <div class="quick-actions">
+    <a routerLink="/biblioteca-viva/admin" class="action-btn primary">
+      <span>⚙</span> Centro de Revisión
+    </a>
+    <a routerLink="/biblioteca-viva/estadisticas" class="action-btn secondary">
+      <span>📊</span> Estadísticas
+    </a>
+    <a routerLink="/biblioteca-viva/developers" class="action-btn secondary">
+      <span>👥</span> Developers
+    </a>
+    <a routerLink="/biblioteca-viva/convocatorias" class="action-btn secondary">
+      <span>🏆</span> Convocatorias
+    </a>
+  </div>
+</div>

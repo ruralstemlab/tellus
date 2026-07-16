@@ -1,5 +1,8 @@
 <app-navbar></app-navbar>
 
+<!-- 🔥 NUEVO: Dashboard de administrador (solo si es admin) -->
+<app-admin-dashboard *ngIf="(profile$ | async)?.role === 'admin'"></app-admin-dashboard>
+
 <!-- ==========================================================
      HERO – MEJORADO
 =========================================================== -->
@@ -343,17 +346,6 @@
       <h3>{{ card.title }}</h3>
       <p>{{ card.desc }}</p>
       <button class="primary small" routerLink="/biblioteca-viva/participar">Ir →</button>
-    </div>
-
-    <!-- 🔥 NUEVA TARJETA EXCLUSIVA PARA ADMINISTRADORES -->
-    <div 
-      class="main-card admin-card" 
-      *ngIf="(profile$ | async)?.role === 'admin'"
-    >
-      <div class="icon">⚙</div>
-      <h3>Centro de Revisión</h3>
-      <p>Revisa y publica apps de la comunidad</p>
-      <button class="primary small" routerLink="/biblioteca-viva/admin">Ir →</button>
     </div>
   </div>
 
