@@ -1,23 +1,50 @@
 <div class="galeria-container">
-  <h2>Galería de Proyectos</h2>
-  
+  <div class="header">
+    <h2>📚 Galería de Apps</h2>
+    <div class="controls">
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="showApproved" (change)="toggleApproved()">
+        <span class="slider"></span>
+      </label>
+      <span>Mostrar Apps aprobadas</span>
+    </div>
+  </div>
+
   <div *ngIf="loading" class="loading">
-    Cargando proyectos...
+    <div class="spinner"></div>
+    <p>Cargando proyectos...</p>
   </div>
 
   <div *ngIf="!loading && projects.length === 0" class="empty">
-    No hay proyectos publicados aún.
+    <span class="empty-icon">📭</span>
+    <p>No hay proyectos publicados aún.</p>
   </div>
 
-  <div class="proyectos-grid" *ngIf="!loading && projects.length > 0">
-    <div *ngFor="let project of projects" class="proyecto-card">
-      <h3>{{ project.title }}</h3>
-      <p><strong>Categoría:</strong> {{ project.category }}</p>
-      <p><strong>Estudiante:</strong> {{ project.studentName }}</p>
-      <p><strong>Institución:</strong> {{ project.institution }}</p>
-      <button (click)="openProject(project)" class="btn-ver">
-        Ver proyecto
-      </button>
+  <div class="projects-grid" *ngIf="!loading">
+    <div class="project-card" *ngFor="let project of projects">
+      <div class="card-header">
+        <span class="app-icon">📱</span>
+        <span class="status-badge" [class]="project.status">
+          {{ project.status === 'published' ? '🚀 Publicado' : '✅ Verificado' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <h3>{{ project.title }}</h3>
+        <div class="stars">
+          <span>{{ getStars(project.rating || 0) }}</span>
+          <span class="rating-number">{{ (project.rating || 0).toFixed(1) }}</span>
+        </div>
+        <div class="meta">
+          <span class="developer">👨‍💻 {{ project.studentName }}</span>
+          <span class="category">📂 {{ project.category }}</span>
+          <span class="institution">🏫 {{ project.institution }}</span>
+        </div>
+        <p class="description">{{ project.description | slice:0:120 }}{{ project.description?.length > 120 ? '...' : '' }}</p>
+      </div>
+      <div class="card-footer">
+        <button class="btn-view" (click)="verProyecto(project)">Ver App →</button>
+        <span class="date">📅 {{ project.updatedAt | date:'dd/MM/yyyy' }}</span>
+      </div>
     </div>
   </div>
 </div>

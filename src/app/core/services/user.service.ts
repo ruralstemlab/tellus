@@ -29,9 +29,6 @@ export interface UserData {
 export class UserService {
   private collectionName = 'users';
 
-  /**
-   * Obtener todos los usuarios (solo para administradores)
-   */
   getUsers(): Observable<UserData[]> {
     const ref = collection(db, this.collectionName);
     return from(getDocs(ref)).pipe(
@@ -52,16 +49,10 @@ export class UserService {
     );
   }
 
-  /**
-   * 🔥 Obtener un usuario por UID (devuelve Promise<UserProfile | null>)
-   * para mantener compatibilidad con ProfileService.
-   */
   async getUser(uid: string): Promise<UserProfile | null> {
     const ref = doc(db, this.collectionName, uid);
     const docSnap = await getDoc(ref);
-    if (!docSnap.exists()) {
-      return null;
-    }
+    if (!docSnap.exists()) return null;
     const data = docSnap.data();
     return {
       uid: docSnap.id,
@@ -74,18 +65,12 @@ export class UserService {
     } as UserProfile;
   }
 
-  /**
-   * Obtener cantidad de desarrolladores (role = 'student' o 'teacher')
-   */
   getDevelopersCount(): Observable<number> {
     const ref = collection(db, this.collectionName);
     const q = query(ref, where('role', 'in', ['student', 'teacher']));
     return from(getDocs(q)).pipe(map((snapshot) => snapshot.size));
   }
 
-  /**
-   * Obtener cantidad de instituciones únicas
-   */
   getInstitutionsCount(): Observable<number> {
     return this.getUsers().pipe(
       map((users) => {

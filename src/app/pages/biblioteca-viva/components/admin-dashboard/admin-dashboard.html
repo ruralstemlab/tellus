@@ -1,5 +1,4 @@
 <div class="admin-dashboard">
-  <!-- Encabezado -->
   <div class="dashboard-header">
     <div class="header-left">
       <span class="shield">🛡️</span>
@@ -18,7 +17,6 @@
     </div>
   </div>
 
-  <!-- Estadísticas -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon">📋</div>
@@ -28,7 +26,6 @@
       </div>
       <div class="stat-trend up">▲</div>
     </div>
-
     <div class="stat-card">
       <div class="stat-icon">📱</div>
       <div class="stat-info">
@@ -37,16 +34,14 @@
       </div>
       <div class="stat-trend up">▲</div>
     </div>
-
     <div class="stat-card">
-      <div class="stat-icon">👨‍💻</div>
+      <div class="stat-icon">👥</div>
       <div class="stat-info">
-        <h3>{{ (stats$ | async)?.developers || 0 }}</h3>
-        <p>Developers</p>
+        <h3>{{ (stats$ | async)?.users || 0 }}</h3>
+        <p>Usuarios registrados</p>
       </div>
       <div class="stat-trend up">▲</div>
     </div>
-
     <div class="stat-card">
       <div class="stat-icon">🏫</div>
       <div class="stat-info">
@@ -57,7 +52,6 @@
     </div>
   </div>
 
-  <!-- Accesos rápidos -->
   <div class="quick-actions">
     <a routerLink="/biblioteca-viva/admin" class="action-btn primary">
       <span>⚙</span> Centro de Revisión
@@ -70,7 +64,6 @@
     </button>
   </div>
 
-  <!-- Sección: Developers (expandible) -->
   <div *ngIf="showDevelopers" class="expandable-section">
     <h3>👥 Desarrolladores registrados</h3>
     <div class="developer-list">
@@ -80,16 +73,16 @@
       <div *ngFor="let dev of (developersList$ | async)" class="developer-item">
         <div class="dev-info">
           <strong>{{ dev.name }}</strong>
-          <span class="dev-email">{{ dev.email }}</span>
-        </div>
-        <div class="dev-project">
-          <span>📱</span> {{ dev.projectTitle }}
+          <span class="dev-institution">{{ dev.institution }}</span>
+          <span class="dev-meta">📱 {{ dev.projectCount }} apps publicadas</span>
+          <span class="dev-meta" *ngIf="dev.lastPublished">
+            🕒 Última: {{ dev.lastPublished | date:'dd/MM/yyyy' }}
+          </span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Sección: Convocatorias (expandible) -->
   <div *ngIf="showConvocatorias" class="expandable-section">
     <h3>🏆 Convocatoria actual</h3>
     <div class="convocatoria-info">
@@ -103,8 +96,8 @@
       </p>
       <div class="convocatoria-meta">
         <span>📅 Inscripciones: hasta 31 Jul 2026</span>
-        <span>👥 Participantes: {{ (stats$ | async)?.developers || 0 }}</span>
-        <span>📊 Proyectos: {{ (stats$ | async)?.published || 0 }}</span>
+        <span>👥 Participantes: {{ (stats$ | async)?.users || 0 }}</span>
+        <span>📊 Proyectos publicados: {{ (stats$ | async)?.published || 0 }}</span>
       </div>
       <button class="btn-crear-convocatoria" (click)="crearConvocatoria()">
         ➕ Crear nueva convocatoria
