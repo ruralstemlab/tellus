@@ -1,3 +1,5 @@
+// Variables
+$navbar-height: 78px; // Ajusta según la altura real de tu navbar
 $glass-bg: rgba(255, 255, 255, 0.06);
 $glass-border: rgba(255, 255, 255, 0.10);
 $glass-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -8,17 +10,18 @@ $secondary: #6495ed;
 $accent: #ffc107;
 
 .admin-dashboard {
-  // AUMENTAR ALTURA: más padding y margen
-  margin: 2rem 1.5rem 3rem;   // aumentado el margen inferior
-  padding: 2rem 2.5rem;       // más padding interior
+  // 🔥 SOLUCIÓN: margin-top para evitar que el navbar fijo lo tape
+  margin-top: $navbar-height + 12px; // 78px + 12px de espaciado extra
+  margin-bottom: 3rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 2.5rem;
   background: $glass-bg;
   backdrop-filter: blur(16px);
   border: 1px solid $glass-border;
   border-radius: $border-radius;
   box-shadow: $glass-shadow;
   max-width: 1440px;
-  margin-left: auto;
-  margin-right: auto;
 
   .dashboard-header {
     display: flex;
@@ -200,7 +203,6 @@ $accent: #ffc107;
     }
   }
 
-  // Secciones expandibles
   .expandable-section {
     margin-top: 2rem;
     padding-top: 1.5rem;
@@ -329,8 +331,11 @@ $accent: #ffc107;
     }
   }
 
+  // Responsive
   @media (max-width: 768px) {
-    margin: 1rem 0.8rem;
+    margin-top: $navbar-height + 8px; // Ajuste para móvil
+    margin-left: 0.8rem;
+    margin-right: 0.8rem;
     padding: 1.2rem;
 
     .dashboard-header {
