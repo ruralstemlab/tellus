@@ -10,12 +10,12 @@ export interface Project {
   status: 'pending' | 'approved' | 'published' | 'rejected';
   htmlContent: string;
   storagePath?: string;
-  rating?: number;
-  ratingCount?: number;
-  featured?: boolean;
+  rating: number;           // ✅ necesario
+  ratingCount: number;      // ✅ necesario
+  featured: boolean;        // ✅ necesario
   featuredAt?: Date;
-  views?: number;
-  votes?: number;
+  views: number;
+  votes: number;
   reviewedBy?: string;
   reviewedAt?: Date;
   publishedAt?: Date;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ProjectService } from '../../services/project.service';
+import { ProjectService } from '../../../../core/services/project.service';
 import { Project } from '../../../../core/models/project.model';
 
 @Component({
@@ -49,13 +49,14 @@ export class GaleriaComponent implements OnInit {
     return '⭐'.repeat(full) + '☆'.repeat(empty);
   }
 
-  // 🔥 Método para ver proyecto (lo que sea que haga tu botón)
-  // Si no quieres que haga nada, solo comenta el (click) en el HTML
   verProyecto(project: Project): void {
-    // Ejemplo: navegar a la vista del proyecto o abrir en nueva pestaña
-    // router.navigate(['/biblioteca-viva/proyecto', project.id]);
-    console.log('Ver proyecto:', project.title);
-    // Si no tienes ruta, muestra un alert
-    alert('Funcionalidad "Ver proyecto" en desarrollo. Próximamente podrás ver los detalles de cada app.');
+    if (!project.htmlContent) {
+      alert('Este proyecto no tiene contenido HTML.');
+      return;
+    }
+    const blob = new Blob([project.htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 }

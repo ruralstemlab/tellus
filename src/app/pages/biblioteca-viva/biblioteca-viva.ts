@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Navbar } from '../../components/navbar/navbar';
@@ -9,8 +9,16 @@ import { Footer } from '../../components/footer/footer';
 import { ProfileService } from '../../core/services/profile.service';
 import { UserProfile } from '../../core/models/user-profile.model';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
-import { ProjectService } from './services/project.service';
+import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
+import { UserService } from '../../core/services/user.service';
+
+interface HeroStats {
+  projects: number;
+  developers: number;
+  institutions: number;
+  votes: number;
+}
 
 @Component({
   selector: 'app-biblioteca-viva',
@@ -23,6 +31,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
   profile$: Observable<UserProfile | null>;
   featuredProject$: Observable<Project | null>;
+  stats$: Observable<HeroStats>;
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -31,12 +40,12 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   seconds = 0;
   private timer: any;
 
-  // ---------- ESTADÍSTICAS ----------
+  // ---------- ESTADÍSTICAS (estáticas, ya no se usan) ----------
   stats = [
-    { number: '250+', label: 'Proyectos' },
-    { number: '15', label: 'Instituciones' },
-    { number: '540', label: 'Developers' },
-    { number: '9.2k', label: 'Votos' }
+    { number: '0', label: 'Proyectos' },
+    { number: '0', label: 'Instituciones' },
+    { number: '0', label: 'Developers' },
+    { number: '0', label: 'Votos' }
   ];
 
   // ---------- QUÉ PUEDES CONSTRUIR ----------
@@ -192,16 +201,39 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
   constructor(
     private readonly profileService: ProfileService,
-    private readonly projectService: ProjectService
+    private readonly projectService: ProjectService,
+    private readonly userService: UserService
   ) {
     this.profile$ = this.profileService.profile$;
-    // Obtener el primer proyecto publicado como destacado
     this.featuredProject$ = this.projectService.getProjects('published').pipe(
       map(projects => projects.length > 0 ? projects[0] : null)
     );
+    this.stats$ = this.loadHeroStats();
   }
 
-  // ---------- LIFECYCLE ----------
+  private loadHeroStats(): Observable<HeroStats> {
+    const projects$ = this.projectService.getAllProjects().pipe(
+      map(projects => projects.length)
+    );
+    const developers$ = this.userService.getUsers().pipe(
+      map(users => users.length)
+    );
+    const institutions$ = this.userService.getUsers().pipe(
+      map(users => new Set(users.map(u => u.institution).filter(Boolean)).size)
+    );
+    const votes$ = of(0);
+
+    return combineLatest([projects$, developers$, institutions$, votes$]).pipe(
+      map(([projects, developers, institutions, votes]) => ({
+        projects,
+        developers,
+        institutions,
+        votes
+      }))
+    );
+  }
+
+  // ✅ Implementación correcta de OnInit y OnDestroy
   ngOnInit(): void {
     this.startCountdown();
   }
@@ -210,7 +242,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     clearInterval(this.timer);
   }
 
-  // ---------- CONTADOR ----------
   private startCountdown(): void {
     const target = new Date('2026-07-31T23:59:59').getTime();
     this.timer = setInterval(() => {
@@ -228,18 +259,15 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // ---------- FAQ FILTER ----------
   filterFaqs(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredFaqs = this.faqs.filter(f => f.question.toLowerCase().includes(query));
   }
 
-  // ---------- FAQ TOGGLE ----------
   toggleFaq(faq: any): void {
     faq.open = !faq.open;
   }
 
-  // ---------- ESTRELLAS (para el proyecto destacado) ----------
   getStars(rating: number): string {
     const full = Math.round(rating || 0);
     const empty = 5 - full;
