@@ -33,7 +33,7 @@ export class ParticiparComponent {
     studentName: '',
     studentEmail: '',
     grade: '',
-    institution: 'I.E. Tierra Negra'
+    institution: ''
   };
 
   categories = [
@@ -43,6 +43,15 @@ export class ParticiparComponent {
     { name: 'Finanzas', icon: '💰' },
     { name: 'Emprendimiento', icon: '🚀' },
     { name: 'Otro', icon: '💡' }
+  ];
+
+  // 🔥 NUEVO: Lista de instituciones premium
+  institutions = [
+    { name: 'I.E. Tierra Negra', location: 'Chipatá', full: 'I.E. Tierra Negra – Chipatá' },
+    { name: 'I.E. La Esperanza', location: 'Montería', full: 'I.E. La Esperanza – Montería' },
+    { name: 'Colegio Calcuta', location: 'Bogotá', full: 'Colegio Calcuta – Bogotá' },
+    { name: 'I.E. El Tagüí', location: 'Sabana de Torres', full: 'I.E. El Tagüí – Sabana de Torres' },
+    { name: 'Instituto Técnico', location: 'Puente Nacional', full: 'Instituto Técnico – Puente Nacional' }
   ];
 
   selectedFile: File | null = null;
@@ -115,7 +124,7 @@ export class ParticiparComponent {
         lines,
         chars,
         content: content.slice(0, 500) + (chars > 500 ? '...' : ''),
-        fullContent: content // Guardamos el contenido completo
+        fullContent: content
       };
 
       this.validateHTML(content);
@@ -148,8 +157,8 @@ export class ParticiparComponent {
       htmlFileName: this.selectedFile.name,
       htmlSize: this.selectedFile.size,
       htmlLines: this.fileInfo.lines,
-      htmlContent: this.fileInfo.fullContent, // ← Guardamos el contenido completo en Firestore
-      storagePath: '', // Ya no se usa, pero lo mantenemos por compatibilidad
+      htmlContent: this.fileInfo.fullContent,
+      storagePath: '',
       status: 'pending' as const
     };
 
@@ -179,6 +188,7 @@ export class ParticiparComponent {
       errors.push('El correo electrónico no es válido');
     }
     if (!this.project.grade.trim()) errors.push('El grado es obligatorio');
+    if (!this.project.institution) errors.push('Debes seleccionar una institución');
     if (!this.selectedFile) errors.push('Debes seleccionar un archivo index.html');
 
     if (this.warnings.some(w => w.includes('Falta la etiqueta <html>') || w.includes('vacío') || w.includes('excede el tamaño'))) {

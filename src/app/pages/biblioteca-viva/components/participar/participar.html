@@ -53,14 +53,24 @@
       <input type="text" [(ngModel)]="project.grade" name="grade" required />
     </div>
 
+    <!-- 🔥 INSTITUCIÓN PREMIUM: tarjetas visuales en lugar de select -->
     <div class="campo">
-      <label>Institución</label>
-      <input
-        type="text"
-        [(ngModel)]="project.institution"
-        name="institution"
-        disabled
-      />
+      <label>Institución *</label>
+      <div class="instituciones-grid">
+        <div
+          *ngFor="let inst of institutions"
+          class="institucion-card"
+          [class.seleccionada]="project.institution === inst.full"
+          (click)="project.institution = inst.full"
+        >
+          <div class="inst-icon">🏛️</div>
+          <div class="inst-info">
+            <span class="inst-nombre">{{ inst.name }}</span>
+            <span class="inst-ubicacion">📍 {{ inst.location }}</span>
+          </div>
+          <span class="check" *ngIf="project.institution === inst.full">✔</span>
+        </div>
+      </div>
     </div>
 
     <!-- Archivo -->
