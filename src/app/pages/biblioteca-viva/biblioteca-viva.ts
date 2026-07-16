@@ -2,12 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
 import { ProfileService } from '../../core/services/profile.service';
 import { UserProfile } from '../../core/models/user-profile.model';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
+import { ProjectService } from './services/project.service';
+import { Project } from '../../core/models/project.model';
 
 @Component({
   selector: 'app-biblioteca-viva',
@@ -19,6 +22,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 export class BibliotecaViva implements OnInit, OnDestroy {
 
   profile$: Observable<UserProfile | null>;
+  featuredProject$: Observable<Project | null>;
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -186,9 +190,14 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
   filteredFaqs = this.faqs;
 
-  constructor(private readonly profileService: ProfileService) {
-    // Exponer observable del perfil para el template
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly projectService: ProjectService
+  ) {
     this.profile$ = this.profileService.profile$;
+    this.featuredProject$ = this.projectService.getProjects('published').pipe(
+      map(projects => projects.length > 0 ? projects[0] : null)
+    );
   }
 
   // ---------- LIFECYCLE ----------
@@ -227,5 +236,12 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   // ---------- FAQ TOGGLE ----------
   toggleFaq(faq: any): void {
     faq.open = !faq.open;
+  }
+
+  // ---------- ESTRELLAS (para el proyecto destacado) ----------
+  getStars(rating: number): string {
+    const full = Math.round(rating || 0);
+    const empty = 5 - full;
+    return '⭐'.repeat(full) + '☆'.repeat(empty);
   }
 }

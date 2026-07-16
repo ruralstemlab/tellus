@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<!-- 🔥 NUEVO: Dashboard de administrador (solo si es admin) -->
+<!-- Dashboard de administrador (solo si es admin) -->
 <app-admin-dashboard *ngIf="(profile$ | async)?.role === 'admin'"></app-admin-dashboard>
 
 <!-- ==========================================================
@@ -352,10 +352,9 @@
 </section>
 
 <!-- ==========================================================
-     PROYECTO DESTACADO – NUEVA SECCIÓN
+     PROYECTO DESTACADO – DINÁMICO
 =========================================================== -->
-<section class="featured-section">
-
+<section class="featured-section" *ngIf="(featuredProject$ | async) as project">
   <div class="section-header">
     <span class="label">🌟 Proyecto de la semana</span>
     <h2>Destacado</h2>
@@ -364,13 +363,16 @@
   <div class="featured-card">
     <div class="featured-image">🖼️</div>
     <div class="featured-info">
-      <h3>EcoSim – Simulador de reciclaje</h3>
-      <p>Una aplicación interactiva que enseña a reciclar mediante simulación 3D.</p>
-      <div class="author">👤 Ana García · I.E. Tierra Negra</div>
-      <button class="primary small" routerLink="/biblioteca-viva/proyecto/1">Ver proyecto →</button>
+      <h3>{{ project.title }}</h3>
+      <div class="stars">
+        <span>{{ getStars(project.rating || 0) }}</span>
+        <span class="rating-number">{{ (project.rating || 0).toFixed(1) }}</span>
+      </div>
+      <p>{{ project.description }}</p>
+      <div class="author">👤 {{ project.studentName }} · {{ project.institution }}</div>
+      <button class="primary small" [routerLink]="['/biblioteca-viva/proyecto', project.id]">Ver proyecto →</button>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
