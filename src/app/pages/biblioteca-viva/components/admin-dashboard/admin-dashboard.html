@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <!-- Estadísticas reales desde Firestore -->
+  <!-- Estadísticas -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon">📋</div>
@@ -26,6 +26,7 @@
         <h3>{{ (stats$ | async)?.pending || 0 }}</h3>
         <p>Apps pendientes</p>
       </div>
+      <div class="stat-trend up">▲</div>
     </div>
 
     <div class="stat-card">
@@ -34,6 +35,7 @@
         <h3>{{ (stats$ | async)?.published || 0 }}</h3>
         <p>Apps publicadas</p>
       </div>
+      <div class="stat-trend up">▲</div>
     </div>
 
     <div class="stat-card">
@@ -42,6 +44,7 @@
         <h3>{{ (stats$ | async)?.developers || 0 }}</h3>
         <p>Developers</p>
       </div>
+      <div class="stat-trend up">▲</div>
     </div>
 
     <div class="stat-card">
@@ -50,6 +53,7 @@
         <h3>{{ (stats$ | async)?.institutions || 0 }}</h3>
         <p>Instituciones</p>
       </div>
+      <div class="stat-trend up">▲</div>
     </div>
   </div>
 
@@ -58,14 +62,53 @@
     <a routerLink="/biblioteca-viva/admin" class="action-btn primary">
       <span>⚙</span> Centro de Revisión
     </a>
-    <a routerLink="/biblioteca-viva/estadisticas" class="action-btn secondary">
-      <span>📊</span> Estadísticas
-    </a>
-    <a routerLink="/biblioteca-viva/developers" class="action-btn secondary">
+    <button class="action-btn secondary" (click)="toggleDevelopers()">
       <span>👥</span> Developers
-    </a>
-    <a routerLink="/biblioteca-viva/convocatorias" class="action-btn secondary">
+    </button>
+    <button class="action-btn secondary" (click)="toggleConvocatorias()">
       <span>🏆</span> Convocatorias
-    </a>
+    </button>
+  </div>
+
+  <!-- Sección: Developers (expandible) -->
+  <div *ngIf="showDevelopers" class="expandable-section">
+    <h3>👥 Desarrolladores registrados</h3>
+    <div class="developer-list">
+      <div *ngIf="(developersList$ | async)?.length === 0" class="empty-message">
+        No hay desarrolladores registrados aún.
+      </div>
+      <div *ngFor="let dev of (developersList$ | async)" class="developer-item">
+        <div class="dev-info">
+          <strong>{{ dev.name }}</strong>
+          <span class="dev-email">{{ dev.email }}</span>
+        </div>
+        <div class="dev-project">
+          <span>📱</span> {{ dev.projectTitle }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección: Convocatorias (expandible) -->
+  <div *ngIf="showConvocatorias" class="expandable-section">
+    <h3>🏆 Convocatoria actual</h3>
+    <div class="convocatoria-info">
+      <div class="convocatoria-badge">🏆 Convocatoria 001 · 2026</div>
+      <h4>Concurso de Aplicaciones Web HTML 2026</h4>
+      <p>
+        Diseña una aplicación web utilizando HTML, CSS y JavaScript. Puedes crear juegos, 
+        simuladores, aplicaciones educativas, herramientas financieras, proyectos de 
+        emprendimiento, sistemas administrativos o cualquier idea innovadora. Los mejores 
+        proyectos harán parte de la Biblioteca Viva de Tellus.
+      </p>
+      <div class="convocatoria-meta">
+        <span>📅 Inscripciones: hasta 31 Jul 2026</span>
+        <span>👥 Participantes: {{ (stats$ | async)?.developers || 0 }}</span>
+        <span>📊 Proyectos: {{ (stats$ | async)?.published || 0 }}</span>
+      </div>
+      <button class="btn-crear-convocatoria" (click)="crearConvocatoria()">
+        ➕ Crear nueva convocatoria
+      </button>
+    </div>
   </div>
 </div>
