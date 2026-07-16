@@ -195,6 +195,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     private readonly projectService: ProjectService
   ) {
     this.profile$ = this.profileService.profile$;
+    // Obtener el primer proyecto publicado como destacado
     this.featuredProject$ = this.projectService.getProjects('published').pipe(
       map(projects => projects.length > 0 ? projects[0] : null)
     );
