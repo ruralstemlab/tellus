@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable, combineLatest, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, combineLatest, of, Subscription } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
@@ -21,6 +21,9 @@ interface HeroStats {
   developers: number;
   institutions: number;
   votes: number;
+  published: number;
+  featured: Project | null;
+  latestProjects: Project[];
 }
 
 @Component({
@@ -38,6 +41,8 @@ interface HeroStats {
   styleUrl: './biblioteca-viva.scss'
 })
 export class BibliotecaViva implements OnInit, OnDestroy {
+
+  @ViewChild('gallerySection') gallerySection!: ElementRef<HTMLElement>;
 
   profile$: Observable<UserProfile | null>;
   featuredProject$: Observable<Project | null>;
@@ -133,9 +138,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     { title: 'Tutorial: Crea tu primera app HTML', desc: 'Aprende HTML, CSS y JS desde cero.', duration: '12:15' }
   ];
 
-  // ---------- GALERÍA ELIMINADA (reemplazada por ProjectGalleryComponent) ----------
-  // gallery ya no existe
-
   // ---------- TARJETAS PRINCIPALES ----------
   mainCards = [
     { icon: '⬆️', title: 'Subir Proyecto', desc: 'Publica tu aplicación y compite.' },
@@ -210,33 +212,106 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     private readonly convocatoriaService: ConvocatoriaService
   ) {
     this.profile$ = this.profileService.profile$;
-    this.featuredProject$ = this.projectService.getProjects('published').pipe(
-      map(projects => projects.length > 0 ? projects[0] : null)
+    this.stats$ = this.loadHeroStats().pipe(shareReplay(1));
+    this.featuredProject$ = this.stats$.pipe(
+      map(stats => stats.featured)
     );
-    this.stats$ = this.loadHeroStats();
     this.convocatorias$ = this.convocatoriaService.getActiveConvocatorias();
   }
 
   private loadHeroStats(): Observable<HeroStats> {
-    const projects$ = this.projectService.getAllProjects().pipe(
+    // Proyectos publicados
+    const publishedProjects$ = this.projectService.getProjects('published').pipe(
+      shareReplay(1)
+    );
+
+    const projects$ = publishedProjects$.pipe(
       map(projects => projects.length)
     );
-    const developers$ = this.userService.getUsers().pipe(
-      map(users => users.length)
-    );
-    const institutions$ = this.userService.getUsers().pipe(
-      map(users => new Set(users.map(u => u.institution).filter(Boolean)).size)
-    );
-    const votes$ = of(0);
 
-    return combineLatest([projects$, developers$, institutions$, votes$]).pipe(
-      map(([projects, developers, institutions, votes]) => ({
+    // 🔥 CORREGIDO: solo estudiantes y docentes
+    const developers$ = this.userService.getUsers().pipe(
+      map(users => users.filter(u => u.role === 'student' || u.role === 'teacher').length)
+    );
+
+    // 🔥 CORREGIDO: instituciones únicas de TODOS los proyectos (para mostrar las 5)
+    const institutions$ = this.projectService.getAllProjects().pipe(
+      map(projects => new Set(projects.map(p => p.institution).filter(Boolean)).size)
+    );
+
+    const votes$ = publishedProjects$.pipe(
+      map(projects => projects.reduce((acc, p) => acc + (p.ratingCount || 0), 0))
+    );
+
+    // 🔥 CORREGIDO: proyecto destacado con orden natural
+    const featured$ = publishedProjects$.pipe(
+      map(projects => {
+        if (projects.length === 0) return null;
+        const sorted = [...projects].sort((a, b) => {
+          if ((a.rating || 0) !== (b.rating || 0)) {
+            return (b.rating || 0) - (a.rating || 0);
+          }
+          if ((a.ratingCount || 0) !== (b.ratingCount || 0)) {
+            return (b.ratingCount || 0) - (a.ratingCount || 0);
+          }
+          return (b.uploadedAt?.getTime() || 0) - (a.uploadedAt?.getTime() || 0);
+        });
+        return sorted[0];
+      })
+    );
+
+    // 🔥 CORREGIDO: últimas publicaciones ordenadas por fecha
+    const latestProjects$ = publishedProjects$.pipe(
+      map(projects => {
+        const sorted = [...projects].sort((a, b) => {
+          const dateA = a.publishedAt || a.uploadedAt;
+          const dateB = b.publishedAt || b.uploadedAt;
+          if (!dateA && !dateB) return 0;
+          if (!dateA) return 1;
+          if (!dateB) return -1;
+          return dateB.getTime() - dateA.getTime();
+        });
+        return sorted.slice(0, 5);
+      })
+    );
+
+    return combineLatest([projects$, developers$, institutions$, votes$, featured$, latestProjects$]).pipe(
+      map(([projects, developers, institutions, votes, featured, latestProjects]) => ({
         projects,
         developers,
         institutions,
-        votes
+        votes,
+        published: projects,
+        featured,
+        latestProjects
       }))
     );
+  }
+
+  // 🔥 Método para scroll suave a la galería con offset del navbar
+  scrollToGallery(): void {
+    const element = this.gallerySection?.nativeElement;
+    if (!element) return;
+
+    const navbarHeight = 80; // Ajusta según la altura real de tu navbar
+    const y = element.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
+  }
+
+  // 🔥 Método para abrir proyecto HTML en nueva pestaña (para el proyecto destacado)
+  verProyecto(project: Project): void {
+    if (!project.htmlContent) {
+      alert('Este proyecto no tiene contenido HTML.');
+      return;
+    }
+    const blob = new Blob([project.htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
   ngOnInit(): void {

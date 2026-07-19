@@ -13,7 +13,7 @@
     <span *ngFor="let p of [].constructor(40)"></span>
   </div>
 
-  <div class="hero-container">
+  <div class="hero-container" *ngIf="stats$ | async as stats">
 
     <!-- Columna izquierda -->
     <div class="hero-content">
@@ -40,8 +40,8 @@
 
       <div class="buttons">
         <button class="primary" routerLink="/biblioteca-viva/participar">🚀 Participar</button>
-        <button class="secondary" routerLink="/biblioteca-viva/proyectos">📂 Ver proyectos</button>
-        <button class="secondary">🎥 Tutorial desde cero</button>
+        <button class="secondary" (click)="scrollToGallery()">📂 Ver proyectos</button>
+        <button class="secondary" (click)="scrollToGallery()">🎥 Tutorial desde cero</button>
       </div>
 
       <div class="chips">
@@ -76,72 +76,69 @@
 
         <div class="dashboard-grid">
 
-          <!-- Estadísticas rápidas REALES -->
+          <!-- 🔥 ESTADÍSTICAS REALES (sin tendencias) -->
           <div class="stat-card">
             <span class="icon">📁</span>
             <div class="info">
-              <h3>{{ (stats$ | async)?.projects || 0 }}</h3>
+              <h3>{{ stats.projects || 0 }}</h3>
               <p>Proyectos</p>
             </div>
-            <div class="trend up">+{{ (stats$ | async)?.projects || 0 }}%</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">👥</span>
             <div class="info">
-              <h3>{{ (stats$ | async)?.developers || 0 }}</h3>
+              <h3>{{ stats.developers || 0 }}</h3>
               <p>Developers</p>
             </div>
-            <div class="trend up">+{{ (stats$ | async)?.developers || 0 }}%</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">🏫</span>
             <div class="info">
-              <h3>{{ (stats$ | async)?.institutions || 0 }}</h3>
+              <h3>{{ stats.institutions || 0 }}</h3>
               <p>Instituciones</p>
             </div>
-            <div class="trend up">+{{ (stats$ | async)?.institutions || 0 }}</div>
           </div>
 
           <div class="stat-card">
             <span class="icon">⭐</span>
             <div class="info">
-              <h3>{{ (stats$ | async)?.votes || 0 }}</h3>
+              <h3>{{ stats.votes || 0 }}</h3>
               <p>Votos</p>
             </div>
-            <div class="trend up">+0%</div>
           </div>
 
           <!-- Mini gráfica de actividad -->
           <div class="chart-card">
             <h4>Actividad reciente</h4>
             <div class="mini-chart">
-              <span style="height: 40%"></span>
-              <span style="height: 70%"></span>
-              <span style="height: 50%"></span>
-              <span style="height: 90%"></span>
-              <span style="height: 60%"></span>
-              <span style="height: 80%"></span>
-              <span style="height: 45%"></span>
+              <span *ngFor="let p of stats.latestProjects || []" 
+                    [style.height]="p.ratingCount ? (p.ratingCount * 10 + 20) + '%' : '20%'"
+                    [title]="p.title + ' - ' + (p.ratingCount || 0) + ' votos'">
+              </span>
             </div>
           </div>
 
-          <!-- Proyecto destacado DINÁMICO -->
-          <div class="top-card" *ngIf="(featuredProject$ | async) as featured">
+          <!-- 🔥 PROYECTO DESTACADO -->
+          <div class="top-card" *ngIf="stats.featured as featured">
             <h4>🏆 Proyecto destacado</h4>
             <p>“{{ featured.title }}”</p>
             <div class="meta">👤 {{ featured.studentName }} · {{ featured.institution }}</div>
-            <div class="badge-premium">⭐ {{ (featured.rating || 0).toFixed(1) }}</div>
+            <div class="badge-premium">⭐ {{ (featured.rating || 0).toFixed(1) }} ({{ featured.ratingCount || 0 }} votos)</div>
           </div>
 
-          <!-- Mini actividad reciente -->
+          <!-- 🔥 ÚLTIMAS PUBLICACIONES -->
           <div class="activity-card">
             <h4>⚡ Últimas publicaciones</h4>
             <ul>
-              <li><span>Juego de memoria</span><span class="time">hace 2h</span></li>
-              <li><span>App de finanzas</span><span class="time">hace 4h</span></li>
-              <li><span>Simulador de circuito</span><span class="time">hace 6h</span></li>
+              <li *ngFor="let p of stats.latestProjects || []">
+                <span>{{ p.title }}</span>
+                <span class="time">{{ (p.publishedAt || p.uploadedAt) | date:'dd/MM/yyyy' }}</span>
+              </li>
+              <li *ngIf="(stats.latestProjects?.length || 0) === 0">
+                <span style="color: #666;">No hay publicaciones recientes</span>
+              </li>
             </ul>
           </div>
 
@@ -156,19 +153,31 @@
 </section>
 
 <!-- ==========================================================
-     ESTADÍSTICAS – NUEVA SECCIÓN (estáticas por ahora)
+     ESTADÍSTICAS INFERIORES – CON DATOS REALES
 =========================================================== -->
-<section class="stats-section">
+<section class="stats-section" *ngIf="stats$ | async as stats">
   <div class="stats-grid">
-    <div class="stat-item" *ngFor="let stat of stats">
-      <h2>{{ stat.number }}</h2>
-      <p>{{ stat.label }}</p>
+    <div class="stat-item">
+      <h2>{{ stats.projects || 0 }}</h2>
+      <p>Proyectos</p>
+    </div>
+    <div class="stat-item">
+      <h2>{{ stats.institutions || 0 }}</h2>
+      <p>Instituciones</p>
+    </div>
+    <div class="stat-item">
+      <h2>{{ stats.developers || 0 }}</h2>
+      <p>Developers</p>
+    </div>
+    <div class="stat-item">
+      <h2>{{ stats.votes || 0 }}</h2>
+      <p>Votos</p>
     </div>
   </div>
 </section>
 
 <!-- ==========================================================
-     QUÉ PUEDES CONSTRUIR – MEJORADO
+     QUÉ PUEDES CONSTRUIR
 =========================================================== -->
 <section class="build-section">
 
@@ -189,7 +198,7 @@
 </section>
 
 <!-- ==========================================================
-     APRENDE DESDE CERO – MEJORADO
+     APRENDE DESDE CERO
 =========================================================== -->
 <section class="learn-section">
 
@@ -213,7 +222,7 @@
 </section>
 
 <!-- ==========================================================
-     CÓMO PARTICIPAR – TIMELINE PREMIUM
+     CÓMO PARTICIPAR
 =========================================================== -->
 <section class="steps-section">
 
@@ -240,7 +249,7 @@
 </section>
 
 <!-- ==========================================================
-     CRONOGRAMA – MEJORADO
+     CRONOGRAMA
 =========================================================== -->
 <section class="schedule-section">
 
@@ -263,7 +272,7 @@
 </section>
 
 <!-- ==========================================================
-     PREMIOS – MEJORADO
+     PREMIOS
 =========================================================== -->
 <section class="prizes-section">
 
@@ -286,7 +295,7 @@
 </section>
 
 <!-- ==========================================================
-     VIDEO – MEJORADO
+     VIDEO
 =========================================================== -->
 <section class="video-section">
 
@@ -309,12 +318,14 @@
 </section>
 
 <!-- ==========================================================
-     GALERÍA INTELIGENTE – DINÁMICA (NUEVO COMPONENTE)
+     GALERÍA – ENVUELTA EN SECTION PARA SCROLL
 =========================================================== -->
-<app-project-gallery></app-project-gallery>
+<section id="gallery" #gallerySection>
+  <app-project-gallery></app-project-gallery>
+</section>
 
 <!-- ==========================================================
-     TARJETAS PRINCIPALES – MEJORADAS
+     TARJETAS PRINCIPALES – ACCESO DIRECTO
 =========================================================== -->
 <section class="main-cards-section">
 
@@ -324,11 +335,53 @@
   </div>
 
   <div class="main-cards-grid">
-    <div class="main-card" *ngFor="let card of mainCards">
-      <div class="icon">{{ card.icon }}</div>
-      <h3>{{ card.title }}</h3>
-      <p>{{ card.desc }}</p>
+    <div class="main-card">
+      <div class="icon">⬆️</div>
+      <h3>Subir Proyecto</h3>
+      <p>Publica tu aplicación y compite.</p>
       <button class="primary small" routerLink="/biblioteca-viva/participar">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">👀</div>
+      <h3>Ver Proyectos</h3>
+      <p>Explora creaciones de otros estudiantes.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">🗳️</div>
+      <h3>Votar</h3>
+      <p>Apoya los proyectos que más te gusten.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">🏆</div>
+      <h3>Ganadores</h3>
+      <p>Conoce los proyectos galardonados.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">📘</div>
+      <h3>Tutoriales</h3>
+      <p>Aprende con guías paso a paso.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">👨‍💻</div>
+      <h3>Developer</h3>
+      <p>Accede a tu perfil de desarrollador.</p>
+      <button class="primary small" routerLink="/biblioteca-viva/participar">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">🏅</div>
+      <h3>Hall of Fame</h3>
+      <p>Los mejores de la historia.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+    </div>
+    <div class="main-card">
+      <div class="icon">📢</div>
+      <h3>Convocatorias</h3>
+      <p>Consulta concursos activos.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
     </div>
   </div>
 
@@ -353,31 +406,37 @@
       </div>
       <p>{{ project.description }}</p>
       <div class="author">👤 {{ project.studentName }} · {{ project.institution }}</div>
-      <button class="primary small" [routerLink]="['/biblioteca-viva/proyecto', project.id]">Ver proyecto →</button>
+      <button class="primary small" (click)="verProyecto(project)">Ver proyecto →</button>
     </div>
   </div>
 </section>
 
 <!-- ==========================================================
-     CONVOCATORIAS – DINÁMICAS DESDE FIRESTORE
+     CONVOCATORIAS – DINÁMICAS
 =========================================================== -->
 <section class="calls-section">
-
   <div class="section-header">
     <span class="label">🏫 Multi‑institucional</span>
     <h2>Convocatorias activas</h2>
   </div>
 
-  <div class="calls-grid">
-    <!-- 🔥 Si no hay convocatorias -->
-    <div *ngIf="(convocatorias$ | async)?.length === 0" class="empty-calls">
+  <!-- Cargando -->
+  <div *ngIf="(convocatorias$ | async) === undefined" class="calls-loading">
+    <div class="spinner"></div>
+    <p>Cargando convocatorias...</p>
+  </div>
+
+  <!-- Con datos -->
+  <div class="calls-grid" *ngIf="(convocatorias$ | async) as convocatorias">
+    <!-- Vacío -->
+    <div *ngIf="convocatorias.length === 0" class="empty-calls">
       <span class="empty-icon">📭</span>
       <p>No hay convocatorias activas en este momento.</p>
       <span class="empty-sub">Vuelve pronto para conocer las próximas convocatorias.</span>
     </div>
 
-    <!-- 🔥 Mostrar convocatorias desde Firestore -->
-    <div class="call-card" *ngFor="let convocatoria of (convocatorias$ | async)">
+    <!-- Lista -->
+    <div class="call-card" *ngFor="let convocatoria of convocatorias">
       <div class="call-header">
         <span class="logo">🏛️</span>
         <h4>{{ convocatoria.title }}</h4>
@@ -390,13 +449,13 @@
       <div class="call-prizes" *ngIf="convocatoria.prizes && convocatoria.prizes.length > 0">
         <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">🏆 {{ prize }}</span>
       </div>
-      <button class="secondary small" routerLink="/biblioteca-viva/proyectos">Ver proyectos →</button>
+      <button class="secondary small" (click)="scrollToGallery()">Ver proyectos →</button>
     </div>
   </div>
 </section>
 
 <!-- ==========================================================
-     TESTIMONIOS – NUEVA SECCIÓN
+     TESTIMONIOS
 =========================================================== -->
 <section class="testimonials-section">
 
@@ -421,7 +480,7 @@
 </section>
 
 <!-- ==========================================================
-     HALL OF FAME – NUEVA SECCIÓN
+     HALL OF FAME
 =========================================================== -->
 <section class="hall-of-fame-section">
 
@@ -443,7 +502,7 @@
 </section>
 
 <!-- ==========================================================
-     FAQ – MEJORADO
+     FAQ
 =========================================================== -->
 <section class="faq-section">
 
@@ -470,7 +529,7 @@
 </section>
 
 <!-- ==========================================================
-     CTA FINAL – ESPECTACULAR
+     CTA FINAL
 =========================================================== -->
 <section class="cta-section">
 
