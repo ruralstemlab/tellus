@@ -9,9 +9,12 @@ import { Footer } from '../../components/footer/footer';
 import { ProfileService } from '../../core/services/profile.service';
 import { UserProfile } from '../../core/models/user-profile.model';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
+import { ProjectGalleryComponent } from './components/project-gallery/project-gallery';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
 import { UserService } from '../../core/services/user.service';
+import { ConvocatoriaService } from '../../core/services/convocatoria.service';
+import { Convocatoria } from '../../core/models/convocatoria.model';
 
 interface HeroStats {
   projects: number;
@@ -23,7 +26,14 @@ interface HeroStats {
 @Component({
   selector: 'app-biblioteca-viva',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, Footer, AdminDashboardComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    Navbar,
+    Footer,
+    AdminDashboardComponent,
+    ProjectGalleryComponent
+  ],
   templateUrl: './biblioteca-viva.html',
   styleUrl: './biblioteca-viva.scss'
 })
@@ -32,6 +42,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   profile$: Observable<UserProfile | null>;
   featuredProject$: Observable<Project | null>;
   stats$: Observable<HeroStats>;
+  convocatorias$: Observable<Convocatoria[]>;
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -122,15 +133,8 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     { title: 'Tutorial: Crea tu primera app HTML', desc: 'Aprende HTML, CSS y JS desde cero.', duration: '12:15' }
   ];
 
-  // ---------- GALERÍA ----------
-  gallery = [
-    { emoji: '🎮', title: 'Juego de plataformas', author: 'Carlos M.' },
-    { emoji: '🧪', title: 'Simulador de física', author: 'Ana G.' },
-    { emoji: '📱', title: 'App financiera', author: 'Luis R.' },
-    { emoji: '🤖', title: 'Chatbot educativo', author: 'Marta S.' },
-    { emoji: '🏥', title: 'Sistema de salud', author: 'Pedro J.' },
-    { emoji: '🚀', title: 'Plan de negocio', author: 'Laura T.' }
-  ];
+  // ---------- GALERÍA ELIMINADA (reemplazada por ProjectGalleryComponent) ----------
+  // gallery ya no existe
 
   // ---------- TARJETAS PRINCIPALES ----------
   mainCards = [
@@ -202,13 +206,15 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   constructor(
     private readonly profileService: ProfileService,
     private readonly projectService: ProjectService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly convocatoriaService: ConvocatoriaService
   ) {
     this.profile$ = this.profileService.profile$;
     this.featuredProject$ = this.projectService.getProjects('published').pipe(
       map(projects => projects.length > 0 ? projects[0] : null)
     );
     this.stats$ = this.loadHeroStats();
+    this.convocatorias$ = this.convocatoriaService.getActiveConvocatorias();
   }
 
   private loadHeroStats(): Observable<HeroStats> {
@@ -233,7 +239,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     );
   }
 
-  // ✅ Implementación correcta de OnInit y OnDestroy
   ngOnInit(): void {
     this.startCountdown();
   }

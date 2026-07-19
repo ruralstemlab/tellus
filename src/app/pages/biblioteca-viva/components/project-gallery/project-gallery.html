@@ -1,0 +1,100 @@
+<div class="project-gallery">
+
+  <!-- HEADER -->
+  <div class="gallery-header">
+    <div>
+      <span class="badge">📸 Proyectos</span>
+      <h2>Galería de creaciones</h2>
+      <p class="subtitle" *ngIf="!isLoading">{{ allProjects.length }} proyectos publicados</p>
+    </div>
+    <button class="toggle-btn" (click)="toggleView()" *ngIf="!isLoading && allProjects.length > 8">
+      {{ viewMode === 'slider' ? '📂 Explorar todos los proyectos' : '▲ Mostrar menos' }}
+    </button>
+  </div>
+
+  <!-- SKELETON LOADING -->
+  <div *ngIf="isLoading" class="skeleton-wrapper">
+    <div class="skeleton-track">
+      <div class="skeleton-card" *ngFor="let _ of [].constructor(8); let i = index">
+        <div class="skeleton-image shimmer"></div>
+        <div class="skeleton-line shimmer"></div>
+        <div class="skeleton-line short shimmer"></div>
+        <div class="skeleton-line short shimmer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDER -->
+  <div *ngIf="!isLoading && viewMode === 'slider' && allProjects.length > 0" class="slider-wrapper"
+       (mousedown)="onMouseDown($event)"
+       (mousemove)="onMouseMove($event)"
+       (mouseup)="onMouseUp($event)"
+       (mouseleave)="onMouseUp($event)"
+       (touchstart)="onTouchStart($event)"
+       (touchmove)="onTouchMove($event)"
+       (touchend)="onTouchEnd($event)"
+       (wheel)="onWheel($event)">
+    <button class="nav-btn prev" (click)="prev()" [disabled]="currentIndex === 0">‹</button>
+    <div class="slider-container">
+      <div class="slider-track" #sliderTrack>
+        <div class="project-card" *ngFor="let project of visibleProjects; let i = index; trackBy: trackByProjectId">
+          <div class="medal" *ngIf="i < 3">{{ getMedal(i) }}</div>
+          <div class="badges">
+            <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
+          </div>
+          <div class="category-icon">{{ getIcon(project.category) }}</div>
+          <h3>{{ project.title }}</h3>
+          <div class="author">
+            <span class="developer">👤 {{ project.studentName }}</span>
+            <span class="institution">🏫 {{ project.institution }}</span>
+          </div>
+          <div class="rating">
+            <span class="stars">
+              <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+            </span>
+            <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
+            <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+          </div>
+          <!-- 🔥 BOTÓN CORREGIDO: usa (click) en lugar de routerLink -->
+          <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
+        </div>
+      </div>
+    </div>
+    <button class="nav-btn next" (click)="next()" [disabled]="currentIndex >= visibleProjects.length - 1">›</button>
+  </div>
+
+  <!-- GRID -->
+  <div *ngIf="!isLoading && viewMode === 'grid' && allProjects.length > 0" class="grid-wrapper">
+    <div class="grid-container">
+      <div class="project-card-grid" *ngFor="let project of allProjects; let i = index; trackBy: trackByProjectId">
+        <div class="medal" *ngIf="i < 3">{{ getMedal(i) }}</div>
+        <div class="badges">
+          <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
+        </div>
+        <div class="category-icon">{{ getIcon(project.category) }}</div>
+        <h3>{{ project.title }}</h3>
+        <div class="author">
+          <span class="developer">👤 {{ project.studentName }}</span>
+          <span class="institution">🏫 {{ project.institution }}</span>
+        </div>
+        <div class="rating">
+          <span class="stars">
+            <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+          </span>
+          <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
+          <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+        </div>
+        <!-- 🔥 BOTÓN CORREGIDO: usa (click) en lugar de routerLink -->
+        <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!isLoading && allProjects.length === 0" class="empty-state">
+    <span class="empty-icon">📭</span>
+    <p>No hay proyectos publicados aún.</p>
+    <span class="empty-sub">Sé el primero en publicar tu aplicación.</span>
+  </div>
+
+</div>

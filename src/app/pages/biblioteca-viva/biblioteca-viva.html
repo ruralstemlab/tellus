@@ -309,26 +309,9 @@
 </section>
 
 <!-- ==========================================================
-     GALERÍA – MEJORADA
+     GALERÍA INTELIGENTE – DINÁMICA (NUEVO COMPONENTE)
 =========================================================== -->
-<section class="gallery-section">
-
-  <div class="section-header">
-    <span class="label">📸 Proyectos</span>
-    <h2>Galería de creaciones</h2>
-  </div>
-
-  <div class="gallery-grid">
-    <div class="gallery-item" *ngFor="let item of gallery">
-      <div class="image-placeholder">
-        <span class="emoji">{{ item.emoji }}</span>
-      </div>
-      <h4>{{ item.title }}</h4>
-      <p>{{ item.author }}</p>
-    </div>
-  </div>
-
-</section>
+<app-project-gallery></app-project-gallery>
 
 <!-- ==========================================================
      TARJETAS PRINCIPALES – MEJORADAS
@@ -376,7 +359,7 @@
 </section>
 
 <!-- ==========================================================
-     CONVOCATORIAS – MEJORADAS
+     CONVOCATORIAS – DINÁMICAS DESDE FIRESTORE
 =========================================================== -->
 <section class="calls-section">
 
@@ -386,20 +369,30 @@
   </div>
 
   <div class="calls-grid">
-    <div class="call-card" *ngFor="let call of calls">
+    <!-- 🔥 Si no hay convocatorias -->
+    <div *ngIf="(convocatorias$ | async)?.length === 0" class="empty-calls">
+      <span class="empty-icon">📭</span>
+      <p>No hay convocatorias activas en este momento.</p>
+      <span class="empty-sub">Vuelve pronto para conocer las próximas convocatorias.</span>
+    </div>
+
+    <!-- 🔥 Mostrar convocatorias desde Firestore -->
+    <div class="call-card" *ngFor="let convocatoria of (convocatorias$ | async)">
       <div class="call-header">
         <span class="logo">🏛️</span>
-        <h4>{{ call.name }}</h4>
+        <h4>{{ convocatoria.title }}</h4>
       </div>
-      <p>{{ call.location }}</p>
+      <p>{{ convocatoria.description | slice:0:100 }}{{ convocatoria.description?.length > 100 ? '...' : '' }}</p>
       <div class="call-meta">
-        <span class="status" [class.active]="call.active">{{ call.active ? '● Activa' : '○ Próxima' }}</span>
-        <span class="participants">👥 {{ call.participants || 0 }} participantes</span>
+        <span class="status active">● Activa</span>
+        <span class="participants">📅 {{ convocatoria.startDate | date:'dd/MM/yyyy' }} - {{ convocatoria.endDate | date:'dd/MM/yyyy' }}</span>
       </div>
-      <button class="secondary small" routerLink="/biblioteca-viva/proyectos">Ver más</button>
+      <div class="call-prizes" *ngIf="convocatoria.prizes && convocatoria.prizes.length > 0">
+        <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">🏆 {{ prize }}</span>
+      </div>
+      <button class="secondary small" routerLink="/biblioteca-viva/proyectos">Ver proyectos →</button>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================

@@ -808,42 +808,8 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   GALERÍA – MEJORADA
+   GALERÍA ELIMINADA – Reemplazada por ProjectGalleryComponent
 =========================================================== */
-.gallery-section {
-  background: #04140d;
-  padding: 80px 20px;
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
-    .gallery-item {
-      background: $glass;
-      backdrop-filter: blur(6px);
-      border: 1px solid $border-glass;
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      transition: 0.25s;
-      &:hover {
-        transform: scale(1.04);
-        border-color: $green;
-        box-shadow: 0 16px 40px rgba(0,0,0,0.3);
-      }
-      .image-placeholder {
-        background: #0a261b;
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 12px;
-        .emoji { font-size: 3rem; }
-      }
-      h4 { margin: 0 0 4px; font-size: 1rem; color: #fff; }
-      p { margin: 0; font-size: 0.8rem; color: #aaa; }
-    }
-  }
-}
 
 /* ==========================================================
    TARJETAS PRINCIPALES – MEJORADAS
