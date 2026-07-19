@@ -1,6 +1,5 @@
 <div class="project-gallery">
 
-  <!-- HEADER -->
   <div class="gallery-header">
     <div>
       <span class="badge">📸 Proyectos</span>
@@ -12,10 +11,9 @@
     </button>
   </div>
 
-  <!-- SKELETON LOADING -->
   <div *ngIf="isLoading" class="skeleton-wrapper">
     <div class="skeleton-track">
-      <div class="skeleton-card" *ngFor="let _ of [].constructor(8); let i = index">
+      <div class="skeleton-card" *ngFor="let _ of [].constructor(8)">
         <div class="skeleton-image shimmer"></div>
         <div class="skeleton-line shimmer"></div>
         <div class="skeleton-line short shimmer"></div>
@@ -24,7 +22,6 @@
     </div>
   </div>
 
-  <!-- SLIDER -->
   <div *ngIf="!isLoading && viewMode === 'slider' && allProjects.length > 0" class="slider-wrapper"
        (mousedown)="onMouseDown($event)"
        (mousemove)="onMouseMove($event)"
@@ -48,14 +45,20 @@
             <span class="developer">👤 {{ project.studentName }}</span>
             <span class="institution">🏫 {{ project.institution }}</span>
           </div>
-          <div class="rating">
-            <span class="stars">
-              <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+          <div class="stars" *ngIf="isAuthenticated">
+            <span *ngFor="let star of [1,2,3,4,5]" 
+                  (click)="votar(project, star, $event)"
+                  [class.active]="(userVotes[project.id!] || 0) >= star">
+              ★
             </span>
             <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
             <span class="count">({{ project.ratingCount || 0 }} votos)</span>
           </div>
-          <!-- 🔥 BOTÓN CORREGIDO: usa (click) en lugar de routerLink -->
+          <div class="stars-static" *ngIf="!isAuthenticated">
+            <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+            <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
+            <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+          </div>
           <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
         </div>
       </div>
@@ -63,7 +66,6 @@
     <button class="nav-btn next" (click)="next()" [disabled]="currentIndex >= visibleProjects.length - 1">›</button>
   </div>
 
-  <!-- GRID -->
   <div *ngIf="!isLoading && viewMode === 'grid' && allProjects.length > 0" class="grid-wrapper">
     <div class="grid-container">
       <div class="project-card-grid" *ngFor="let project of allProjects; let i = index; trackBy: trackByProjectId">
@@ -77,20 +79,25 @@
           <span class="developer">👤 {{ project.studentName }}</span>
           <span class="institution">🏫 {{ project.institution }}</span>
         </div>
-        <div class="rating">
-          <span class="stars">
-            <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+        <div class="stars" *ngIf="isAuthenticated">
+          <span *ngFor="let star of [1,2,3,4,5]" 
+                (click)="votar(project, star, $event)"
+                [class.active]="(userVotes[project.id!] || 0) >= star">
+            ★
           </span>
           <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
           <span class="count">({{ project.ratingCount || 0 }} votos)</span>
         </div>
-        <!-- 🔥 BOTÓN CORREGIDO: usa (click) en lugar de routerLink -->
+        <div class="stars-static" *ngIf="!isAuthenticated">
+          <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
+          <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
+          <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+        </div>
         <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
       </div>
     </div>
   </div>
 
-  <!-- EMPTY STATE -->
   <div *ngIf="!isLoading && allProjects.length === 0" class="empty-state">
     <span class="empty-icon">📭</span>
     <p>No hay proyectos publicados aún.</p>

@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
-import { ProjectService } from '../../../../core/services/project.service';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
+import { shareReplay, map } from 'rxjs/operators';
+import { ProjectService } from '../../../../core/services/project.service'; // ✅ Ruta correcta
+import { VoteService } from '../../../../core/services/vote.service';
+import { AuthService } from '../../../../core/auth/auth.service'; // ✅ Ruta corregida
 import { Project } from '../../../../core/models/project.model';
 
-// Mapa de iconos por categoría
 const categoryIcons: Record<string, string> = {
   'Juego': '🎮',
   'Educación': '📚',
@@ -46,7 +47,10 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
   currentIndex = 0;
   isLoading = true;
 
-  // Variables para drag
+  userVotes: Record<string, number> = {};
+  isAuthenticated = false;
+  private userId: string | null = null;
+
   private isDragging = false;
   private startX = 0;
   private currentX = 0;
@@ -55,6 +59,8 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectService: ProjectService,
+    private voteService: VoteService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {
     this.projects$ = this.projectService.getProjects('published').pipe(
@@ -63,6 +69,19 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.subscription.add(
+      this.authService.user$.subscribe(async user => {
+        this.isAuthenticated = !!user;
+        this.userId = user?.uid || null;
+        if (this.isAuthenticated) {
+          await this.loadUserVotes();
+        } else {
+          this.userVotes = {};
+          this.cdr.detectChanges();
+        }
+      })
+    );
+
     this.subscription.add(
       this.projects$.subscribe(projects => {
         this.allProjects = projects;
@@ -73,11 +92,26 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     );
   }
 
+  private async loadUserVotes(): Promise<void> {
+    if (!this.userId) return;
+    try {
+      const votes = await firstValueFrom(this.voteService.getUserVotes(this.userId));
+      if (votes) {
+        this.userVotes = {};
+        votes.forEach(v => {
+          this.userVotes[v.projectId] = v.rating;
+        });
+        this.cdr.detectChanges();
+      }
+    } catch (err) {
+      console.error('Error cargando votos:', err);
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  // Navegación
   prev(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -109,10 +143,80 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     }
   }
 
-  // 🔥 NUEVO: Abrir proyecto en nueva pestaña (igual que el admin panel)
+  async votar(project: Project, rating: number, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.isAuthenticated) {
+      this.showNotification('Inicia sesión para votar', 'warning');
+      return;
+    }
+    if (this.userVotes[project.id!] === rating) {
+      this.showNotification('Ya votaste con esta calificación', 'info');
+      return;
+    }
+
+    try {
+      await this.voteService.vote(project.id!, rating);
+
+      const updatedProject = { ...project };
+      const freshProject = await firstValueFrom(this.projectService.getProject(project.id!));
+      if (freshProject) {
+        Object.assign(updatedProject, freshProject);
+      }
+      this.userVotes[project.id!] = rating;
+
+      const updateArray = (arr: Project[]) => {
+        const index = arr.findIndex(p => p.id === project.id);
+        if (index !== -1) arr[index] = updatedProject;
+        return arr;
+      };
+      this.allProjects = updateArray([...this.allProjects]);
+      this.visibleProjects = updateArray([...this.visibleProjects]);
+      this.cdr.detectChanges();
+
+      this.showNotification('¡Voto registrado!', 'success');
+    } catch (err) {
+      console.error('Error al votar:', err);
+      this.showNotification('Error al votar. Inténtalo de nuevo.', 'error');
+    }
+  }
+
+  private showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info'): void {
+    const colors = {
+      success: '#4cff9c',
+      error: '#ff5252',
+      warning: '#ffc107',
+      info: '#6495ed'
+    };
+    const bg = colors[type] || '#fff';
+    const textColor = type === 'warning' || type === 'info' ? '#fff' : '#04140d';
+    const div = document.createElement('div');
+    div.textContent = message;
+    div.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: ${bg};
+      color: ${textColor};
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      z-index: 9999;
+      animation: fadeInUp 0.3s ease;
+    `;
+    document.body.appendChild(div);
+    setTimeout(() => {
+      div.style.opacity = '0';
+      div.style.transform = 'translateX(-50%) translateY(20px)';
+      div.style.transition = 'all 0.3s ease';
+      setTimeout(() => div.remove(), 400);
+    }, 3000);
+  }
+
   verProyecto(project: Project): void {
     if (!project.htmlContent) {
-      alert('Este proyecto no tiene contenido HTML.');
+      this.showNotification('Este proyecto no tiene contenido HTML.', 'warning');
       return;
     }
     const blob = new Blob([project.htmlContent], { type: 'text/html' });
@@ -121,7 +225,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
-  // Eventos de drag (mouse)
   onMouseDown(event: MouseEvent): void {
     if (this.viewMode !== 'slider') return;
     this.isDragging = true;
@@ -168,7 +271,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     this.updateSlider();
   }
 
-  // Eventos táctiles
   onTouchStart(event: TouchEvent): void {
     if (this.viewMode !== 'slider') return;
     const touch = event.touches[0];
@@ -216,7 +318,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     this.updateSlider();
   }
 
-  // Wheel horizontal
   onWheel(event: WheelEvent): void {
     if (this.viewMode !== 'slider') return;
     const delta = event.deltaY;
@@ -230,7 +331,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Utilerías
   getIcon(category: string): string {
     return getCategoryIcon(category);
   }
