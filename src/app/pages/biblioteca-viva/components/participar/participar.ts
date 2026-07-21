@@ -2,8 +2,20 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project.model';
+import { Project } from '../../../../core/models/project.model';
+import { InstitutionService } from '../../../../core/services/institution.service';
+import { Institution } from '../../../../core/models/institution.model';
+
+interface InstitutionView {
+  id: string;
+  name: string;
+  location: string;
+  full: string;
+}
 
 @Component({
   selector: 'app-participar',
@@ -26,6 +38,15 @@ export class ParticiparComponent {
     | 'status'
     | 'votes'
     | 'views'
+    | 'rating'
+    | 'ratingCount'
+    | 'featured'
+    | 'featuredAt'
+    | 'reviewedBy'
+    | 'reviewedAt'
+    | 'publishedAt'
+    | 'submittedAt'
+    | 'reviewNotes'
   > = {
     title: '',
     description: '',
@@ -45,14 +66,7 @@ export class ParticiparComponent {
     { name: 'Otro', icon: '💡' }
   ];
 
-  // 🔥 NUEVO: Lista de instituciones premium
-  institutions = [
-    { name: 'I.E. Tierra Negra', location: 'Chipatá', full: 'I.E. Tierra Negra – Chipatá' },
-    { name: 'I.E. La Esperanza', location: 'Montería', full: 'I.E. La Esperanza – Montería' },
-    { name: 'Colegio Calcuta', location: 'Bogotá', full: 'Colegio Calcuta – Bogotá' },
-    { name: 'I.E. El Tagüí', location: 'Sabana de Torres', full: 'I.E. El Tagüí – Sabana de Torres' },
-    { name: 'Instituto Técnico', location: 'Puente Nacional', full: 'Instituto Técnico – Puente Nacional' }
-  ];
+  institutions$: Observable<InstitutionView[]>;
 
   selectedFile: File | null = null;
   fileInfo: {
@@ -67,12 +81,22 @@ export class ParticiparComponent {
 
   warnings: string[] = [];
   isSubmitting = false;
-  maxFileSize = 2 * 1024 * 1024; // 2 MB
+  maxFileSize = 2 * 1024 * 1024;
 
   constructor(
     private projectService: ProjectService,
+    private institutionService: InstitutionService,
     private router: Router
-  ) {}
+  ) {
+    this.institutions$ = this.institutionService.getActiveInstitutions().pipe(
+      map((insts: Institution[]) => insts.map(inst => ({
+        id: inst.id,
+        name: inst.name,
+        location: inst.municipality + (inst.department ? ', ' + inst.department : ''),
+        full: inst.name + ' – ' + inst.municipality
+      })))
+    );
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -140,6 +164,10 @@ export class ParticiparComponent {
     if (!/<html/i.test(content)) this.warnings.push('Falta la etiqueta <html>');
     if (!/<head/i.test(content)) this.warnings.push('Falta la etiqueta <head>');
     if (!/<body/i.test(content)) this.warnings.push('Falta la etiqueta <body>');
+  }
+
+  seleccionarInstitucion(inst: InstitutionView): void {
+    this.project.institution = inst.full;
   }
 
   onSubmit(): void {

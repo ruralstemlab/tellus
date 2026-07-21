@@ -53,15 +53,28 @@
       <input type="text" [(ngModel)]="project.grade" name="grade" required />
     </div>
 
-    <!-- 🔥 INSTITUCIÓN PREMIUM: tarjetas visuales en lugar de select -->
+    <!-- 🔥 INSTITUCIONES DINÁMICAS DESDE FIRESTORE -->
     <div class="campo">
       <label>Institución *</label>
-      <div class="instituciones-grid">
+      <!-- Estado de carga -->
+      <div *ngIf="(institutions$ | async) === undefined" class="carga-instituciones">
+        <div class="spinner-pequeno"></div>
+        <span>Cargando instituciones...</span>
+      </div>
+
+      <!-- Lista de tarjetas -->
+      <div class="instituciones-grid" *ngIf="(institutions$ | async) as instituciones">
+        <!-- Mensaje si no hay activas -->
+        <div *ngIf="instituciones.length === 0" class="empty-instituciones">
+          <p>No hay instituciones activas disponibles.</p>
+        </div>
+
+        <!-- Tarjetas -->
         <div
-          *ngFor="let inst of institutions"
+          *ngFor="let inst of instituciones"
           class="institucion-card"
           [class.seleccionada]="project.institution === inst.full"
-          (click)="project.institution = inst.full"
+          (click)="seleccionarInstitucion(inst)"
         >
           <div class="inst-icon">🏛️</div>
           <div class="inst-info">
