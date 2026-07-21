@@ -69,7 +69,7 @@
           <p>No hay instituciones activas disponibles.</p>
         </div>
 
-        <!-- Tarjetas -->
+        <!-- Tarjetas (mismo estilo que categorías) -->
         <div
           *ngFor="let inst of instituciones"
           class="institucion-card"
@@ -77,10 +77,8 @@
           (click)="seleccionarInstitucion(inst)"
         >
           <div class="inst-icon">🏛️</div>
-          <div class="inst-info">
-            <span class="inst-nombre">{{ inst.name }}</span>
-            <span class="inst-ubicacion">📍 {{ inst.location }}</span>
-          </div>
+          <span class="inst-nombre">{{ inst.name }}</span>
+          <span class="inst-ubicacion">{{ inst.location }}</span>
           <span class="check" *ngIf="project.institution === inst.full">✔</span>
         </div>
       </div>

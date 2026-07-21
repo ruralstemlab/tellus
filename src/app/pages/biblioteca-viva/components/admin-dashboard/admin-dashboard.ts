@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { ProfileService } from '../../../../core/services/profile.service';
 import { UserProfile } from '../../../../core/models/user-profile.model';
 import { ProjectService } from '../../../../core/services/project.service';
 import { UserService } from '../../../../core/services/user.service';
+import { InstitutionService } from '../../../../core/services/institution.service'; // ✅ NUEVO
 
 interface DashboardStats {
   pending: number;
@@ -39,7 +40,8 @@ export class AdminDashboardComponent {
   constructor(
     private readonly profileService: ProfileService,
     private readonly projectService: ProjectService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly institutionService: InstitutionService // ✅ NUEVO
   ) {
     this.profile$ = this.profileService.profile$;
     this.stats$ = this.loadStats().pipe(shareReplay(1));
@@ -50,9 +52,10 @@ export class AdminDashboardComponent {
     const pending$ = this.projectService.getProjects('pending').pipe(map(p => p.length));
     const published$ = this.projectService.getProjects('published').pipe(map(p => p.length));
     const users$ = this.userService.getUsers().pipe(map(u => u.length));
-    const institutions$ = this.userService.getUsers().pipe(
-      map(users => new Set(users.map(u => u.institution).filter(Boolean)).size)
-    );
+
+    // 🔥 CAMBIO: Usar InstitutionService en lugar de UserService
+    const institutions$ = this.institutionService.getInstitutionsCount();
+
     return combineLatest([pending$, published$, users$, institutions$]).pipe(
       map(([pending, published, users, institutions]) => ({
         pending,
@@ -66,7 +69,7 @@ export class AdminDashboardComponent {
   private loadDevelopersList(): Observable<DeveloperInfo[]> {
     return combineLatest([
       this.userService.getUsers(),
-      this.projectService.getAllProjects() // ✅ ahora existe
+      this.projectService.getAllProjects()
     ]).pipe(
       map(([users, projects]) => {
         const developers = users.filter(u => u.role === 'student' || u.role === 'teacher');

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
   collection,
+  addDoc,
+  updateDoc,
+  doc,
   getDoc,
   getDocs,
   query,
   orderBy,
   where,
-  doc,
   Timestamp,
   DocumentData,
   QueryDocumentSnapshot,
@@ -94,5 +96,28 @@ export class InstitutionService {
     return from(getDocs(q)).pipe(
       map(snapshot => snapshot.size)
     );
+  }
+
+  createInstitution(data: Omit<Institution, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
+    const now = new Date();
+    const docData = {
+      ...data,
+      createdAt: now,
+      updatedAt: now,
+    };
+    return from(addDoc(this.getCollection(), docData)).pipe(
+      map(docRef => docRef.id)
+    );
+  }
+
+  updateInstitution(id: string, data: Partial<Institution>): Observable<void> {
+    return from(updateDoc(doc(db, this.collectionName, id), {
+      ...data,
+      updatedAt: new Date()
+    }));
+  }
+
+  toggleInstitution(id: string, active: boolean): Observable<void> {
+    return this.updateInstitution(id, { active });
   }
 }

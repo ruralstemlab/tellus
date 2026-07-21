@@ -1,0 +1,127 @@
+<div class="admin-institutions">
+
+  <!-- Notificación -->
+  @if (notification(); as notif) {
+    <div class="notification" [class]="notif.type" (click)="clearNotification()">
+      <span>{{ notif.message }}</span>
+      <button class="close-btn">✕</button>
+    </div>
+  }
+
+  <!-- Encabezado -->
+  <div class="header">
+    <div>
+      <h1>🏛 Administrar Instituciones</h1>
+      <p class="subtitle">Gestiona todas las instituciones registradas en Tellus.</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateModal()">+ Nueva Institución</button>
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="search-box">
+    <input
+      type="text"
+      placeholder="Buscar institución por nombre, municipio o departamento..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+    />
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <!-- Estado de carga -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando instituciones...</p>
+    </div>
+  }
+
+  <!-- Grid -->
+  @if (!isLoading()) {
+    <div class="institutions-grid">
+      @for (inst of filteredInstitutions(); track inst.id) {
+        <div class="institution-card">
+          <div class="card-header">
+            <span class="inst-icon">🏛️</span>
+            <span class="inst-status" [class.active]="inst.active">
+              {{ inst.active ? '🟢 Activa' : '🔴 Inactiva' }}
+            </span>
+          </div>
+          <div class="card-body">
+            <h3>{{ inst.name }}</h3>
+            <div class="inst-details">
+              <span><strong>Municipio:</strong> {{ inst.municipality }}</span>
+              <span><strong>Departamento:</strong> {{ inst.department }}</span>
+              <span><strong>País:</strong> {{ inst.country }}</span>
+              @if (inst.logoUrl) {
+                <span><strong>Logo:</strong> <a [href]="inst.logoUrl" target="_blank">Ver logo</a></span>
+              }
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-edit" (click)="openEditModal(inst)">✏️ Editar</button>
+            <button class="btn-toggle" (click)="toggleInstitution(inst)">
+              {{ inst.active ? '🔴 Desactivar' : '🟢 Activar' }}
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <p>No hay instituciones</p>
+          <span class="empty-sub">Crea una nueva institución usando el botón "Nueva Institución".</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing() ? '✏️ Editar Institución' : '➕ Nueva Institución' }}</h2>
+          <button class="modal-close" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" [ngModel]="currentInstitution().name" (ngModelChange)="currentInstitution.set({...currentInstitution(), name: $event})" placeholder="Ej: I.E. Tierra Negra" />
+          </div>
+          <div class="form-group">
+            <label>Municipio *</label>
+            <input type="text" [ngModel]="currentInstitution().municipality" (ngModelChange)="currentInstitution.set({...currentInstitution(), municipality: $event})" placeholder="Ej: Chipatá" />
+          </div>
+          <div class="form-group">
+            <label>Departamento *</label>
+            <input type="text" [ngModel]="currentInstitution().department" (ngModelChange)="currentInstitution.set({...currentInstitution(), department: $event})" placeholder="Ej: Santander" />
+          </div>
+          <div class="form-group">
+            <label>País *</label>
+            <input type="text" [ngModel]="currentInstitution().country" (ngModelChange)="currentInstitution.set({...currentInstitution(), country: $event})" placeholder="Ej: Colombia" />
+          </div>
+          <div class="form-group">
+            <label>Logo URL</label>
+            <input type="text" [ngModel]="currentInstitution().logoUrl" (ngModelChange)="currentInstitution.set({...currentInstitution(), logoUrl: $event})" placeholder="https://ejemplo.com/logo.png" />
+          </div>
+          <div class="form-group checkbox">
+            <label>
+              <input type="checkbox" [ngModel]="currentInstitution().active" (ngModelChange)="currentInstitution.set({...currentInstitution(), active: $event})" />
+              Institución activa
+            </label>
+          </div>
+          @if (modalError()) {
+            <div class="error-message">⚠️ {{ modalError() }}</div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button class="btn-primary" (click)="saveInstitution()" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

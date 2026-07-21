@@ -15,6 +15,7 @@ import { Project } from '../../core/models/project.model';
 import { UserService } from '../../core/services/user.service';
 import { ConvocatoriaService } from '../../core/services/convocatoria.service';
 import { Convocatoria } from '../../core/models/convocatoria.model';
+import { InstitutionService } from '../../core/services/institution.service'; // ✅ NUEVO
 
 interface HeroStats {
   projects: number;
@@ -209,7 +210,8 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     private readonly profileService: ProfileService,
     private readonly projectService: ProjectService,
     private readonly userService: UserService,
-    private readonly convocatoriaService: ConvocatoriaService
+    private readonly convocatoriaService: ConvocatoriaService,
+    private readonly institutionService: InstitutionService // ✅ NUEVO
   ) {
     this.profile$ = this.profileService.profile$;
     this.stats$ = this.loadHeroStats().pipe(shareReplay(1));
@@ -229,21 +231,17 @@ export class BibliotecaViva implements OnInit, OnDestroy {
       map(projects => projects.length)
     );
 
-    // 🔥 CORREGIDO: solo estudiantes y docentes
     const developers$ = this.userService.getUsers().pipe(
       map(users => users.filter(u => u.role === 'student' || u.role === 'teacher').length)
     );
 
-    // 🔥 CORREGIDO: instituciones únicas de TODOS los proyectos (para mostrar las 5)
-    const institutions$ = this.projectService.getAllProjects().pipe(
-      map(projects => new Set(projects.map(p => p.institution).filter(Boolean)).size)
-    );
+    // 🔥 CAMBIO: Usar InstitutionService en lugar de ProjectService
+    const institutions$ = this.institutionService.getInstitutionsCount();
 
     const votes$ = publishedProjects$.pipe(
       map(projects => projects.reduce((acc, p) => acc + (p.ratingCount || 0), 0))
     );
 
-    // 🔥 CORREGIDO: proyecto destacado con orden natural
     const featured$ = publishedProjects$.pipe(
       map(projects => {
         if (projects.length === 0) return null;
@@ -260,7 +258,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
       })
     );
 
-    // 🔥 CORREGIDO: últimas publicaciones ordenadas por fecha
     const latestProjects$ = publishedProjects$.pipe(
       map(projects => {
         const sorted = [...projects].sort((a, b) => {
@@ -288,12 +285,11 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     );
   }
 
-  // 🔥 Método para scroll suave a la galería con offset del navbar
   scrollToGallery(): void {
     const element = this.gallerySection?.nativeElement;
     if (!element) return;
 
-    const navbarHeight = 80; // Ajusta según la altura real de tu navbar
+    const navbarHeight = 80;
     const y = element.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
 
     window.scrollTo({
@@ -302,7 +298,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     });
   }
 
-  // 🔥 Método para abrir proyecto HTML en nueva pestaña (para el proyecto destacado)
   verProyecto(project: Project): void {
     if (!project.htmlContent) {
       alert('Este proyecto no tiene contenido HTML.');

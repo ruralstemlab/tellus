@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/guards/admin.guard';
 
 import { Landing } from './pages/landing/landing';
 
@@ -59,6 +60,16 @@ export const routes: Routes = [
   {
     path: 'biblioteca-viva',
     loadChildren: () => import('./pages/biblioteca-viva/biblioteca-viva.routes').then(m => m.routes)
+  },
+
+  // ===== ADMINISTRACIÓN =====
+  {
+    path: 'admin/institutions',
+    loadComponent: () =>
+      import('./pages/admin/institutions/institutions').then(
+        (m) => m.InstitutionsComponent
+      ),
+    canActivate: [adminGuard],
   },
 
   {
