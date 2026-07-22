@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, Subscription, firstValueFrom } from 'rxjs';
-import { shareReplay, map } from 'rxjs/operators';
-import { ProjectService } from '../../../../core/services/project.service'; // ✅ Ruta correcta
+import { shareReplay } from 'rxjs/operators';
+import { ProjectService } from '../../../../core/services/project.service';
 import { VoteService } from '../../../../core/services/vote.service';
-import { AuthService } from '../../../../core/auth/auth.service'; // ✅ Ruta corregida
+import { AuthService } from '../../../../core/auth/auth.service';
 import { Project } from '../../../../core/models/project.model';
 
 const categoryIcons: Record<string, string> = {
@@ -42,10 +42,11 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
 
   projects$: Observable<Project[]>;
   allProjects: Project[] = [];
-  visibleProjects: Project[] = [];
   viewMode: 'slider' | 'grid' = 'slider';
   currentIndex = 0;
   isLoading = true;
+
+  showApproved = true;
 
   userVotes: Record<string, number> = {};
   isAuthenticated = false;
@@ -82,14 +83,28 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscription.add(
-      this.projects$.subscribe(projects => {
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
+    this.isLoading = true;
+    this.projectService.getProjects('published').subscribe({
+      next: (projects) => {
         this.allProjects = projects;
-        this.visibleProjects = projects.slice(0, 8);
         this.isLoading = false;
         this.cdr.detectChanges();
-      })
-    );
+      },
+      error: (err) => {
+        console.error('Error cargando proyectos:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  toggleApproved(): void {
+    this.showApproved = !this.showApproved;
+    this.loadProjects();
+    this.currentIndex = 0;
   }
 
   private async loadUserVotes(): Promise<void> {
@@ -120,7 +135,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
   }
 
   next(): void {
-    if (this.currentIndex < this.visibleProjects.length - 1) {
+    if (this.currentIndex < this.allProjects.length - 1) {
       this.currentIndex++;
       this.updateSlider();
     }
@@ -143,6 +158,22 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ✅ Ranking: ordena por SCORE = rating * ratingCount (total de estrellas acumuladas)
+  getRankedProjects(): Project[] {
+    return [...this.allProjects].sort((a, b) => {
+      const scoreA = (a.rating || 0) * (a.ratingCount || 0);
+      const scoreB = (b.rating || 0) * (b.ratingCount || 0);
+      return scoreB - scoreA;
+    });
+  }
+
+  getRankMedal(project: Project, index: number): string {
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return '';
+  }
+
   async votar(project: Project, rating: number, event: Event): Promise<void> {
     event.stopPropagation();
     if (!this.isAuthenticated) {
@@ -156,7 +187,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
 
     try {
       await this.voteService.vote(project.id!, rating);
-
       const updatedProject = { ...project };
       const freshProject = await firstValueFrom(this.projectService.getProject(project.id!));
       if (freshProject) {
@@ -170,7 +200,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
         return arr;
       };
       this.allProjects = updateArray([...this.allProjects]);
-      this.visibleProjects = updateArray([...this.visibleProjects]);
       this.cdr.detectChanges();
 
       this.showNotification('¡Voto registrado!', 'success');
@@ -225,6 +254,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
+  // Drag handlers (sin cambios)
   onMouseDown(event: MouseEvent): void {
     if (this.viewMode !== 'slider') return;
     this.isDragging = true;
@@ -258,7 +288,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     const cardWidth = 324;
     const threshold = 50;
     if (Math.abs(delta) > threshold) {
-      if (delta < 0 && this.currentIndex < this.visibleProjects.length - 1) {
+      if (delta < 0 && this.currentIndex < this.allProjects.length - 1) {
         this.currentIndex++;
       } else if (delta > 0 && this.currentIndex > 0) {
         this.currentIndex--;
@@ -305,7 +335,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     const cardWidth = 324;
     const threshold = 50;
     if (Math.abs(delta) > threshold) {
-      if (delta < 0 && this.currentIndex < this.visibleProjects.length - 1) {
+      if (delta < 0 && this.currentIndex < this.allProjects.length - 1) {
         this.currentIndex++;
       } else if (delta > 0 && this.currentIndex > 0) {
         this.currentIndex--;
@@ -322,7 +352,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     if (this.viewMode !== 'slider') return;
     const delta = event.deltaY;
     if (Math.abs(delta) > 20) {
-      if (delta > 0 && this.currentIndex < this.visibleProjects.length - 1) {
+      if (delta > 0 && this.currentIndex < this.allProjects.length - 1) {
         this.currentIndex++;
       } else if (delta < 0 && this.currentIndex > 0) {
         this.currentIndex--;
@@ -333,13 +363,6 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
 
   getIcon(category: string): string {
     return getCategoryIcon(category);
-  }
-
-  getMedal(index: number): string {
-    if (index === 0) return '🥇';
-    if (index === 1) return '🥈';
-    if (index === 2) return '🥉';
-    return '';
   }
 
   getBadges(project: Project): string[] {

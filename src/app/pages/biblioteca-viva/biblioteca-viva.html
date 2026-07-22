@@ -416,7 +416,7 @@
     <p class="subtitle">Descubre las instituciones que ya forman parte del ecosistema Tellus</p>
   </div>
 
-  <!-- Resumen general (stats reales desde Firestore) -->
+  <!-- Resumen general -->
   <div class="stats-overview" *ngIf="stats$ | async as stats">
     <div class="overview-card">
       <div class="overview-icon">🏛️</div>
@@ -454,17 +454,17 @@
       <!-- Glow decorativo -->
       <div class="card-glow"></div>
 
-      <!-- Logo / Icono -->
+      <!-- Logo / Icono (centrado) -->
       <div class="card-icon-wrapper">
         <div class="card-icon">
           <span *ngIf="inst.logoUrl; else fallbackIcon">
             <img [src]="inst.logoUrl" [alt]="inst.name" class="institution-logo" />
           </span>
-          <ng-template #fallbackIcon>🏛️</ng-template>
+          <ng-template #fallbackIcon>🏫</ng-template> <!-- ✅ Cambiado de 🏛️ a 🏫 -->
         </div>
       </div>
 
-      <!-- Información principal -->
+      <!-- Información principal (centrada) -->
       <div class="card-body">
         <h3 class="institution-name">{{ inst.name }}</h3>
         <p class="institution-location">
@@ -472,14 +472,14 @@
           {{ inst.municipality }}, {{ inst.department }}
         </p>
 
-        <!-- Estado -->
+        <!-- Estado (centrado) -->
         <div class="institution-status" [class.active]="inst.active">
           <span class="status-dot"></span>
           {{ inst.active ? 'Activa' : 'Inactiva' }}
         </div>
       </div>
 
-      <!-- Footer con botón -->
+      <!-- Footer con botón (centrado) -->
       <div class="card-footer">
         <button class="btn-view-projects" (click)="scrollToGallery()">
           Ver proyectos →

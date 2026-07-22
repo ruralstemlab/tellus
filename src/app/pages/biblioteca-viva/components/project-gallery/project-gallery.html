@@ -1,16 +1,23 @@
 <div class="project-gallery">
 
+  <!-- HEADER con contador real -->
   <div class="gallery-header">
     <div>
       <span class="badge">📸 Proyectos</span>
       <h2>Galería de creaciones</h2>
       <p class="subtitle" *ngIf="!isLoading">{{ allProjects.length }} proyectos publicados</p>
     </div>
-    <button class="toggle-btn" (click)="toggleView()" *ngIf="!isLoading && allProjects.length > 8">
-      {{ viewMode === 'slider' ? '📂 Explorar todos los proyectos' : '▲ Mostrar menos' }}
-    </button>
+    <div class="header-controls">
+      <button class="toggle-view-btn" (click)="toggleView()">
+        {{ viewMode === 'slider' ? '⊞ Ver todos los proyectos' : '🎠 Volver al carrusel' }}
+      </button>
+      <p class="view-hint" *ngIf="viewMode === 'slider' && allProjects.length > 8">
+        ¿Prefieres comparar todos los proyectos? Cambia a la vista en cuadrícula para explorar y votar de forma más cómoda.
+      </p>
+    </div>
   </div>
 
+  <!-- SKELETON LOADING -->
   <div *ngIf="isLoading" class="skeleton-wrapper">
     <div class="skeleton-track">
       <div class="skeleton-card" *ngFor="let _ of [].constructor(8)">
@@ -22,6 +29,9 @@
     </div>
   </div>
 
+  <!-- ==========================================================
+       VISTA: SLIDER (todos los proyectos, sin límite)
+  ========================================================== -->
   <div *ngIf="!isLoading && viewMode === 'slider' && allProjects.length > 0" class="slider-wrapper"
        (mousedown)="onMouseDown($event)"
        (mousemove)="onMouseMove($event)"
@@ -34,8 +44,10 @@
     <button class="nav-btn prev" (click)="prev()" [disabled]="currentIndex === 0">‹</button>
     <div class="slider-container">
       <div class="slider-track" #sliderTrack>
-        <div class="project-card" *ngFor="let project of visibleProjects; let i = index; trackBy: trackByProjectId">
-          <div class="medal" *ngIf="i < 3">{{ getMedal(i) }}</div>
+        <!-- ✅ Slider usa getRankedProjects() para el orden -->
+        <div class="project-card" *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
+          <!-- ✅ Medallas según ranking -->
+          <div class="medal" *ngIf="i < 3">{{ getRankMedal(project, i) }}</div>
           <div class="badges">
             <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
           </div>
@@ -45,6 +57,7 @@
             <span class="developer">👤 {{ project.studentName }}</span>
             <span class="institution">🏫 {{ project.institution }}</span>
           </div>
+          <!-- Estrellas interactivas -->
           <div class="stars" *ngIf="isAuthenticated">
             <span *ngFor="let star of [1,2,3,4,5]" 
                   (click)="votar(project, star, $event)"
@@ -63,13 +76,17 @@
         </div>
       </div>
     </div>
-    <button class="nav-btn next" (click)="next()" [disabled]="currentIndex >= visibleProjects.length - 1">›</button>
+    <button class="nav-btn next" (click)="next()" [disabled]="currentIndex >= allProjects.length - 1">›</button>
   </div>
 
+  <!-- ==========================================================
+       VISTA: GRID (todos los proyectos)
+  ========================================================== -->
   <div *ngIf="!isLoading && viewMode === 'grid' && allProjects.length > 0" class="grid-wrapper">
     <div class="grid-container">
-      <div class="project-card-grid" *ngFor="let project of allProjects; let i = index; trackBy: trackByProjectId">
-        <div class="medal" *ngIf="i < 3">{{ getMedal(i) }}</div>
+      <!-- ✅ Grid usa getRankedProjects() para el orden -->
+      <div class="project-card-grid" *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
+        <div class="medal" *ngIf="i < 3">{{ getRankMedal(project, i) }}</div>
         <div class="badges">
           <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
         </div>
@@ -98,6 +115,7 @@
     </div>
   </div>
 
+  <!-- EMPTY STATE -->
   <div *ngIf="!isLoading && allProjects.length === 0" class="empty-state">
     <span class="empty-icon">📭</span>
     <p>No hay proyectos publicados aún.</p>
