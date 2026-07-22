@@ -62,16 +62,6 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/biblioteca-viva/biblioteca-viva.routes').then(m => m.routes)
   },
 
-  // ===== ADMINISTRACIÓN =====
-  {
-    path: 'admin/institutions',
-    loadComponent: () =>
-      import('./pages/admin/institutions/institutions').then(
-        (m) => m.InstitutionsComponent
-      ),
-    canActivate: [adminGuard],
-  },
-
   {
     path: 'laboratorios',
     component: Laboratorios
