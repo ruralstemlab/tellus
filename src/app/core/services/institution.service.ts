@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   collection,
-  addDoc,
-  updateDoc,
-  doc,
   getDoc,
   getDocs,
   query,
   orderBy,
   where,
+  doc,
   Timestamp,
   DocumentData,
   QueryDocumentSnapshot,
@@ -66,6 +64,9 @@ export class InstitutionService {
     };
   }
 
+  /**
+   * Obtener todas las instituciones (ordenadas por nombre)
+   */
   getInstitutions(): Observable<Institution[]> {
     const q = query(this.getCollection(), orderBy('name', 'asc'));
     return from(getDocs(q)).pipe(
@@ -73,16 +74,32 @@ export class InstitutionService {
     );
   }
 
+  /**
+   * 🔥 TEMPORAL: Obtener instituciones activas filtrando en Angular
+   * (Mientras se crea el índice compuesto en Firestore)
+   * Luego se puede volver a la versión optimizada con where + orderBy
+   */
   getActiveInstitutions(): Observable<Institution[]> {
-    const q = query(
-      this.getCollection(),
-      where('active', '==', true),
-      orderBy('name', 'asc')
-    );
-    return from(getDocs(q)).pipe(
-      map(snapshot => snapshot.docs.map(doc => this.mapInstitutionFromQuery(doc)))
+    // 🔥 Versión temporal: trae todas y filtra en el frontend
+    return this.getInstitutions().pipe(
+      map(institutions => institutions.filter(i => i.active === true))
     );
   }
+
+  /**
+   * 🔥 Versión optimizada (cuando el índice esté creado):
+   * Descomentar y comentar la versión temporal
+   */
+  // getActiveInstitutions(): Observable<Institution[]> {
+  //   const q = query(
+  //     this.getCollection(),
+  //     where('active', '==', true),
+  //     orderBy('name', 'asc')
+  //   );
+  //   return from(getDocs(q)).pipe(
+  //     map(snapshot => snapshot.docs.map(doc => this.mapInstitutionFromQuery(doc)))
+  //   );
+  // }
 
   getInstitution(id: string): Observable<Institution | null> {
     const ref = doc(db, this.collectionName, id);
@@ -96,28 +113,5 @@ export class InstitutionService {
     return from(getDocs(q)).pipe(
       map(snapshot => snapshot.size)
     );
-  }
-
-  createInstitution(data: Omit<Institution, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
-    const now = new Date();
-    const docData = {
-      ...data,
-      createdAt: now,
-      updatedAt: now,
-    };
-    return from(addDoc(this.getCollection(), docData)).pipe(
-      map(docRef => docRef.id)
-    );
-  }
-
-  updateInstitution(id: string, data: Partial<Institution>): Observable<void> {
-    return from(updateDoc(doc(db, this.collectionName, id), {
-      ...data,
-      updatedAt: new Date()
-    }));
-  }
-
-  toggleInstitution(id: string, active: boolean): Observable<void> {
-    return this.updateInstitution(id, { active });
   }
 }

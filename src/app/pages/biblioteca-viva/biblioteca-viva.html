@@ -1,10 +1,9 @@
 <app-navbar></app-navbar>
 
-<!-- Dashboard de administrador (solo si es admin) -->
 <app-admin-dashboard *ngIf="(profile$ | async)?.role === 'admin'"></app-admin-dashboard>
 
 <!-- ==========================================================
-     HERO – CON DATOS REALES
+     HERO
 =========================================================== -->
 <section class="hero">
 
@@ -15,7 +14,6 @@
 
   <div class="hero-container" *ngIf="stats$ | async as stats">
 
-    <!-- Columna izquierda -->
     <div class="hero-content">
 
       <span class="badge">
@@ -61,7 +59,6 @@
 
     </div>
 
-    <!-- Columna derecha – DASHBOARD PROFESIONAL (CON DATOS REALES) -->
     <div class="hero-image">
 
       <div class="dashboard-glass">
@@ -76,7 +73,6 @@
 
         <div class="dashboard-grid">
 
-          <!-- 🔥 ESTADÍSTICAS REALES (sin tendencias) -->
           <div class="stat-card">
             <span class="icon">📁</span>
             <div class="info">
@@ -109,7 +105,6 @@
             </div>
           </div>
 
-          <!-- Mini gráfica de actividad -->
           <div class="chart-card">
             <h4>Actividad reciente</h4>
             <div class="mini-chart">
@@ -120,7 +115,6 @@
             </div>
           </div>
 
-          <!-- 🔥 PROYECTO DESTACADO -->
           <div class="top-card" *ngIf="stats.featured as featured">
             <h4>🏆 Proyecto destacado</h4>
             <p>“{{ featured.title }}”</p>
@@ -128,7 +122,6 @@
             <div class="badge-premium">⭐ {{ (featured.rating || 0).toFixed(1) }} ({{ featured.ratingCount || 0 }} votos)</div>
           </div>
 
-          <!-- 🔥 ÚLTIMAS PUBLICACIONES -->
           <div class="activity-card">
             <h4>⚡ Últimas publicaciones</h4>
             <ul>
@@ -153,7 +146,7 @@
 </section>
 
 <!-- ==========================================================
-     ESTADÍSTICAS INFERIORES – CON DATOS REALES
+     ESTADÍSTICAS INFERIORES
 =========================================================== -->
 <section class="stats-section" *ngIf="stats$ | async as stats">
   <div class="stats-grid">
@@ -318,7 +311,7 @@
 </section>
 
 <!-- ==========================================================
-     GALERÍA – ENVUELTA EN SECTION PARA SCROLL
+     GALERÍA – CON ID PARA SCROLL
 =========================================================== -->
 <section id="gallery" #gallerySection>
   <app-project-gallery></app-project-gallery>
@@ -412,6 +405,99 @@
 </section>
 
 <!-- ==========================================================
+     INSTITUCIONES – DASHBOARD PREMIUM
+=========================================================== -->
+<section class="institutions-premium-section">
+
+  <!-- Encabezado -->
+  <div class="section-header">
+    <span class="label">🏛️ Comunidad educativa</span>
+    <h2>Instituciones participantes</h2>
+    <p class="subtitle">Descubre las instituciones que ya forman parte del ecosistema Tellus</p>
+  </div>
+
+  <!-- Resumen general (stats reales desde Firestore) -->
+  <div class="stats-overview" *ngIf="stats$ | async as stats">
+    <div class="overview-card">
+      <div class="overview-icon">🏛️</div>
+      <div class="overview-info">
+        <span class="overview-number">{{ stats.institutions || 0 }}</span>
+        <span class="overview-label">Instituciones</span>
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon">👨‍💻</div>
+      <div class="overview-info">
+        <span class="overview-number">{{ stats.developers || 0 }}</span>
+        <span class="overview-label">Developers</span>
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon">📁</div>
+      <div class="overview-info">
+        <span class="overview-number">{{ stats.projects || 0 }}</span>
+        <span class="overview-label">Proyectos publicados</span>
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon">⭐</div>
+      <div class="overview-info">
+        <span class="overview-number">{{ stats.votes || 0 }}</span>
+        <span class="overview-label">Votos totales</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de instituciones -->
+  <div class="institutions-grid" *ngIf="institutions$ | async as institutions">
+    <div class="institution-card" *ngFor="let inst of institutions; let i = index">
+      <!-- Glow decorativo -->
+      <div class="card-glow"></div>
+
+      <!-- Logo / Icono -->
+      <div class="card-icon-wrapper">
+        <div class="card-icon">
+          <span *ngIf="inst.logoUrl; else fallbackIcon">
+            <img [src]="inst.logoUrl" [alt]="inst.name" class="institution-logo" />
+          </span>
+          <ng-template #fallbackIcon>🏛️</ng-template>
+        </div>
+      </div>
+
+      <!-- Información principal -->
+      <div class="card-body">
+        <h3 class="institution-name">{{ inst.name }}</h3>
+        <p class="institution-location">
+          <span class="location-pin">📍</span>
+          {{ inst.municipality }}, {{ inst.department }}
+        </p>
+
+        <!-- Estado -->
+        <div class="institution-status" [class.active]="inst.active">
+          <span class="status-dot"></span>
+          {{ inst.active ? 'Activa' : 'Inactiva' }}
+        </div>
+      </div>
+
+      <!-- Footer con botón -->
+      <div class="card-footer">
+        <button class="btn-view-projects" (click)="scrollToGallery()">
+          Ver proyectos →
+        </button>
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="institutions.length === 0" class="empty-institutions">
+      <span class="empty-icon">📭</span>
+      <p>No hay instituciones registradas aún.</p>
+      <span class="empty-sub">Pronto más instituciones se unirán a Tellus.</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================
      CONVOCATORIAS – DINÁMICAS
 =========================================================== -->
 <section class="calls-section">
@@ -428,14 +514,12 @@
 
   <!-- Con datos -->
   <div class="calls-grid" *ngIf="(convocatorias$ | async) as convocatorias">
-    <!-- Vacío -->
     <div *ngIf="convocatorias.length === 0" class="empty-calls">
       <span class="empty-icon">📭</span>
       <p>No hay convocatorias activas en este momento.</p>
       <span class="empty-sub">Vuelve pronto para conocer las próximas convocatorias.</span>
     </div>
 
-    <!-- Lista -->
     <div class="call-card" *ngFor="let convocatoria of convocatorias">
       <div class="call-header">
         <span class="logo">🏛️</span>

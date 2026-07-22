@@ -15,7 +15,8 @@ import { Project } from '../../core/models/project.model';
 import { UserService } from '../../core/services/user.service';
 import { ConvocatoriaService } from '../../core/services/convocatoria.service';
 import { Convocatoria } from '../../core/models/convocatoria.model';
-import { InstitutionService } from '../../core/services/institution.service'; // ✅ NUEVO
+import { InstitutionService } from '../../core/services/institution.service';
+import { Institution } from '../../core/models/institution.model';
 
 interface HeroStats {
   projects: number;
@@ -43,12 +44,13 @@ interface HeroStats {
 })
 export class BibliotecaViva implements OnInit, OnDestroy {
 
-  @ViewChild('gallerySection') gallerySection!: ElementRef<HTMLElement>;
+  @ViewChild('gallerySection') gallerySection!: ElementRef;
 
   profile$: Observable<UserProfile | null>;
   featuredProject$: Observable<Project | null>;
   stats$: Observable<HeroStats>;
   convocatorias$: Observable<Convocatoria[]>;
+  institutions$: Observable<Institution[]>; // 🆕
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -151,14 +153,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     { icon: '📢', title: 'Convocatorias', desc: 'Consulta concursos activos.' }
   ];
 
-  // ---------- CONVOCATORIAS ----------
-  calls = [
-    { name: 'I.E. Tierra Negra', location: '📍 Tierra Negra', active: true, participants: 45 },
-    { name: 'Colegio Bogotá', location: '📍 Bogotá', active: true, participants: 28 },
-    { name: 'Colegio Bucaramanga', location: '📍 Bucaramanga', active: false, participants: 0 },
-    { name: 'Colegio Medellín', location: '📍 Medellín', active: false, participants: 0 },
-    { name: 'Universidad de Santander', location: '📍 Santander', active: true, participants: 32 }
-  ];
+  // ---------- CONVOCATORIAS (eliminado el arreglo calls, ya no se usa) ----------
 
   // ---------- TESTIMONIOS ----------
   testimonials = [
@@ -211,7 +206,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     private readonly projectService: ProjectService,
     private readonly userService: UserService,
     private readonly convocatoriaService: ConvocatoriaService,
-    private readonly institutionService: InstitutionService // ✅ NUEVO
+    private readonly institutionService: InstitutionService
   ) {
     this.profile$ = this.profileService.profile$;
     this.stats$ = this.loadHeroStats().pipe(shareReplay(1));
@@ -219,10 +214,10 @@ export class BibliotecaViva implements OnInit, OnDestroy {
       map(stats => stats.featured)
     );
     this.convocatorias$ = this.convocatoriaService.getActiveConvocatorias();
+    this.institutions$ = this.institutionService.getActiveInstitutions();
   }
 
   private loadHeroStats(): Observable<HeroStats> {
-    // Proyectos publicados
     const publishedProjects$ = this.projectService.getProjects('published').pipe(
       shareReplay(1)
     );
@@ -235,7 +230,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
       map(users => users.filter(u => u.role === 'student' || u.role === 'teacher').length)
     );
 
-    // 🔥 CAMBIO: Usar InstitutionService en lugar de ProjectService
     const institutions$ = this.institutionService.getInstitutionsCount();
 
     const votes$ = publishedProjects$.pipe(
@@ -288,10 +282,8 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   scrollToGallery(): void {
     const element = this.gallerySection?.nativeElement;
     if (!element) return;
-
     const navbarHeight = 80;
     const y = element.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
-
     window.scrollTo({
       top: y,
       behavior: 'smooth'

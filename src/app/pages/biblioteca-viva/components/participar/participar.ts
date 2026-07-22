@@ -66,7 +66,6 @@ export class ParticiparComponent {
     { name: 'Otro', icon: '💡' }
   ];
 
-  // 🔥 Observable de instituciones desde Firestore
   institutions$: Observable<InstitutionView[]>;
 
   selectedFile: File | null = null;
@@ -89,7 +88,6 @@ export class ParticiparComponent {
     private institutionService: InstitutionService,
     private router: Router
   ) {
-    // Transformar datos de Firestore al formato de tarjeta
     this.institutions$ = this.institutionService.getActiveInstitutions().pipe(
       map((insts: Institution[]) => insts.map(inst => ({
         id: inst.id,
@@ -98,6 +96,12 @@ export class ParticiparComponent {
         full: inst.name + ' – ' + inst.municipality
       })))
     );
+
+    // 🔥 Log para depuración (puedes eliminarlo después)
+    this.institutions$.subscribe({
+      next: data => console.log('✅ Instituciones en Participar:', data),
+      error: err => console.error('❌ Error en Participar:', err)
+    });
   }
 
   onFileSelected(event: Event): void {
