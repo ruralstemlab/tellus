@@ -288,26 +288,44 @@
 </section>
 
 <!-- ==========================================================
-     VIDEO
+     VIDEO – MEJORADO (CON VIDEO PROMOCIONAL)
 =========================================================== -->
 <section class="video-section">
 
   <div class="section-header">
     <span class="label">🎬 Inspírate</span>
     <h2>Videos destacados</h2>
+    <p>Conoce Tellus a través de nuestros videos</p>
   </div>
 
   <div class="video-grid">
-    <div class="video-card" *ngFor="let video of videos">
+
+    <!-- Video promocional de Tellus (iframe) -->
+    <div class="video-card featured-video">
+      <div class="video-iframe-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/Wj643cHv0h0"
+          title="Tellus - Video promocional"
+          frameborder="0"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+      <h4>🎬 Trailer oficial Tellus 2026</h4>
+      <p>Conoce la experiencia de la Biblioteca Viva.</p>
+    </div>
+
+    <!-- Segundo video (el primer elemento del array videos) -->
+    <div class="video-card" *ngIf="videos && videos.length > 0">
       <div class="thumbnail">
         <div class="play-btn">▶</div>
-        <span class="duration">{{ video.duration }}</span>
+        <span class="duration">{{ videos[0].duration }}</span>
       </div>
-      <h4>{{ video.title }}</h4>
-      <p>{{ video.desc }}</p>
+      <h4>{{ videos[0].title }}</h4>
+      <p>{{ videos[0].desc }}</p>
     </div>
-  </div>
 
+  </div>
 </section>
 
 <!-- ==========================================================
@@ -460,7 +478,7 @@
           <span *ngIf="inst.logoUrl; else fallbackIcon">
             <img [src]="inst.logoUrl" [alt]="inst.name" class="institution-logo" />
           </span>
-          <ng-template #fallbackIcon>🏫</ng-template> <!-- ✅ Cambiado de 🏛️ a 🏫 -->
+          <ng-template #fallbackIcon>🏫</ng-template>
         </div>
       </div>
 

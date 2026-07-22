@@ -749,17 +749,19 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   VIDEO – MEJORADO
+   VIDEO – MEJORADO (CON IFRAME RESPONSIVO)
 =========================================================== */
 .video-section {
   background: #071b12;
   padding: 80px 20px;
+
   .video-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
     max-width: 1100px;
     margin: 0 auto;
+
     .video-card {
       background: $glass;
       backdrop-filter: blur(8px);
@@ -767,18 +769,22 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
       border-radius: 24px;
       overflow: hidden;
       transition: 0.3s;
+
       &:hover {
         transform: scale(1.02);
         border-color: $green;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
       }
+
       .thumbnail {
         background: #0a261b;
         padding: 40px 20px;
         text-align: center;
         position: relative;
+
         .play-btn {
-          width: 60px; height: 60px;
+          width: 60px;
+          height: 60px;
           background: $green;
           border-radius: 50%;
           display: inline-flex;
@@ -788,19 +794,61 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
           color: #04140d;
           transition: 0.3s;
           cursor: pointer;
-          &:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(76,255,156,0.3); }
+
+          &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(76, 255, 156, 0.3);
+          }
         }
+
         .duration {
           position: absolute;
-          bottom: 12px; right: 12px;
-          background: rgba(0,0,0,0.6);
+          bottom: 12px;
+          right: 12px;
+          background: rgba(0, 0, 0, 0.6);
           padding: 2px 10px;
           border-radius: 30px;
           font-size: 0.7rem;
         }
       }
-      h4 { margin: 16px 20px 6px; font-size: 1.1rem; }
-      p { margin: 0 20px 20px; color: #aaa; font-size: 0.9rem; }
+
+      &.featured-video {
+        .video-iframe-wrapper {
+          position: relative;
+          width: 100%;
+          padding-bottom: 56.25%; /* 16:9 ratio */
+          height: 0;
+          overflow: hidden;
+          border-radius: 16px;
+          background: #0a0f0d;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+
+          iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            border: none;
+          }
+        }
+
+        h4 {
+          margin-top: 4px;
+        }
+      }
+
+      h4 {
+        margin: 16px 20px 6px;
+        font-size: 1.1rem;
+      }
+
+      p {
+        margin: 0 20px 20px;
+        color: #aaa;
+        font-size: 0.9rem;
+      }
     }
   }
 }
@@ -1670,4 +1718,5 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
   .learn-grid { grid-template-columns: 1fr 1fr; }
   .hall-grid { grid-template-columns: repeat(2, 1fr); }
   .institutions-premium-section .institutions-grid { grid-template-columns: 1fr; }
+  .video-grid { grid-template-columns: 1fr; }
 }
