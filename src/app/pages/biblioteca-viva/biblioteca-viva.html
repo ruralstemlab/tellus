@@ -288,19 +288,19 @@
 </section>
 
 <!-- ==========================================================
-     VIDEO – MEJORADO (CON VIDEO PROMOCIONAL)
+     VIDEO – PROMOCIONAL + CONCURSO (ACTUALIZADO)
 =========================================================== -->
 <section class="video-section">
 
   <div class="section-header">
     <span class="label">🎬 Inspírate</span>
     <h2>Videos destacados</h2>
-    <p>Conoce Tellus a través de nuestros videos</p>
+    <p>Conoce Tellus y el primer concurso de aplicaciones web</p>
   </div>
 
   <div class="video-grid">
 
-    <!-- Video promocional de Tellus (iframe) -->
+    <!-- Video 1: Promocional Tellus -->
     <div class="video-card featured-video">
       <div class="video-iframe-wrapper">
         <iframe
@@ -311,18 +311,29 @@
           loading="lazy">
         </iframe>
       </div>
-      <h4>🎬 Trailer oficial Tellus 2026</h4>
-      <p>Conoce la experiencia de la Biblioteca Viva.</p>
+      <div class="video-info">
+        <span class="video-badge">🎬 Promocional</span>
+        <h4>¿Qué es Tellus?</h4>
+        <p>Descubre la plataforma educativa donde los estudiantes crean, comparten y votan aplicaciones web.</p>
+      </div>
     </div>
 
-    <!-- Segundo video (el primer elemento del array videos) -->
-    <div class="video-card" *ngIf="videos && videos.length > 0">
-      <div class="thumbnail">
-        <div class="play-btn">▶</div>
-        <span class="duration">{{ videos[0].duration }}</span>
+    <!-- Video 2: Concurso 01 · 2026 -->
+    <div class="video-card featured-video">
+      <div class="video-iframe-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/RMz_hfjAzgo"
+          title="Tellus - Concurso 01 · 2026"
+          frameborder="0"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
       </div>
-      <h4>{{ videos[0].title }}</h4>
-      <p>{{ videos[0].desc }}</p>
+      <div class="video-info">
+        <span class="video-badge">📋 Concurso 01</span>
+        <h4>Concurso 01 · 2026</h4>
+        <p>Entérate de las bases, fechas y premios del primer concurso de aplicaciones web de Tellus.</p>
+      </div>
     </div>
 
   </div>
