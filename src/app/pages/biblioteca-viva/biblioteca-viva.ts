@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, combineLatest, of, Subscription } from 'rxjs';
@@ -50,7 +50,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   featuredProject$: Observable<Project | null>;
   stats$: Observable<HeroStats>;
   convocatorias$: Observable<Convocatoria[]>;
-  institutions$: Observable<Institution[]>; // 🆕
+  institutions$: Observable<Institution[]>;
 
   // ---------- CONTADOR ----------
   days = 0;
@@ -153,8 +153,6 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     { icon: '📢', title: 'Convocatorias', desc: 'Consulta concursos activos.' }
   ];
 
-  // ---------- CONVOCATORIAS (eliminado el arreglo calls, ya no se usa) ----------
-
   // ---------- TESTIMONIOS ----------
   testimonials = [
     { text: 'Tellus cambió la forma en que enseño. Mis estudiantes ahora crean sus propias aplicaciones.', name: 'Prof. Carlos R.', role: 'Docente de tecnología', avatar: '👨‍🏫' },
@@ -200,6 +198,15 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   ];
 
   filteredFaqs = this.faqs;
+
+  // ==========================================================
+  // CENTRO DE RECURSOS – CONSTANTES Y MODAL
+  // ==========================================================
+
+  readonly STUDENT_GUIDE = 'assets/pdf/infografia-estudiantes.pdf';
+  readonly TEACHER_GUIDE = 'assets/pdf/infografia-docentes.pdf';
+
+  showResourcesModal = false;
 
   constructor(
     private readonly profileService: ProfileService,
@@ -279,6 +286,10 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     );
   }
 
+  // ==========================================================
+  // NAVEGACIÓN Y SCROLL
+  // ==========================================================
+
   scrollToGallery(): void {
     const element = this.gallerySection?.nativeElement;
     if (!element) return;
@@ -300,6 +311,37 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
+
+  // ==========================================================
+  // CENTRO DE RECURSOS – MÉTODOS
+  // ==========================================================
+
+  openResourcesModal(): void {
+    this.showResourcesModal = true;
+  }
+
+  closeResourcesModal(): void {
+    this.showResourcesModal = false;
+  }
+
+  openStudentGuide(): void {
+    this.closeResourcesModal();
+    window.open(this.STUDENT_GUIDE, '_blank');
+  }
+
+  openTeacherGuide(): void {
+    this.closeResourcesModal();
+    window.open(this.TEACHER_GUIDE, '_blank');
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeResourcesModal();
+  }
+
+  // ==========================================================
+  // LIFECYCLE
+  // ==========================================================
 
   ngOnInit(): void {
     this.startCountdown();
