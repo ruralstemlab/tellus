@@ -45,9 +45,6 @@ import { of } from 'rxjs';
               <!-- ===== FONDO PREMIUM ===== -->
               <div class="bg-premium"></div>
 
-              <!-- ===== MARCA DE AGUA (texto elegante, sin SVG) ===== -->
-              <div class="watermark-text">TELLUS</div>
-
               <!-- ===== ENCABEZADO ===== -->
               <div class="cert-header">
                 <div class="org">
@@ -265,24 +262,6 @@ import { of } from 'rxjs';
           repeating-linear-gradient(45deg, rgba(200,200,200,0.01) 0px, rgba(200,200,200,0.01) 2px, transparent 2px, transparent 8px);
         pointer-events: none;
         z-index: 0;
-      }
-
-      /* ===== MARCA DE AGUA (texto, SIN SVG) ===== */
-      .watermark-text {
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%) rotate(-5deg);
-        font-family: 'Cinzel', serif;
-        font-size: 140px;
-        font-weight: 700;
-        color: #1E5631;
-        opacity: 0.03;
-        letter-spacing: 20px;
-        pointer-events: none;
-        z-index: 0;
-        white-space: nowrap;
-        user-select: none;
       }
 
       /* ==========================================================
@@ -578,7 +557,6 @@ import { of } from 'rxjs';
         .org-country { font-size: 11px; letter-spacing: 7px; }
         .org-slogan { font-size: 10px; letter-spacing: 2px; }
         .project-label { font-size: 15px; }
-        .watermark-text { font-size: 80px; letter-spacing: 10px; }
       }
 
       @media (max-width: 700px) {
@@ -599,7 +577,6 @@ import { of } from 'rxjs';
         .org-slogan { font-size: 9px; letter-spacing: 2px; }
         .project-label { font-size: 13px; }
         .cert-header { margin-bottom: 4px; }
-        .watermark-text { display: none; }
       }
 
       /* ==========================================================
@@ -773,7 +750,7 @@ export class PublicVerificationComponent implements OnInit {
   }
 
   // ================================================================
-  //  MÉTODO downloadPDF DEFINITIVO (con clonación, sin SVG)
+  //  MÉTODO downloadPDF
   // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
@@ -785,29 +762,15 @@ export class PublicVerificationComponent implements OnInit {
       const container = document.getElementById('certificate-container');
       if (!container) throw new Error('Contenedor no encontrado');
 
-      // Clonar el contenedor
-      const clone = container.cloneNode(true) as HTMLElement;
-      clone.style.position = 'fixed';
-      clone.style.left = '-9999px';
-      clone.style.top = '0';
-      clone.style.width = container.offsetWidth + 'px';
-      clone.style.height = container.offsetHeight + 'px';
-      clone.style.backgroundColor = '#FAF8F2';
-      clone.style.zIndex = '-9999';
-      document.body.appendChild(clone);
-
-      // Capturar el clon (ya no hay SVG problemático)
-      const canvas = await html2canvas(clone, {
+      const canvas = await html2canvas(container, {
         scale: 2.5,
         useCORS: true,
         logging: false,
         backgroundColor: '#FAF8F2',
-        width: clone.scrollWidth,
-        height: clone.scrollHeight,
+        width: container.scrollWidth,
+        height: container.scrollHeight,
         allowTaint: false
       });
-
-      document.body.removeChild(clone);
 
       if (canvas.width === 0 || canvas.height === 0) {
         throw new Error('Canvas generado con dimensiones cero');
