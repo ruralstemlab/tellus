@@ -1,6 +1,6 @@
 .admin-dashboard {
   padding: 2rem 1.5rem;
-  padding-top: 120px; /* ✅ Aumentado para evitar solapamiento con el navbar */
+  padding-top: 140px; /* ✅ Ajuste definitivo para evitar solapamiento con el navbar */
   max-width: 1200px;
   margin: 0 auto;
   color: #f0f0f0;
@@ -253,10 +253,10 @@
   }
 }
 
-/* ✅ Ajuste adicional para pantallas pequeñas */
+/* ✅ Responsive: Ajuste para pantallas pequeñas */
 @media (max-width: 768px) {
   .admin-dashboard {
-    padding-top: 100px;
+    padding-top: 120px;
     padding-left: 1rem;
     padding-right: 1rem;
   }
