@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CredentialService } from '../../core/services/credential.service';
@@ -7,6 +7,8 @@ import { ProjectService } from '../biblioteca-viva/services/project.service';
 import { Project } from '../biblioteca-viva/models/project.model';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { timeout, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-public-verification',
@@ -14,27 +16,28 @@ import jsPDF from 'jspdf';
   imports: [CommonModule],
   template: `
     <div class="verification-container">
+      <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
         <p>Verificando credencial...</p>
       </div>
 
-      <div *ngIf="error" class="error-state">
+      <!-- Error -->
+      <div *ngIf="error && !loading" class="error-state">
         <span class="error-icon">🔍</span>
         <h2>Credencial no encontrada</h2>
         <p>{{ error }}</p>
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
 
-      <div *ngIf="credential && project" class="credential-found">
-        <!-- Encabezado -->
+      <!-- Diploma (se muestra cuando credential y project existen) -->
+      <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
           <h1>🌿 Tellus</h1>
           <p class="subtitle">Rural STEAM Lab</p>
         </div>
 
-        <!-- Diploma -->
         <div class="diploma-preview" id="diploma-container">
           <div class="diploma">
             <div class="diploma-border">
@@ -84,7 +87,6 @@ import jsPDF from 'jspdf';
           </div>
         </div>
 
-        <!-- Botones de acción -->
         <div class="actions">
           <button class="btn-primary" (click)="downloadPDF()">📥 Descargar diploma (PDF)</button>
           <button class="btn-secondary" (click)="goHome()">🏠 Ir a Tellus</button>
@@ -93,6 +95,12 @@ import jsPDF from 'jspdf';
         <div class="footer-text">
           <span>🌿 Tellus · {{ credential.issueDate | date:'yyyy' }}</span>
         </div>
+      </div>
+
+      <!-- Mensaje de depuración (si no hay credencial o proyecto) -->
+      <div *ngIf="!loading && !credential && !error" class="error-state">
+        <p>No se pudieron cargar los datos. Por favor, intenta de nuevo.</p>
+        <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
     </div>
   `,
@@ -226,12 +234,14 @@ export class PublicVerificationComponent implements OnInit {
   project: Project | null = null;
   loading = true;
   error = '';
+  private timeoutId: any;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private credentialService: CredentialService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private cdr: ChangeDetectorRef  // ✅ Para forzar detección de cambios
   ) {}
 
   ngOnInit(): void {
@@ -240,56 +250,93 @@ export class PublicVerificationComponent implements OnInit {
     if (!uuid) {
       this.error = 'No se especificó un código de verificación.';
       this.loading = false;
-      console.warn('⚠️ [PublicVerification] No se proporcionó UUID');
+      this.cdr.detectChanges();
       return;
     }
+    this.timeoutId = setTimeout(() => {
+      if (this.loading) {
+        this.error = '⏳ La verificación está tomando demasiado tiempo. Por favor, intenta de nuevo.';
+        this.loading = false;
+        this.cdr.detectChanges();
+        console.warn('⏳ [PublicVerification] Timeout alcanzado');
+      }
+    }, 10000);
+
     this.loadCredential(uuid);
   }
 
   private loadCredential(uuid: string): void {
     console.log('🔍 [PublicVerification] Buscando credencial con UUID:', uuid);
-    this.credentialService.getCredentialByUuid(uuid).subscribe({
-      next: (cred) => {
-        console.log('📄 [PublicVerification] Credencial obtenida:', cred);
-        if (!cred) {
-          this.error = '❌ Credencial no encontrada. Verifica el código.';
+    this.credentialService.getCredentialByUuid(uuid)
+      .pipe(
+        timeout(15000),
+        catchError(err => {
+          console.error('❌ [PublicVerification] Error en la petición:', err);
+          this.error = '⚠️ Error de conexión. Verifica tu internet e intenta de nuevo.';
           this.loading = false;
-          console.warn('⚠️ [PublicVerification] Credencial no encontrada para UUID:', uuid);
-          return;
+          if (this.timeoutId) clearTimeout(this.timeoutId);
+          this.cdr.detectChanges();
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (cred) => {
+          if (this.timeoutId) clearTimeout(this.timeoutId);
+          console.log('📄 [PublicVerification] Credencial obtenida:', cred);
+          if (!cred) {
+            this.error = '❌ Credencial no encontrada. Verifica el código.';
+            this.loading = false;
+            this.cdr.detectChanges();
+            return;
+          }
+          this.credential = cred;
+          console.log('✅ [PublicVerification] Credencial cargada, projectId:', cred.projectId);
+          this.loadProject(cred.projectId);
+        },
+        error: (err) => {
+          if (this.timeoutId) clearTimeout(this.timeoutId);
+          console.error('❌ [PublicVerification] Error al verificar:', err);
+          this.error = '⚠️ Error al verificar la credencial. Intenta de nuevo.';
+          this.loading = false;
+          this.cdr.detectChanges();
         }
-        this.credential = cred;
-        console.log('✅ [PublicVerification] Credencial cargada, projectId:', cred.projectId);
-        this.loadProject(cred.projectId);
-      },
-      error: (err) => {
-        console.error('❌ [PublicVerification] Error al verificar:', err);
-        this.error = '⚠️ Error al verificar la credencial. Intenta de nuevo.';
-        this.loading = false;
-      }
-    });
+      });
   }
 
   private loadProject(projectId: string): void {
     if (!projectId) {
-      console.warn('⚠️ [PublicVerification] No hay projectId, asignando null');
       this.project = null;
       this.loading = false;
+      this.cdr.detectChanges();
       return;
     }
     console.log('🔍 [PublicVerification] Buscando proyecto con ID:', projectId);
-    this.projectService.getProject(projectId).subscribe({
-      next: (project) => {
-        console.log('📄 [PublicVerification] Proyecto obtenido:', project);
-        this.project = project || null;
-        this.loading = false;
-        console.log('✅ [PublicVerification] Carga completada');
-      },
-      error: (err) => {
-        console.error('❌ [PublicVerification] Error al cargar proyecto:', err);
-        this.project = null;
-        this.loading = false;
-      }
-    });
+    this.projectService.getProject(projectId)
+      .pipe(
+        timeout(10000),
+        catchError(err => {
+          console.error('❌ [PublicVerification] Error al obtener proyecto:', err);
+          this.project = null;
+          this.loading = false;
+          this.cdr.detectChanges();
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (project) => {
+          console.log('📄 [PublicVerification] Proyecto obtenido:', project);
+          this.project = project || null;
+          this.loading = false;
+          console.log('✅ [PublicVerification] Carga completada');
+          this.cdr.detectChanges();  // ✅ Forzar actualización de la vista
+        },
+        error: (err) => {
+          console.error('❌ [PublicVerification] Error al cargar proyecto:', err);
+          this.project = null;
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   goHome(): void {
