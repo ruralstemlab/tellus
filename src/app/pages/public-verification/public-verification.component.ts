@@ -45,16 +45,8 @@ import { of } from 'rxjs';
               <!-- ===== FONDO PREMIUM ===== -->
               <div class="bg-premium"></div>
 
-              <!-- ===== MARCA DE AGUA ===== -->
-              <div class="watermark">
-                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" width="180" height="240">
-                  <path d="M100 30 L200 30 L220 90 L240 150 Q240 280 150 280 Q60 280 60 150 L80 90 Z" fill="none" stroke="#1E5631" stroke-width="2"/>
-                  <path d="M130 100 Q160 70 190 100 Q160 130 130 100" fill="#1E5631" opacity="0.6"/>
-                  <path d="M115 130 Q150 100 185 130 Q150 160 115 130" fill="#1E5631" opacity="0.8"/>
-                  <circle cx="70" cy="70" r="4" fill="#1E5631" opacity="0.5"/>
-                  <circle cx="230" cy="80" r="3" fill="#1E5631" opacity="0.5"/>
-                </svg>
-              </div>
+              <!-- ===== MARCA DE AGUA (texto elegante, sin SVG) ===== -->
+              <div class="watermark-text">TELLUS</div>
 
               <!-- ===== ENCABEZADO ===== -->
               <div class="cert-header">
@@ -275,21 +267,22 @@ import { of } from 'rxjs';
         z-index: 0;
       }
 
-      /* ===== MARCA DE AGUA ===== */
-      .watermark {
+      /* ===== MARCA DE AGUA (texto, SIN SVG) ===== */
+      .watermark-text {
         position: absolute;
         right: 20px;
         top: 50%;
-        transform: translateY(-50%);
-        width: 180px;
-        height: 240px;
-        opacity: 0.04;
+        transform: translateY(-50%) rotate(-5deg);
+        font-family: 'Cinzel', serif;
+        font-size: 140px;
+        font-weight: 700;
+        color: #1E5631;
+        opacity: 0.03;
+        letter-spacing: 20px;
         pointer-events: none;
         z-index: 0;
-      }
-      .watermark svg {
-        width: 100%;
-        height: 100%;
+        white-space: nowrap;
+        user-select: none;
       }
 
       /* ==========================================================
@@ -582,10 +575,10 @@ import { of } from 'rxjs';
         .sign-name { font-size: 12px; }
         .sign-role { font-size: 9px; }
         .sign-line { width: 60px; }
-        .watermark { width: 120px; height: 160px; }
         .org-country { font-size: 11px; letter-spacing: 7px; }
         .org-slogan { font-size: 10px; letter-spacing: 2px; }
         .project-label { font-size: 15px; }
+        .watermark-text { font-size: 80px; letter-spacing: 10px; }
       }
 
       @media (max-width: 700px) {
@@ -601,12 +594,12 @@ import { of } from 'rxjs';
         .signature { width: 100%; }
         .sign-line { width: 60px; }
         .cert-footer { flex-direction: column; gap: 4px; text-align: center; font-size: 10px; }
-        .watermark { display: none; }
         .header-line { margin: 10px auto 0 auto; }
         .org-country { font-size: 10px; letter-spacing: 5px; }
         .org-slogan { font-size: 9px; letter-spacing: 2px; }
         .project-label { font-size: 13px; }
         .cert-header { margin-bottom: 4px; }
+        .watermark-text { display: none; }
       }
 
       /* ==========================================================
@@ -780,7 +773,7 @@ export class PublicVerificationComponent implements OnInit {
   }
 
   // ================================================================
-  //  MÉTODO downloadPDF DEFINITIVO (con clonación y eliminación de elementos problemáticos)
+  //  MÉTODO downloadPDF DEFINITIVO (con clonación, sin SVG)
   // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
@@ -792,7 +785,7 @@ export class PublicVerificationComponent implements OnInit {
       const container = document.getElementById('certificate-container');
       if (!container) throw new Error('Contenedor no encontrado');
 
-      // Clonar el contenedor para no afectar el DOM original
+      // Clonar el contenedor
       const clone = container.cloneNode(true) as HTMLElement;
       clone.style.position = 'fixed';
       clone.style.left = '-9999px';
@@ -803,28 +796,7 @@ export class PublicVerificationComponent implements OnInit {
       clone.style.zIndex = '-9999';
       document.body.appendChild(clone);
 
-      // Eliminar elementos con dimensiones cero (causan el error createPattern)
-      const allElements = clone.querySelectorAll('*');
-      allElements.forEach(el => {
-        const rect = (el as HTMLElement).getBoundingClientRect();
-        if (rect.width === 0 && rect.height === 0) {
-          (el as HTMLElement).style.display = 'none';
-        }
-      });
-
-      // Asegurar que la marca de agua tenga dimensiones válidas
-      const watermark = clone.querySelector('.watermark') as HTMLElement;
-      if (watermark) {
-        watermark.style.width = '180px';
-        watermark.style.height = '240px';
-        const svg = watermark.querySelector('svg');
-        if (svg) {
-          svg.setAttribute('width', '180');
-          svg.setAttribute('height', '240');
-        }
-      }
-
-      // Capturar el clon
+      // Capturar el clon (ya no hay SVG problemático)
       const canvas = await html2canvas(clone, {
         scale: 2.5,
         useCORS: true,
@@ -835,7 +807,6 @@ export class PublicVerificationComponent implements OnInit {
         allowTaint: false
       });
 
-      // Remover el clon del DOM
       document.body.removeChild(clone);
 
       if (canvas.width === 0 || canvas.height === 0) {
