@@ -59,7 +59,9 @@ import { of } from 'rxjs';
               <!-- ===== ENCABEZADO ===== -->
               <div class="cert-header">
                 <div class="org">
-                  <span class="org-name">Rural <span class="steam-color">STEAM</span> Lab</span>
+                  <span class="org-name">
+                    Rural <span class="steam-multicolor"><span class="s">S</span><span class="t">T</span><span class="e">E</span><span class="a">A</span><span class="m">M</span></span> Lab
+                  </span>
                   <span class="org-country">COLOMBIA</span>
                   <span class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</span>
                 </div>
@@ -244,14 +246,14 @@ import { of } from 'rxjs';
       .certificate {
         position: relative;
         background: #FAF8F2;
-        padding: 60px 60px 40px 60px;
+        padding: 45px 55px 35px 55px;
         border-radius: 8px;
         border: 1px solid #D8C9A6;
         box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         color: #202124;
         overflow: hidden;
-        min-height: 520px;
+        min-height: 500px;
         aspect-ratio: 16 / 9;
         display: flex;
         flex-direction: column;
@@ -295,9 +297,10 @@ import { of } from 'rxjs';
       ========================================================= */
       .cert-header {
         text-align: center;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .org {
         display: flex;
@@ -307,27 +310,25 @@ import { of } from 'rxjs';
       }
       .org-name {
         font-family: 'Cinzel', serif;
-        font-size: 32px;
+        font-size: 34px;
         font-weight: 700;
         letter-spacing: 4px;
         color: #1E5631;
         text-transform: uppercase;
       }
-      .org-name .steam-color {
+      .org-name .steam-multicolor {
         font-weight: 700;
-      }
-      .org-name .steam-color span {
         display: inline-block;
       }
-      .org-name .steam-color .s { color: #1976d2; }
-      .org-name .steam-color .t { color: #00bcd4; }
-      .org-name .steam-color .e { color: #fdd835; }
-      .org-name .steam-color .a { color: #f57c00; }
-      .org-name .steam-color .m { color: #388e3c; }
+      .org-name .steam-multicolor .s { color: #1976d2; }
+      .org-name .steam-multicolor .t { color: #00bcd4; }
+      .org-name .steam-multicolor .e { color: #fdd835; }
+      .org-name .steam-multicolor .a { color: #f57c00; }
+      .org-name .steam-multicolor .m { color: #388e3c; }
 
       .org-country {
         font-family: 'Inter', sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         letter-spacing: 10px;
         color: #666;
@@ -336,7 +337,7 @@ import { of } from 'rxjs';
       }
       .org-slogan {
         font-family: 'Inter', sans-serif;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 400;
         letter-spacing: 3px;
         color: #999;
@@ -347,8 +348,8 @@ import { of } from 'rxjs';
         width: 80px;
         height: 1px;
         background: #C8A24A;
-        margin: 16px auto 0 auto;
-        opacity: 0.5;
+        margin: 14px auto 0 auto;
+        opacity: 0.4;
       }
 
       /* ==========================================================
@@ -363,23 +364,23 @@ import { of } from 'rxjs';
         text-align: center;
         position: relative;
         z-index: 1;
-        gap: 6px;
-        padding: 8px 0;
+        gap: 4px;
+        padding: 6px 0;
       }
 
       .certifies {
         font-family: 'Cinzel', serif;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 600;
         letter-spacing: 6px;
         color: #666;
         text-transform: uppercase;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
       }
 
       .student-name {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 60px;
+        font-size: 58px;
         font-weight: 600;
         font-style: italic;
         color: #1E5631;
@@ -390,15 +391,15 @@ import { of } from 'rxjs';
 
       .project-label {
         font-family: 'Inter', sans-serif;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 400;
         color: #666;
-        margin-top: 4px;
+        margin-top: 2px;
       }
 
       .project-name {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 36px;
+        font-size: 34px;
         font-weight: 600;
         font-style: italic;
         color: #2E7D32;
@@ -416,11 +417,11 @@ import { of } from 'rxjs';
 
       .project-text {
         font-family: 'Inter', sans-serif;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 400;
         color: #666;
         max-width: 80%;
-        line-height: 1.6;
+        line-height: 1.5;
         margin: 2px 0;
       }
       .project-text strong {
@@ -430,12 +431,12 @@ import { of } from 'rxjs';
 
       .recognition {
         font-family: 'Inter', sans-serif;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         letter-spacing: 3px;
         color: #C8A24A;
         text-transform: uppercase;
-        margin-top: 6px;
+        margin-top: 4px;
         padding: 0 20px;
       }
 
@@ -444,7 +445,7 @@ import { of } from 'rxjs';
       ========================================================= */
       .tech-section {
         position: absolute;
-        left: 40px;
+        left: 35px;
         top: 50%;
         transform: translateY(-50%);
         width: 120px;
@@ -453,7 +454,7 @@ import { of } from 'rxjs';
         flex-direction: column;
         gap: 4px;
         border-right: 1px solid rgba(216,201,166,0.3);
-        padding-right: 16px;
+        padding-right: 14px;
       }
       .tech-item {
         text-align: left;
@@ -501,12 +502,13 @@ import { of } from 'rxjs';
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        padding-top: 16px;
+        padding-top: 14px;
         border-top: 1px solid rgba(216,201,166,0.3);
         position: relative;
         z-index: 1;
         gap: 20px;
-        margin-top: 8px;
+        margin-top: 6px;
+        flex-shrink: 0;
       }
       .signature {
         text-align: center;
@@ -545,15 +547,16 @@ import { of } from 'rxjs';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 12px;
+        padding-top: 10px;
         border-top: 1px solid rgba(216,201,166,0.15);
         font-family: 'Inter', sans-serif;
         font-size: 11px;
         color: #999;
         position: relative;
         z-index: 1;
-        margin-top: 4px;
+        margin-top: 2px;
         letter-spacing: 0.3px;
+        flex-shrink: 0;
       }
       .cert-footer .footer-url {
         font-weight: 500;
@@ -566,13 +569,13 @@ import { of } from 'rxjs';
          RESPONSIVE
       ========================================================= */
       @media (max-width: 900px) {
-        .certificate { padding: 40px 30px 30px 30px; min-height: 400px; }
-        .tech-section { left: 20px; width: 90px; }
+        .certificate { padding: 35px 30px 25px 30px; min-height: 400px; }
+        .tech-section { left: 18px; width: 90px; }
         .tech-value { font-size: 9px; }
         .tech-label { font-size: 7px; }
         .student-name { font-size: 44px; }
         .project-name { font-size: 28px; }
-        .org-name { font-size: 26px; }
+        .org-name { font-size: 28px; letter-spacing: 3px; }
         .project-text { font-size: 15px; max-width: 90%; }
         .certifies { font-size: 15px; }
         .recognition { font-size: 13px; }
@@ -580,14 +583,17 @@ import { of } from 'rxjs';
         .sign-role { font-size: 9px; }
         .sign-line { width: 60px; }
         .watermark { width: 120px; height: 160px; }
+        .org-country { font-size: 11px; letter-spacing: 7px; }
+        .org-slogan { font-size: 10px; letter-spacing: 2px; }
+        .project-label { font-size: 15px; }
       }
 
       @media (max-width: 700px) {
         .tech-section { display: none; }
-        .certificate { padding: 30px 20px 20px 20px; min-height: 350px; }
+        .certificate { padding: 25px 18px 18px 18px; min-height: 320px; }
         .student-name { font-size: 34px; }
         .project-name { font-size: 22px; }
-        .org-name { font-size: 20px; }
+        .org-name { font-size: 22px; letter-spacing: 2px; }
         .project-text { font-size: 13px; max-width: 100%; }
         .certifies { font-size: 12px; letter-spacing: 3px; }
         .recognition { font-size: 11px; letter-spacing: 1px; }
@@ -597,9 +603,10 @@ import { of } from 'rxjs';
         .cert-footer { flex-direction: column; gap: 4px; text-align: center; font-size: 10px; }
         .watermark { display: none; }
         .header-line { margin: 10px auto 0 auto; }
-        .org-country { font-size: 11px; letter-spacing: 6px; }
-        .org-slogan { font-size: 10px; letter-spacing: 2px; }
-        .project-label { font-size: 14px; }
+        .org-country { font-size: 10px; letter-spacing: 5px; }
+        .org-slogan { font-size: 9px; letter-spacing: 2px; }
+        .project-label { font-size: 13px; }
+        .cert-header { margin-bottom: 4px; }
       }
 
       /* ==========================================================
