@@ -30,7 +30,7 @@ import { of } from 'rxjs';
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
 
-      <!-- Certificado Oficial (vista previa y PDF unificados) -->
+      <!-- Certificado Premium -->
       <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
@@ -38,84 +38,107 @@ import { of } from 'rxjs';
           <p class="subtitle">Rural STEAM Lab · Biblioteca Viva</p>
         </div>
 
-        <!-- Contenedor del certificado (se usa tanto para vista como para PDF) -->
         <div class="certificate-preview" id="certificate-container">
           <div class="certificate-wrapper">
             <div class="certificate">
-              <!-- Encabezado con STEAM multicolor -->
+
+              <!-- ===== FONDO PREMIUM ===== -->
+              <div class="bg-premium"></div>
+
+              <!-- ===== MARCA DE AGUA ===== -->
+              <div class="watermark">
+                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 30 L200 30 L220 90 L240 150 Q240 280 150 280 Q60 280 60 150 L80 90 Z" fill="none" stroke="#1E5631" stroke-width="2"/>
+                  <path d="M130 100 Q160 70 190 100 Q160 130 130 100" fill="#1E5631" opacity="0.6"/>
+                  <path d="M115 130 Q150 100 185 130 Q150 160 115 130" fill="#1E5631" opacity="0.8"/>
+                  <circle cx="70" cy="70" r="4" fill="#1E5631" opacity="0.5"/>
+                  <circle cx="230" cy="80" r="3" fill="#1E5631" opacity="0.5"/>
+                </svg>
+              </div>
+
+              <!-- ===== ENCABEZADO ===== -->
               <div class="cert-header">
-                <div class="org-name">
-                  Rural 
-                  <span class="steam-color">
-                    <span class="s">S</span><span class="t">T</span><span class="e">E</span><span class="a">A</span><span class="m">M</span>
-                  </span>
-                  Lab
+                <div class="org">
+                  <span class="org-name">Rural <span class="steam-color">STEAM</span> Lab</span>
+                  <span class="org-country">COLOMBIA</span>
+                  <span class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</span>
                 </div>
-                <div class="org-country">Colombia</div>
-                <div class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</div>
+                <div class="header-line"></div>
               </div>
 
-              <hr class="cert-divider">
+              <!-- ===== CUERPO ===== -->
+              <div class="cert-body">
 
-              <div class="cert-title">CERTIFICA QUE</div>
+                <div class="certifies">CERTIFICA QUE</div>
 
-              <div class="cert-student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
+                <div class="student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
 
-              <div class="cert-description">
-                ha desarrollado y publicado exitosamente el proyecto
+                <div class="project-label">ha desarrollado y publicado exitosamente el proyecto</div>
+
+                <div class="project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
+                <div class="project-line"></div>
+
+                <div class="project-text">
+                  en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, pensamiento científico, innovación y compromiso con la transformación digital de la educación.
+                </div>
+
+                <div class="recognition">{{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}</div>
+
               </div>
 
-              <div class="cert-project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
-
-              <div class="cert-text">
-                en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, compromiso, pensamiento científico y espíritu de innovación.
+              <!-- ===== SECCIÓN TÉCNICA ===== -->
+              <div class="tech-section">
+                <div class="tech-item">
+                  <span class="tech-label">ID de Certificado</span>
+                  <span class="tech-value">{{ credential.credentialNumber || getCertId(credential, project) }}</span>
+                </div>
+                <div class="tech-divider"></div>
+                <div class="tech-item">
+                  <span class="tech-label">Código de Verificación</span>
+                  <span class="tech-value">{{ credential.verificationCode || 'A1B2-C3D4-E5F6' }}</span>
+                </div>
+                <div class="tech-divider"></div>
+                <div class="tech-item">
+                  <span class="tech-label">Estado</span>
+                  <span class="tech-value status">VERIFICADO</span>
+                </div>
+                <div class="tech-divider"></div>
+                <div class="tech-item">
+                  <span class="tech-label">Emitido</span>
+                  <span class="tech-value">{{ getFormattedDate(credential.issueDate) }}</span>
+                </div>
+                <div class="tech-divider"></div>
+                <div class="tech-item">
+                  <span class="tech-label">Verificar en</span>
+                  <span class="tech-value url">tellus.ruralsteamlab.com/verificar</span>
+                </div>
               </div>
 
-              <div class="cert-recognition">
-                {{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}
-              </div>
-
-              <div class="cert-date">
-                Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong>
-              </div>
-
-              <!-- Firmas -->
-              <div class="cert-signatures">
+              <!-- ===== FIRMAS ===== -->
+              <div class="signatures">
                 <div class="signature">
                   <div class="sign-line"></div>
                   <div class="sign-name">Henson Alberto Medina Castillo</div>
-                  <div class="sign-role">Liderazgo Tecnológico y Desarrollo</div>
+                  <div class="sign-role">Director General</div>
                 </div>
                 <div class="signature">
                   <div class="sign-line"></div>
                   <div class="sign-name">Uberto Manuel Gómez López</div>
-                  <div class="sign-role">Liderazgo Académico e Investigación</div>
+                  <div class="sign-role">Director Académico</div>
                 </div>
                 <div class="signature">
                   <div class="sign-line"></div>
                   <div class="sign-name">Diana Marcela Alfonso Montañez</div>
-                  <div class="sign-role">Liderazgo de Implementación y Calidad</div>
+                  <div class="sign-role">Directora de Operaciones</div>
                 </div>
               </div>
 
-              <!-- ID y Código -->
+              <!-- ===== PIE ===== -->
               <div class="cert-footer">
-                <div class="cert-id">
-                  <span class="label">ID de Certificado</span>
-                  <span class="value">{{ credential.credentialNumber || getCertId(credential, project) }}</span>
-                </div>
-                <div class="cert-code">
-                  <span class="label">Código de Verificación</span>
-                  <span class="value">{{ credential.verificationCode || 'A1B2-C3D4-E5F6' }}</span>
-                </div>
+                <span>Documento verificable digitalmente</span>
+                <span class="footer-url">tellus.ruralsteamlab.com/verificar</span>
               </div>
 
-              <!-- Pie -->
-              <div class="cert-bottom">
-                <span>VERIFICA ESTE CERTIFICADO EN</span>
-                <span class="url">tellus.ruralsteamlab.com/verificar</span>
-                <span>ECOSISTEMA TELLUS</span>
-              </div>
             </div>
           </div>
         </div>
@@ -134,7 +157,7 @@ import { of } from 'rxjs';
   styles: [
     `
       /* ==========================================================
-         CONTENEDOR PRINCIPAL (fondo oscuro)
+         CONTENEDOR PRINCIPAL
       ========================================================= */
       .verification-container {
         min-height: 100vh;
@@ -148,44 +171,26 @@ import { of } from 'rxjs';
         color: #fff;
       }
 
-      /* ==========================================================
-         LOADING & ERROR
-      ========================================================= */
-      .loading-state,
-      .error-state {
+      .loading-state, .error-state {
         text-align: center;
         padding: 40px;
       }
       .spinner {
         width: 48px;
         height: 48px;
-        border: 4px solid rgba(255, 255, 255, 0.1);
+        border: 4px solid rgba(255,255,255,0.1);
         border-top-color: #4cff9c;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
         margin: 0 auto 16px;
       }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      .error-state .error-icon {
-        font-size: 48px;
-        display: block;
-        margin-bottom: 16px;
-      }
-      .error-state h2 {
-        font-size: 24px;
-        margin: 8px 0;
-      }
-      .error-state p {
-        color: rgba(255, 255, 255, 0.6);
-      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .error-state .error-icon { font-size: 48px; display: block; margin-bottom: 16px; }
+      .error-state h2 { font-size: 24px; margin: 8px 0; }
+      .error-state p { color: rgba(255,255,255,0.6); }
 
-      /* ==========================================================
-         HEADER
-      ========================================================= */
       .credential-found {
-        max-width: 820px;
+        max-width: 1100px;
         width: 100%;
       }
       .header {
@@ -194,8 +199,8 @@ import { of } from 'rxjs';
       }
       .verified-badge {
         display: inline-block;
-        background: rgba(76, 255, 156, 0.12);
-        border: 1px solid rgba(76, 255, 156, 0.2);
+        background: rgba(76,255,156,0.12);
+        border: 1px solid rgba(76,255,156,0.2);
         padding: 4px 16px;
         border-radius: 40px;
         font-size: 13px;
@@ -214,14 +219,14 @@ import { of } from 'rxjs';
       }
       .header .subtitle {
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255,255,255,0.3);
         letter-spacing: 2px;
         text-transform: uppercase;
         font-weight: 300;
       }
 
       /* ==========================================================
-         CERTIFICADO OFICIAL (vista previa)
+         CERTIFICADO PREMIUM
       ========================================================= */
       .certificate-preview {
         margin: 20px 0;
@@ -229,203 +234,372 @@ import { of } from 'rxjs';
         justify-content: center;
       }
       .certificate-wrapper {
-        background: #ffffff;
-        padding: 30px 20px;
-        border-radius: 12px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        background: #FAF8F2;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.08);
         width: 100%;
-        max-width: 750px;
+        max-width: 1050px;
       }
       .certificate {
-        border: 3px double #1a2e1a;
+        position: relative;
+        background: #FAF8F2;
+        padding: 60px 60px 40px 60px;
         border-radius: 8px;
-        padding: 30px 35px;
-        background: #fffcf9;
-        text-align: center;
-        font-family: Georgia, 'Times New Roman', serif;
-        color: #1a2e1a;
+        border: 1px solid #D8C9A6;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #202124;
+        overflow: hidden;
+        min-height: 520px;
+        aspect-ratio: 16 / 9;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
-      /* --- Encabezado --- */
-      .cert-header .org-name {
-        font-size: 2.2rem;
+      /* ===== FONDO PREMIUM ===== */
+      .bg-premium {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(circle at 20% 30%, rgba(200,200,200,0.03) 0%, transparent 60%),
+          radial-gradient(circle at 80% 70%, rgba(200,200,200,0.03) 0%, transparent 60%),
+          repeating-linear-gradient(45deg, rgba(200,200,200,0.01) 0px, rgba(200,200,200,0.01) 2px, transparent 2px, transparent 8px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ===== MARCA DE AGUA ===== */
+      .watermark {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 180px;
+        height: 240px;
+        opacity: 0.04;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .watermark svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ==========================================================
+         ENCABEZADO
+      ========================================================= */
+      .cert-header {
+        text-align: center;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+      }
+      .org {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .org-name {
+        font-family: 'Cinzel', serif;
+        font-size: 32px;
         font-weight: 700;
-        letter-spacing: 3px;
+        letter-spacing: 4px;
+        color: #1E5631;
         text-transform: uppercase;
       }
       .org-name .steam-color {
-        font-weight: 800;
+        font-weight: 700;
       }
-      .org-name .s { color: #1976d2; }  /* Azul */
-      .org-name .t { color: #00bcd4; }  /* Celeste */
-      .org-name .e { color: #fdd835; }  /* Amarillo */
-      .org-name .a { color: #f57c00; }  /* Naranja */
-      .org-name .m { color: #388e3c; }  /* Verde */
+      .org-name .steam-color span {
+        display: inline-block;
+      }
+      .org-name .steam-color .s { color: #1976d2; }
+      .org-name .steam-color .t { color: #00bcd4; }
+      .org-name .steam-color .e { color: #fdd835; }
+      .org-name .steam-color .a { color: #f57c00; }
+      .org-name .steam-color .m { color: #388e3c; }
 
-      .cert-header .org-country {
-        font-size: 0.9rem;
-        color: #5a7a5a;
-        letter-spacing: 8px;
+      .org-country {
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 10px;
+        color: #666;
         text-transform: uppercase;
-        font-weight: 600;
         margin-top: 2px;
       }
-      .cert-header .org-slogan {
-        font-size: 0.8rem;
-        color: #2a4a2a;
+      .org-slogan {
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
         letter-spacing: 3px;
+        color: #999;
         text-transform: uppercase;
-        font-weight: 500;
-        margin-top: 6px;
-        border-top: 1px solid #d4c8b0;
-        padding-top: 6px;
-        display: inline-block;
-        padding-left: 20px;
-        padding-right: 20px;
+        margin-top: 2px;
+      }
+      .header-line {
+        width: 80px;
+        height: 1px;
+        background: #C8A24A;
+        margin: 16px auto 0 auto;
+        opacity: 0.5;
       }
 
-      .cert-divider {
-        border: none;
-        border-top: 2px solid #1a2e1a;
-        margin: 12px 0 20px 0;
-        width: 60%;
+      /* ==========================================================
+         CUERPO CENTRAL
+      ========================================================= */
+      .cert-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        gap: 6px;
+        padding: 8px 0;
       }
 
-      .cert-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-        letter-spacing: 4px;
+      .certifies {
+        font-family: 'Cinzel', serif;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 6px;
+        color: #666;
         text-transform: uppercase;
-        margin: 8px 0 16px 0;
+        margin-bottom: 4px;
       }
 
-      .cert-student-name {
-        font-size: 2.6rem;
-        font-weight: 700;
-        color: #0a1a0a;
-        letter-spacing: 1px;
-        margin: 8px 0;
-      }
-
-      .cert-description {
-        font-size: 1.1rem;
-        color: #2a3a2a;
-        margin: 16px 0 8px 0;
-        line-height: 1.6;
-      }
-
-      .cert-project-name {
-        font-size: 1.8rem;
-        font-weight: 700;
+      .student-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 60px;
+        font-weight: 600;
         font-style: italic;
-        margin: 6px 0 12px 0;
-        border-bottom: 1px solid #d4c8b0;
-        padding-bottom: 10px;
-        display: inline-block;
+        color: #1E5631;
+        line-height: 1.1;
+        letter-spacing: 1px;
+        margin: 2px 0;
       }
 
-      .cert-text {
-        font-size: 1.0rem;
-        color: #3a4a3a;
-        margin: 12px 0 8px 0;
+      .project-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        color: #666;
+        margin-top: 4px;
       }
 
-      .cert-recognition {
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: 2px;
+      .project-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 36px;
+        font-weight: 600;
+        font-style: italic;
+        color: #2E7D32;
+        margin: 2px 0 0 0;
+        line-height: 1.2;
+      }
+
+      .project-line {
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #C8A24A, transparent);
+        margin: 4px auto 6px auto;
+        opacity: 0.5;
+      }
+
+      .project-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        color: #666;
+        max-width: 80%;
+        line-height: 1.6;
+        margin: 2px 0;
+      }
+      .project-text strong {
+        color: #1E5631;
+        font-weight: 600;
+      }
+
+      .recognition {
+        font-family: 'Inter', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        color: #C8A24A;
         text-transform: uppercase;
-        margin: 18px 0 12px 0;
-        padding: 8px 20px;
-        border: 1px solid #1a2e1a;
-        display: inline-block;
+        margin-top: 6px;
+        padding: 0 20px;
       }
 
-      .cert-date {
-        font-size: 1.0rem;
-        color: #3a4a3a;
-        margin: 16px 0 20px 0;
+      /* ==========================================================
+         SECCIÓN TÉCNICA
+      ========================================================= */
+      .tech-section {
+        position: absolute;
+        left: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 120px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-right: 1px solid rgba(216,201,166,0.3);
+        padding-right: 16px;
+      }
+      .tech-item {
+        text-align: left;
+        padding: 2px 0;
+      }
+      .tech-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: #999;
+        display: block;
+        font-weight: 500;
+      }
+      .tech-value {
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-size: 11px;
+        font-weight: 500;
+        color: #202124;
+        display: block;
+        word-break: break-word;
+        line-height: 1.2;
+        opacity: 0.8;
+      }
+      .tech-value.status {
+        color: #2E7D32;
+        font-weight: 600;
+        opacity: 1;
+      }
+      .tech-value.url {
+        font-size: 9px;
+        opacity: 0.5;
+        font-weight: 400;
+      }
+      .tech-divider {
+        border: none;
+        border-top: 0.5px solid rgba(216,201,166,0.2);
+        margin: 1px 0;
       }
 
-      /* --- Firmas --- */
-      .cert-signatures {
+      /* ==========================================================
+         FIRMAS
+      ========================================================= */
+      .signatures {
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        margin: 24px 0 20px 0;
         padding-top: 16px;
-        border-top: 1px solid #d4c8b0;
-        flex-wrap: wrap;
+        border-top: 1px solid rgba(216,201,166,0.3);
+        position: relative;
+        z-index: 1;
         gap: 20px;
+        margin-top: 8px;
       }
       .signature {
         text-align: center;
         flex: 1;
-        min-width: 140px;
+        min-width: 120px;
       }
       .sign-line {
-        width: 160px;
-        height: 1px;
-        border-bottom: 2px solid #1a2e1a;
-        margin: 0 auto 6px;
+        width: 80px;
+        height: 1.5px;
+        background: linear-gradient(90deg, #C8A24A, #d4af37);
+        margin: 0 auto 4px auto;
+        opacity: 0.4;
+        border-radius: 2px;
       }
       .sign-name {
-        font-size: 0.8rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #202124;
+        letter-spacing: 0.3px;
+        opacity: 0.8;
       }
       .sign-role {
-        font-size: 0.65rem;
-        color: #5a7a5a;
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        color: #999;
         text-transform: uppercase;
         letter-spacing: 1px;
+        font-weight: 400;
       }
 
-      /* --- ID y Código --- */
+      /* ==========================================================
+         PIE
+      ========================================================= */
       .cert-footer {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin: 16px 0 12px 0;
-        padding-top: 12px;
-        border-top: 1px solid #d4c8b0;
-        flex-wrap: wrap;
-      }
-      .cert-id, .cert-code {
-        text-align: center;
-      }
-      .cert-footer .label {
-        font-size: 0.65rem;
-        color: #5a7a5a;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        display: block;
-      }
-      .cert-footer .value {
-        font-size: 0.95rem;
-        font-weight: 700;
-        font-family: 'Courier New', monospace;
-        display: block;
-        margin-top: 2px;
-      }
-
-      /* --- Pie --- */
-      .cert-bottom {
-        font-size: 0.8rem;
-        color: #5a7a5a;
-        margin-top: 14px;
-        padding-top: 10px;
-        border-top: 1px solid #d4c8b0;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(216,201,166,0.15);
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        color: #999;
+        position: relative;
+        z-index: 1;
+        margin-top: 4px;
+        letter-spacing: 0.3px;
       }
-      .cert-bottom .url {
-        font-weight: 700;
-        color: #1a2e1a;
+      .cert-footer .footer-url {
+        font-weight: 500;
+        color: #1E5631;
         letter-spacing: 0.5px;
+        opacity: 0.6;
+      }
+
+      /* ==========================================================
+         RESPONSIVE
+      ========================================================= */
+      @media (max-width: 900px) {
+        .certificate { padding: 40px 30px 30px 30px; min-height: 400px; }
+        .tech-section { left: 20px; width: 90px; }
+        .tech-value { font-size: 9px; }
+        .tech-label { font-size: 7px; }
+        .student-name { font-size: 44px; }
+        .project-name { font-size: 28px; }
+        .org-name { font-size: 26px; }
+        .project-text { font-size: 15px; max-width: 90%; }
+        .certifies { font-size: 15px; }
+        .recognition { font-size: 13px; }
+        .sign-name { font-size: 12px; }
+        .sign-role { font-size: 9px; }
+        .sign-line { width: 60px; }
+        .watermark { width: 120px; height: 160px; }
+      }
+
+      @media (max-width: 700px) {
+        .tech-section { display: none; }
+        .certificate { padding: 30px 20px 20px 20px; min-height: 350px; }
+        .student-name { font-size: 34px; }
+        .project-name { font-size: 22px; }
+        .org-name { font-size: 20px; }
+        .project-text { font-size: 13px; max-width: 100%; }
+        .certifies { font-size: 12px; letter-spacing: 3px; }
+        .recognition { font-size: 11px; letter-spacing: 1px; }
+        .signatures { flex-direction: column; align-items: center; gap: 8px; }
+        .signature { width: 100%; }
+        .sign-line { width: 60px; }
+        .cert-footer { flex-direction: column; gap: 4px; text-align: center; font-size: 10px; }
+        .watermark { display: none; }
+        .header-line { margin: 10px auto 0 auto; }
+        .org-country { font-size: 11px; letter-spacing: 6px; }
+        .org-slogan { font-size: 10px; letter-spacing: 2px; }
+        .project-label { font-size: 14px; }
       }
 
       /* ==========================================================
@@ -438,8 +612,7 @@ import { of } from 'rxjs';
         justify-content: center;
         margin-top: 20px;
       }
-      .btn-primary,
-      .btn-secondary {
+      .btn-primary, .btn-secondary {
         padding: 12px 28px;
         border: none;
         border-radius: 40px;
@@ -452,72 +625,26 @@ import { of } from 'rxjs';
       .btn-primary {
         background: linear-gradient(135deg, #4cff9c 0%, #28a745 100%);
         color: #0a0a1a;
-        box-shadow: 0 4px 20px rgba(76, 255, 156, 0.2);
+        box-shadow: 0 4px 20px rgba(76,255,156,0.2);
       }
       .btn-primary:hover {
         transform: scale(1.02);
-        box-shadow: 0 8px 30px rgba(76, 255, 156, 0.3);
+        box-shadow: 0 8px 30px rgba(76,255,156,0.3);
       }
       .btn-secondary {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: rgba(255, 255, 255, 0.6);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.6);
       }
       .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.15);
       }
-
       .footer-text {
         margin-top: 24px;
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.2);
+        color: rgba(255,255,255,0.2);
         text-align: center;
-      }
-
-      /* ==========================================================
-         RESPONSIVE
-      ========================================================= */
-      @media (max-width: 600px) {
-        .verification-container {
-          padding: 20px 12px;
-        }
-        .certificate-wrapper {
-          padding: 15px 10px;
-        }
-        .certificate {
-          padding: 20px 15px;
-        }
-        .cert-header .org-name {
-          font-size: 1.6rem;
-        }
-        .cert-title {
-          font-size: 1.2rem;
-        }
-        .cert-student-name {
-          font-size: 2rem;
-        }
-        .cert-project-name {
-          font-size: 1.4rem;
-        }
-        .sign-line {
-          width: 100px;
-        }
-        .cert-footer {
-          gap: 20px;
-        }
-        .cert-bottom {
-          flex-direction: column;
-          text-align: center;
-        }
-        .cert-signatures {
-          flex-direction: column;
-          align-items: center;
-        }
-        .signature {
-          min-width: auto;
-          width: 100%;
-        }
       }
     `
   ]
@@ -539,7 +666,6 @@ export class PublicVerificationComponent implements OnInit {
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
-    console.log('🔍 [PublicVerification] UUID recibido:', uuid);
     if (!uuid) {
       this.error = 'No se especificó un código de verificación.';
       this.errorTitle = 'Código faltante';
@@ -551,12 +677,11 @@ export class PublicVerificationComponent implements OnInit {
   }
 
   private loadCredential(uuid: string): void {
-    console.log('🔍 [PublicVerification] Buscando credencial con UUID:', uuid);
     this.credentialService.getCredentialByUuid(uuid)
       .pipe(
         timeout(15000),
         catchError(err => {
-          console.error('❌ [PublicVerification] Error en la petición:', err);
+          console.error(err);
           this.error = '⚠️ Error de conexión. Verifica tu internet e intenta de nuevo.';
           this.errorTitle = 'Error de conexión';
           this.loading = false;
@@ -566,7 +691,6 @@ export class PublicVerificationComponent implements OnInit {
       )
       .subscribe({
         next: (cred) => {
-          console.log('📄 [PublicVerification] Credencial obtenida:', cred);
           if (!cred) {
             this.error = '❌ Credencial no encontrada. Verifica el código.';
             this.errorTitle = 'No encontrada';
@@ -575,11 +699,10 @@ export class PublicVerificationComponent implements OnInit {
             return;
           }
           this.credential = cred;
-          console.log('✅ [PublicVerification] Credencial cargada, projectId:', cred.projectId);
           this.loadProject(cred.projectId);
         },
         error: (err) => {
-          console.error('❌ [PublicVerification] Error al verificar:', err);
+          console.error(err);
           this.error = '⚠️ Error al verificar la credencial. Intenta de nuevo.';
           this.errorTitle = 'Error interno';
           this.loading = false;
@@ -590,19 +713,17 @@ export class PublicVerificationComponent implements OnInit {
 
   private loadProject(projectId: string): void {
     if (!projectId) {
-      console.warn('⚠️ [PublicVerification] No hay projectId');
       this.error = 'La credencial no tiene un proyecto asociado.';
       this.errorTitle = 'Proyecto faltante';
       this.loading = false;
       this.cdr.detectChanges();
       return;
     }
-    console.log('🔍 [PublicVerification] Buscando proyecto con ID:', projectId);
     this.projectService.getProject(projectId)
       .pipe(
         timeout(10000),
         catchError(err => {
-          console.error('❌ [PublicVerification] Error al obtener proyecto:', err);
+          console.error(err);
           this.error = '⚠️ Error al cargar el proyecto asociado.';
           this.errorTitle = 'Error al cargar proyecto';
           this.loading = false;
@@ -612,9 +733,7 @@ export class PublicVerificationComponent implements OnInit {
       )
       .subscribe({
         next: (project) => {
-          console.log('📄 [PublicVerification] Proyecto obtenido:', project);
           if (!project) {
-            console.warn('⚠️ [PublicVerification] Proyecto no encontrado con ID:', projectId);
             this.error = 'El proyecto asociado a esta credencial ya no existe.';
             this.errorTitle = 'Proyecto eliminado';
             this.loading = false;
@@ -623,11 +742,10 @@ export class PublicVerificationComponent implements OnInit {
           }
           this.project = project;
           this.loading = false;
-          console.log('✅ [PublicVerification] Carga completada');
           this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error('❌ [PublicVerification] Error al cargar proyecto:', err);
+          console.error(err);
           this.error = '⚠️ Error al cargar el proyecto asociado.';
           this.errorTitle = 'Error al cargar proyecto';
           this.loading = false;
@@ -640,13 +758,10 @@ export class PublicVerificationComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  // ================================================================
-  //  MÉTODOS AUXILIARES PARA EL CERTIFICADO
-  // ================================================================
   getFormattedDate(dateValue: any): string {
     if (!dateValue) return new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
     const date = new Date(dateValue);
-    return `${date.getDate().toString().padStart(2, '0')} de ${date.toLocaleString('es-ES', { month: 'long' })} de ${date.getFullYear()}`;
+    return `${date.getDate().toString().padStart(2, '0')} ${date.toLocaleString('es-ES', { month: 'long' })} ${date.getFullYear()}`;
   }
 
   getCertId(credential: Credential, project: Project): string {
@@ -657,39 +772,34 @@ export class PublicVerificationComponent implements OnInit {
     return `RSL-${year}-${month}${day}-${suffix}`;
   }
 
-  // ================================================================
-  //  GENERAR PDF (capturando el mismo contenedor visible)
-  // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
       alert('No hay datos para generar el PDF.');
       return;
     }
     try {
-      console.log('📄 [PublicVerification] Generando certificado oficial...');
       const container = document.getElementById('certificate-container');
       if (!container) throw new Error('Contenedor no encontrado');
 
-      // Capturar el contenedor (escala alta)
       const canvas = await html2canvas(container, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#FAF8F2',
+        width: container.scrollWidth,
+        height: container.scrollHeight
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: 'landscape',
         unit: 'px',
         format: [canvas.width / 2, canvas.height / 2]
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`Certificado-${this.project.title.replace(/\s+/g, '-')}.pdf`);
-
-      console.log('✅ [PublicVerification] PDF descargado');
     } catch (error) {
-      console.error('❌ [PublicVerification] Error al generar PDF:', error);
+      console.error('Error al generar PDF:', error);
       alert('Error al generar el PDF. Intenta de nuevo.');
     }
   }
