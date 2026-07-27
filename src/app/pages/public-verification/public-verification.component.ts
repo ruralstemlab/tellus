@@ -780,7 +780,7 @@ export class PublicVerificationComponent implements OnInit {
   }
 
   // ================================================================
-  //  MÉTODO downloadPDF MEJORADO
+  //  MÉTODO downloadPDF DEFINITIVO (con clonación y eliminación de elementos problemáticos)
   // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
@@ -789,51 +789,59 @@ export class PublicVerificationComponent implements OnInit {
     }
 
     try {
-      console.log('📄 [downloadPDF] Iniciando...');
-
       const container = document.getElementById('certificate-container');
-      if (!container) {
-        throw new Error('❌ Contenedor #certificate-container no encontrado');
+      if (!container) throw new Error('Contenedor no encontrado');
+
+      // Clonar el contenedor para no afectar el DOM original
+      const clone = container.cloneNode(true) as HTMLElement;
+      clone.style.position = 'fixed';
+      clone.style.left = '-9999px';
+      clone.style.top = '0';
+      clone.style.width = container.offsetWidth + 'px';
+      clone.style.height = container.offsetHeight + 'px';
+      clone.style.backgroundColor = '#FAF8F2';
+      clone.style.zIndex = '-9999';
+      document.body.appendChild(clone);
+
+      // Eliminar elementos con dimensiones cero (causan el error createPattern)
+      const allElements = clone.querySelectorAll('*');
+      allElements.forEach(el => {
+        const rect = (el as HTMLElement).getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) {
+          (el as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // Asegurar que la marca de agua tenga dimensiones válidas
+      const watermark = clone.querySelector('.watermark') as HTMLElement;
+      if (watermark) {
+        watermark.style.width = '180px';
+        watermark.style.height = '240px';
+        const svg = watermark.querySelector('svg');
+        if (svg) {
+          svg.setAttribute('width', '180');
+          svg.setAttribute('height', '240');
+        }
       }
 
-      // Verificar dimensiones reales
-      const rect = container.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
-        throw new Error('El contenedor tiene dimensiones cero');
-      }
-      console.log(`📐 Dimensiones contenedor: ${rect.width}×${rect.height}`);
-
-      // Pequeño retardo para asegurar renderizado completo
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      // Capturar con opciones que evitan problemas de elementos vacíos
-      const canvas = await html2canvas(container, {
+      // Capturar el clon
+      const canvas = await html2canvas(clone, {
         scale: 2.5,
         useCORS: true,
         logging: false,
         backgroundColor: '#FAF8F2',
-        width: container.scrollWidth,
-        height: container.scrollHeight,
-        allowTaint: false,
-        onclone: (clonedDoc) => {
-          // Eliminar temporalmente elementos con dimensiones 0
-          const all = clonedDoc.querySelectorAll('*');
-          all.forEach((el) => {
-            const style = (el as HTMLElement).style;
-            if (style.width === '0px' || style.height === '0px') {
-              (el as HTMLElement).style.display = 'none';
-            }
-          });
-        }
+        width: clone.scrollWidth,
+        height: clone.scrollHeight,
+        allowTaint: false
       });
 
+      // Remover el clon del DOM
+      document.body.removeChild(clone);
+
       if (canvas.width === 0 || canvas.height === 0) {
-        throw new Error('El canvas generado tiene dimensiones cero');
+        throw new Error('Canvas generado con dimensiones cero');
       }
 
-      console.log(`✅ Canvas generado: ${canvas.width}×${canvas.height}`);
-
-      // Generar PDF
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const pdf = new jsPDF({
         orientation: 'landscape',
