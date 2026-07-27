@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CredentialService } from '../../core/services/credential.service';
@@ -30,7 +30,7 @@ import { of } from 'rxjs';
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
 
-      <!-- Certificado Premium Tellus V4.0 (sin QR, con medallas) -->
+      <!-- Certificado Oficial (vista previa y PDF unificados) -->
       <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
@@ -38,188 +38,82 @@ import { of } from 'rxjs';
           <p class="subtitle">Rural STEAM Lab · Biblioteca Viva</p>
         </div>
 
+        <!-- Contenedor del certificado (se usa tanto para vista como para PDF) -->
         <div class="certificate-preview" id="certificate-container">
           <div class="certificate-wrapper">
-            <div class="certificate" #certificate>
-
-              <!-- FONDO TEXTURADO CON ONDAS Y PARTÍCULAS -->
-              <div class="cert-bg">
-                <svg class="waves" viewBox="0 0 1200 800" preserveAspectRatio="none">
-                  <path d="M0,200 C300,100 500,400 800,200 C1000,100 1100,300 1200,200 L1200,800 L0,800 Z" fill="#1B5E20" opacity="0.02"/>
-                  <path d="M0,350 C200,250 400,500 700,300 C900,200 1050,400 1200,300 L1200,800 L0,800 Z" fill="#1B5E20" opacity="0.015"/>
-                  <path d="M0,500 C250,400 450,650 750,450 C950,350 1100,550 1200,450 L1200,800 L0,800 Z" fill="#1B5E20" opacity="0.01"/>
-                </svg>
-                <div class="particles">
-                  <span></span><span></span><span></span><span></span>
-                  <span></span><span></span><span></span><span></span>
-                  <span></span><span></span><span></span><span></span>
-                </div>
-                <div class="corner corner-tl"></div>
-                <div class="corner corner-tr"></div>
-                <div class="corner corner-bl"></div>
-                <div class="corner corner-br"></div>
+            <div class="certificate">
+              <!-- Encabezado -->
+              <div class="cert-header">
+                <div class="org-name">Rural STEAM Lab</div>
+                <div class="org-country">Colombia</div>
+                <div class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</div>
               </div>
 
-              <!-- MARCA DE AGUA (matraz) -->
-              <div class="watermark">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M75 40 L125 40 L145 80 L155 120 Q155 160 100 160 Q45 160 45 120 L55 80 Z" fill="none" stroke="#1B5E20" stroke-width="1.5" opacity="0.04"/>
-                  <path d="M95 70 Q105 60 115 70 Q105 80 95 70" fill="#1B5E20" opacity="0.03"/>
-                  <path d="M88 80 Q98 70 108 80 Q98 90 88 80" fill="#1B5E20" opacity="0.03"/>
-                  <circle cx="80" cy="60" r="3" fill="#1B5E20" opacity="0.02"/>
-                  <circle cx="120" cy="55" r="2" fill="#1B5E20" opacity="0.02"/>
-                  <text x="100" y="190" font-family="Georgia, serif" font-size="12" fill="#1B5E20" opacity="0.03" text-anchor="middle" letter-spacing="3">TELLUS</text>
-                </svg>
+              <hr class="cert-divider">
+
+              <div class="cert-title">CERTIFICA QUE</div>
+
+              <div class="cert-student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
+
+              <div class="cert-description">
+                ha desarrollado y publicado exitosamente el proyecto
               </div>
 
-              <!-- COLUMNA IZQUIERDA (información técnica) -->
-              <div class="left-column">
-                <div class="tech-block">
-                  <span class="tech-label">ID DEL CERTIFICADO</span>
-                  <span class="tech-value">{{ credential.credentialNumber || getCertId(credential, project) }}</span>
-                </div>
-                <div class="tech-divider"></div>
-                <div class="tech-block">
-                  <span class="tech-label">CÓDIGO DE VERIFICACIÓN</span>
-                  <span class="tech-value">{{ credential.verificationCode || 'AB21-CD84-EF55' }}</span>
-                </div>
-                <div class="tech-divider"></div>
-                <div class="tech-block">
-                  <span class="tech-label">ESTADO</span>
-                  <span class="tech-value status">VERIFICADO</span>
-                </div>
-                <div class="tech-divider"></div>
-                <div class="tech-block">
-                  <span class="tech-label">EMITIDO</span>
-                  <span class="tech-value">{{ getFormattedDate(credential.issueDate) }}</span>
-                </div>
-                <div class="tech-divider"></div>
-                <div class="tech-block">
-                  <span class="tech-label">VERIFICAR EN</span>
-                  <span class="tech-value url">tellus.ruralsteamlab.com/verificar</span>
-                </div>
+              <div class="cert-project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
+
+              <div class="cert-text">
+                en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, compromiso, pensamiento científico y espíritu de innovación.
               </div>
 
-              <!-- COLUMNA CENTRAL -->
-              <div class="center-column">
-                <!-- LOGO TELLUS -->
-                <div class="logo-area">
-                  <div class="logo-icon">
-                    <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-                          <stop offset="50%" stop-color="#d8ffd8" stop-opacity="0.4"/>
-                          <stop offset="100%" stop-color="#8fdc6d" stop-opacity="0.2"/>
-                        </linearGradient>
-                      </defs>
-                      <path d="M30 10 L50 10 L58 40 L68 70 Q68 95 40 95 Q12 95 12 70 L22 40 Z" fill="url(#glass)" stroke="#1B5E20" stroke-width="1.8"/>
-                      <path d="M38 30 Q48 20 58 30 Q48 40 38 30" fill="#1B5E20" opacity="0.6"/>
-                      <path d="M32 40 Q42 30 52 40 Q42 50 32 40" fill="#1B5E20" opacity="0.7"/>
-                      <circle cx="20" cy="22" r="2" fill="#1B5E20" opacity="0.3"/>
-                      <circle cx="60" cy="20" r="2" fill="#1B5E20" opacity="0.2"/>
-                      <circle cx="16" cy="50" r="2" fill="#1B5E20" opacity="0.2"/>
-                      <circle cx="64" cy="48" r="2" fill="#1B5E20" opacity="0.2"/>
-                    </svg>
-                  </div>
-                  <div class="org-name">
-                    <span class="rural">Rural</span>
-                    <span class="steam">
-                      <span class="s">S</span><span class="t">T</span><span class="e">E</span><span class="a">A</span><span class="m">M</span>
-                    </span>
-                    <span class="lab">Lab</span>
-                  </div>
-                  <div class="org-country">COLOMBIA</div>
-                  <div class="org-slogan">INVESTIGA • INNOVA • TRANSFORMA</div>
-                </div>
-
-                <!-- Título CERTIFICA QUE -->
-                <div class="certifies">CERTIFICA QUE</div>
-
-                <!-- NOMBRE DEL PARTICIPANTE -->
-                <div class="student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
-
-                <!-- Descripción -->
-                <div class="description">
-                  ha desarrollado y publicado exitosamente el proyecto
-                </div>
-
-                <!-- NOMBRE DEL PROYECTO -->
-                <div class="project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
-
-                <!-- Texto descriptivo -->
-                <div class="project-text">
-                  en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, pensamiento científico, innovación y compromiso con la transformación digital de la educación.
-                </div>
-
-                <!-- RECONOCIMIENTO con laureles -->
-                <div class="recognition-band">
-                  <span class="laurel">🏛️</span>
-                  <span class="recognition-text">{{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}</span>
-                  <span class="laurel">🏛️</span>
-                </div>
-
-                <!-- Fecha -->
-                <div class="date">Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong></div>
+              <div class="cert-recognition">
+                {{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}
               </div>
 
-              <!-- COLUMNA DERECHA (medalla + sello) -->
-              <div class="right-column">
-                <!-- MEDALLA SEGÚN RECONOCIMIENTO -->
-                <div class="medal" [ngClass]="getMedalClass(credential.recognition)">
-                  <div class="medal-inner">
-                    <span class="medal-icon">
-                      <ng-container *ngIf="getMedalLevel(credential.recognition) === 'gold'">🥇</ng-container>
-                      <ng-container *ngIf="getMedalLevel(credential.recognition) === 'silver'">🥈</ng-container>
-                      <ng-container *ngIf="getMedalLevel(credential.recognition) === 'bronze'">🥉</ng-container>
-                      <ng-container *ngIf="!getMedalLevel(credential.recognition)">🏆</ng-container>
-                    </span>
-                    <span class="medal-text">
-                      {{ getMedalLevel(credential.recognition) ? getMedalLevel(credential.recognition).toUpperCase() : 'CERTIFICADO' }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- SELLO OFICIAL -->
-                <div class="seal-premium">
-                  <div class="seal-circle">
-                    <div class="seal-content">
-                      <span class="seal-title">ECOSISTEMA</span>
-                      <span class="seal-bold">TELLUS</span>
-                      <span class="seal-year">2026</span>
-                      <span class="seal-country">COLOMBIA</span>
-                    </div>
-                  </div>
-                  <div class="seal-quote">
-                    "La tecnología transforma,<br>pero son las ideas las que cambian el mundo."
-                  </div>
-                </div>
+              <div class="cert-date">
+                Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong>
               </div>
 
-              <!-- FIRMAS -->
-              <div class="signatures">
+              <!-- Firmas -->
+              <div class="cert-signatures">
                 <div class="signature">
-                  <div class="sign-line gold"></div>
+                  <div class="sign-line"></div>
                   <div class="sign-name">Henson Alberto Medina Castillo</div>
-                  <div class="sign-role">Director General</div>
+                  <div class="sign-role">Liderazgo Tecnológico y Desarrollo</div>
                 </div>
                 <div class="signature">
-                  <div class="sign-line gold"></div>
+                  <div class="sign-line"></div>
                   <div class="sign-name">Uberto Manuel Gómez López</div>
-                  <div class="sign-role">Director Académico</div>
+                  <div class="sign-role">Liderazgo Académico e Investigación</div>
                 </div>
                 <div class="signature">
-                  <div class="sign-line gold"></div>
+                  <div class="sign-line"></div>
                   <div class="sign-name">Diana Marcela Alfonso Montañez</div>
-                  <div class="sign-role">Directora de Operaciones</div>
+                  <div class="sign-role">Liderazgo de Implementación y Calidad</div>
                 </div>
               </div>
 
+              <!-- ID y Código -->
+              <div class="cert-footer">
+                <div class="cert-id">
+                  <span class="label">ID de Certificado</span>
+                  <span class="value">{{ credential.credentialNumber || getCertId(credential, project) }}</span>
+                </div>
+                <div class="cert-code">
+                  <span class="label">Código de Verificación</span>
+                  <span class="value">{{ credential.verificationCode || 'A1B2-C3D4-E5F6' }}</span>
+                </div>
+              </div>
+
+              <!-- Pie -->
+              <div class="cert-bottom">
+                <span>VERIFICA ESTE CERTIFICADO EN</span>
+                <span class="url">tellus.ruralsteamlab.com/verificar</span>
+                <span>ECOSISTEMA TELLUS</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- BOTONES -->
         <div class="actions">
           <button class="btn-primary" (click)="downloadPDF()">📥 Descargar diploma (PDF)</button>
           <button class="btn-secondary" (click)="goHome()">🏠 Ir a Tellus</button>
@@ -234,7 +128,7 @@ import { of } from 'rxjs';
   styles: [
     `
       /* ==========================================================
-         CONTENEDOR PRINCIPAL (fondo oscuro exterior)
+         CONTENEDOR PRINCIPAL (fondo oscuro)
       ========================================================= */
       .verification-container {
         min-height: 100vh;
@@ -248,26 +142,44 @@ import { of } from 'rxjs';
         color: #fff;
       }
 
-      .loading-state, .error-state {
+      /* ==========================================================
+         LOADING & ERROR
+      ========================================================= */
+      .loading-state,
+      .error-state {
         text-align: center;
         padding: 40px;
       }
       .spinner {
         width: 48px;
         height: 48px;
-        border: 4px solid rgba(255,255,255,0.1);
+        border: 4px solid rgba(255, 255, 255, 0.1);
         border-top-color: #4cff9c;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
         margin: 0 auto 16px;
       }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      .error-state .error-icon { font-size: 48px; display: block; margin-bottom: 16px; }
-      .error-state h2 { font-size: 24px; margin: 8px 0; }
-      .error-state p { color: rgba(255,255,255,0.6); }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .error-state .error-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 16px;
+      }
+      .error-state h2 {
+        font-size: 24px;
+        margin: 8px 0;
+      }
+      .error-state p {
+        color: rgba(255, 255, 255, 0.6);
+      }
 
+      /* ==========================================================
+         HEADER
+      ========================================================= */
       .credential-found {
-        max-width: 1200px;
+        max-width: 820px;
         width: 100%;
       }
       .header {
@@ -276,8 +188,8 @@ import { of } from 'rxjs';
       }
       .verified-badge {
         display: inline-block;
-        background: rgba(76,255,156,0.12);
-        border: 1px solid rgba(76,255,156,0.2);
+        background: rgba(76, 255, 156, 0.12);
+        border: 1px solid rgba(76, 255, 156, 0.2);
         padding: 4px 16px;
         border-radius: 40px;
         font-size: 13px;
@@ -296,14 +208,14 @@ import { of } from 'rxjs';
       }
       .header .subtitle {
         font-size: 14px;
-        color: rgba(255,255,255,0.3);
+        color: rgba(255, 255, 255, 0.3);
         letter-spacing: 2px;
         text-transform: uppercase;
         font-weight: 300;
       }
 
       /* ==========================================================
-         CERTIFICADO PREMIUM V4.0
+         CERTIFICADO OFICIAL (vista previa)
       ========================================================= */
       .certificate-preview {
         margin: 20px 0;
@@ -311,527 +223,199 @@ import { of } from 'rxjs';
         justify-content: center;
       }
       .certificate-wrapper {
-        background: #FAF8F2;
-        padding: 30px 30px;
-        border-radius: 16px;
-        box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+        background: #ffffff;
+        padding: 30px 20px;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         width: 100%;
-        max-width: 1100px;
+        max-width: 750px;
       }
       .certificate {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        background: #FAF8F2;
-        border-radius: 6px;
-        overflow: hidden;
-        padding: 20px 25px;
-        display: flex;
-        flex-direction: column;
-        box-shadow: inset 0 0 0 1px rgba(200,162,74,0.08);
-        font-family: 'Inter', 'Manrope', 'Plus Jakarta Sans', sans-serif;
-      }
-
-      /* FONDO CON ONDAS Y PARTÍCULAS */
-      .cert-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
-      }
-      .waves {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-      .particles {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-      .particles span {
-        position: absolute;
-        display: block;
-        width: 4px;
-        height: 4px;
-        background: #1B5E20;
-        border-radius: 50%;
-        opacity: 0.04;
-        animation: float 20s infinite alternate ease-in-out;
-      }
-      .particles span:nth-child(1) { top: 10%; left: 20%; animation-duration: 18s; }
-      .particles span:nth-child(2) { top: 30%; left: 80%; animation-duration: 22s; }
-      .particles span:nth-child(3) { top: 50%; left: 10%; animation-duration: 25s; }
-      .particles span:nth-child(4) { top: 70%; left: 90%; animation-duration: 20s; }
-      .particles span:nth-child(5) { top: 20%; left: 60%; animation-duration: 19s; }
-      .particles span:nth-child(6) { top: 60%; left: 30%; animation-duration: 23s; }
-      .particles span:nth-child(7) { top: 80%; left: 50%; animation-duration: 21s; }
-      .particles span:nth-child(8) { top: 40%; left: 70%; animation-duration: 17s; }
-      .particles span:nth-child(9) { top: 15%; left: 40%; animation-duration: 24s; }
-      .particles span:nth-child(10) { top: 75%; left: 15%; animation-duration: 20s; }
-      .particles span:nth-child(11) { top: 45%; left: 50%; animation-duration: 22s; }
-      .particles span:nth-child(12) { top: 85%; left: 75%; animation-duration: 18s; }
-
-      @keyframes float {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(30px, -30px) scale(1.5); }
-      }
-
-      .corner {
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        border: 1px solid #C8A24A;
-        opacity: 0.15;
-      }
-      .corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
-      .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; border-radius: 0 4px 0 0; }
-      .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
-      .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
-
-      /* MARCA DE AGUA */
-      .watermark {
-        position: absolute;
-        right: 5%;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 180px;
-        height: 180px;
-        z-index: 1;
-        pointer-events: none;
-        opacity: 0.08;
-      }
-      .watermark svg {
-        width: 100%;
-        height: 100%;
-      }
-
-      /* COLUMNA IZQUIERDA */
-      .left-column {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 130px;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        border-right: 0.5px solid rgba(200,162,74,0.15);
-        padding-right: 14px;
-      }
-      .tech-block {
-        text-align: left;
-      }
-      .tech-label {
-        font-size: 0.45rem;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        color: #999;
-        font-weight: 500;
-        display: block;
-      }
-      .tech-value {
-        font-size: 0.6rem;
-        font-weight: 600;
-        color: #1B5E20;
-        font-family: 'Courier New', monospace;
-        display: block;
-        word-break: break-word;
-        line-height: 1.2;
-        opacity: 0.8;
-      }
-      .tech-value.status {
-        color: #56C271;
-        font-weight: 700;
-      }
-      .tech-value.url {
-        font-size: 0.5rem;
-        opacity: 0.5;
-        font-weight: 500;
-      }
-      .tech-divider {
-        border: none;
-        border-top: 0.5px solid rgba(200,162,74,0.1);
-        margin: 2px 0;
-      }
-
-      /* COLUMNA CENTRAL */
-      .center-column {
-        position: absolute;
-        left: 180px;
-        right: 170px;
-        top: 20px;
-        bottom: 70px;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        border: 3px double #1a2e1a;
+        border-radius: 8px;
+        padding: 30px 35px;
+        background: #fffcf9;
         text-align: center;
-        padding: 0 10px;
+        font-family: Georgia, 'Times New Roman', serif;
+        color: #1a2e1a;
       }
 
-      .logo-area {
-        margin-bottom: 2px;
-      }
-      .logo-icon {
-        width: 40px;
-        height: 50px;
-        margin: 0 auto 2px;
-      }
-      .logo-icon svg {
-        width: 100%;
-        height: 100%;
-        opacity: 0.7;
-      }
-      .org-name {
-        font-family: 'Georgia', serif;
-        font-size: 1.2rem;
+      /* --- Encabezado --- */
+      .cert-header .org-name {
+        font-size: 2.2rem;
         font-weight: 700;
-        color: #1B5E20;
-        letter-spacing: 0.5px;
-        opacity: 0.6;
-      }
-      .org-name .rural { color: #1B5E20; }
-      .org-name .steam { font-weight: 800; }
-      .org-name .s { color: #1976d2; }
-      .org-name .t { color: #00bcd4; }
-      .org-name .e { color: #fdd835; }
-      .org-name .a { color: #f57c00; }
-      .org-name .m { color: #388e3c; }
-      .org-name .lab { color: #1B5E20; }
-
-      .org-country {
-        font-size: 0.6rem;
-        letter-spacing: 6px;
-        color: #1B5E20;
-        font-weight: 500;
-        opacity: 0.4;
-        margin-top: -2px;
-      }
-      .org-slogan {
-        font-size: 0.55rem;
-        letter-spacing: 2px;
-        color: #1B5E20;
-        opacity: 0.3;
-        font-weight: 400;
-        margin-top: -2px;
-      }
-
-      .certifies {
-        font-family: 'Cinzel', serif;
-        font-size: 0.7rem;
-        letter-spacing: 4px;
-        color: #1B5E20;
-        opacity: 0.5;
-        font-weight: 600;
-        margin-top: 2px;
+        letter-spacing: 3px;
         text-transform: uppercase;
       }
-
-      .student-name {
-        font-family: 'Cormorant Garamond', 'Georgia', serif;
-        font-size: 3.8rem;
-        font-weight: 400;
-        font-style: italic;
-        color: #1B5E20;
-        line-height: 1.1;
-        margin: 2px 0 0 0;
-        letter-spacing: 1px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.02);
-      }
-
-      .description {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.7rem;
-        color: #666;
-        font-weight: 400;
-        letter-spacing: 0.3px;
+      .cert-header .org-country {
+        font-size: 0.9rem;
+        color: #5a7a5a;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        font-weight: 600;
         margin-top: 2px;
       }
-
-      .project-name {
-        font-family: 'Georgia', serif;
-        font-size: 1.8rem;
-        font-weight: 400;
-        font-style: italic;
-        color: #1B5E20;
-        margin: 0 0 0 0;
-        opacity: 0.85;
-      }
-
-      .project-text {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.6rem;
-        color: #888;
-        max-width: 80%;
-        line-height: 1.5;
-        margin: 2px 0 4px 0;
-      }
-      .project-text strong {
-        color: #1B5E20;
-        font-weight: 600;
-      }
-
-      .recognition-band {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 2px 0 2px 0;
-      }
-      .recognition-band .laurel {
+      .cert-header .org-slogan {
         font-size: 0.8rem;
-        opacity: 0.3;
-        color: #C8A24A;
-      }
-      .recognition-band .recognition-text {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.65rem;
-        font-weight: 600;
-        color: #1B5E20;
-        letter-spacing: 1.5px;
+        color: #2a4a2a;
+        letter-spacing: 3px;
         text-transform: uppercase;
-        opacity: 0.7;
-        border-top: 0.5px solid rgba(200,162,74,0.2);
-        border-bottom: 0.5px solid rgba(200,162,74,0.2);
-        padding: 2px 10px;
-      }
-
-      .date {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.6rem;
-        color: #999;
-        letter-spacing: 0.5px;
-        margin-top: 2px;
-      }
-      .date strong {
-        color: #1B5E20;
         font-weight: 500;
+        margin-top: 6px;
+        border-top: 1px solid #d4c8b0;
+        padding-top: 6px;
+        display: inline-block;
+        padding-left: 20px;
+        padding-right: 20px;
       }
 
-      /* COLUMNA DERECHA */
-      .right-column {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 130px;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
+      .cert-divider {
+        border: none;
+        border-top: 2px solid #1a2e1a;
+        margin: 12px 0 20px 0;
+        width: 60%;
       }
 
-      .medal {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at 30% 30%, #f7e9c8, #d4af37);
-        border: 2px solid #b8942a;
-        box-shadow: 0 4px 15px rgba(212,175,55,0.2);
-        position: relative;
-      }
-      .medal.gold {
-        background: radial-gradient(circle at 30% 30%, #ffe082, #f9a825);
-        border-color: #f57f17;
-      }
-      .medal.silver {
-        background: radial-gradient(circle at 30% 30%, #e0e0e0, #9e9e9e);
-        border-color: #757575;
-      }
-      .medal.bronze {
-        background: radial-gradient(circle at 30% 30%, #ffcc80, #e65100);
-        border-color: #bf360c;
-      }
-      .medal-inner {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0;
-      }
-      .medal-icon {
-        font-size: 1.8rem;
-        line-height: 1;
-      }
-      .medal-text {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.45rem;
+      .cert-title {
+        font-size: 1.6rem;
         font-weight: 700;
-        color: #1B5E20;
-        letter-spacing: 0.5px;
+        letter-spacing: 4px;
         text-transform: uppercase;
-        background: rgba(255,255,255,0.3);
-        padding: 0 4px;
-        border-radius: 2px;
+        margin: 8px 0 16px 0;
       }
 
-      .seal-premium {
-        text-align: center;
-        margin-top: 2px;
-      }
-      .seal-circle {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 1.5px solid #C8A24A;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
-        background: rgba(255,255,255,0.6);
-        box-shadow: 0 2px 12px rgba(200,162,74,0.05);
-        position: relative;
-      }
-      .seal-circle::after {
-        content: '';
-        position: absolute;
-        top: 4px;
-        left: 4px;
-        right: 4px;
-        bottom: 4px;
-        border: 0.5px solid rgba(200,162,74,0.2);
-        border-radius: 50%;
-      }
-      .seal-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        line-height: 1.1;
-      }
-      .seal-title {
-        font-size: 0.45rem;
+      .cert-student-name {
+        font-size: 2.6rem;
+        font-weight: 700;
+        color: #0a1a0a;
         letter-spacing: 1px;
-        color: #999;
-        font-weight: 500;
-      }
-      .seal-bold {
-        font-size: 0.7rem;
-        font-weight: 800;
-        color: #1B5E20;
-        letter-spacing: 1.5px;
-      }
-      .seal-year {
-        font-size: 0.5rem;
-        font-weight: 600;
-        color: #C8A24A;
-        letter-spacing: 2px;
-      }
-      .seal-country {
-        font-size: 0.4rem;
-        letter-spacing: 2px;
-        color: #999;
-        font-weight: 500;
+        margin: 8px 0;
       }
 
-      .seal-quote {
-        font-family: 'Georgia', serif;
-        font-size: 0.5rem;
+      .cert-description {
+        font-size: 1.1rem;
+        color: #2a3a2a;
+        margin: 16px 0 8px 0;
+        line-height: 1.6;
+      }
+
+      .cert-project-name {
+        font-size: 1.8rem;
+        font-weight: 700;
         font-style: italic;
-        color: #aaa;
-        text-align: center;
-        line-height: 1.3;
-        margin-top: 4px;
-        max-width: 120px;
+        margin: 6px 0 12px 0;
+        border-bottom: 1px solid #d4c8b0;
+        padding-bottom: 10px;
+        display: inline-block;
       }
 
-      /* FIRMAS */
-      .signatures {
-        position: absolute;
-        bottom: 12px;
-        left: 180px;
-        right: 170px;
-        z-index: 2;
+      .cert-text {
+        font-size: 1.0rem;
+        color: #3a4a3a;
+        margin: 12px 0 8px 0;
+      }
+
+      .cert-recognition {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin: 18px 0 12px 0;
+        padding: 8px 20px;
+        border: 1px solid #1a2e1a;
+        display: inline-block;
+      }
+
+      .cert-date {
+        font-size: 1.0rem;
+        color: #3a4a3a;
+        margin: 16px 0 20px 0;
+      }
+
+      /* --- Firmas --- */
+      .cert-signatures {
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        padding-top: 8px;
-        border-top: 0.5px solid rgba(200,162,74,0.1);
+        margin: 24px 0 20px 0;
+        padding-top: 16px;
+        border-top: 1px solid #d4c8b0;
+        flex-wrap: wrap;
+        gap: 20px;
       }
       .signature {
         text-align: center;
         flex: 1;
+        min-width: 140px;
       }
-      .sign-line.gold {
-        width: 70px;
-        height: 1.5px;
-        background: linear-gradient(90deg, #C8A24A, #d4af37);
-        margin: 0 auto 3px auto;
-        opacity: 0.4;
+      .sign-line {
+        width: 160px;
+        height: 1px;
+        border-bottom: 2px solid #1a2e1a;
+        margin: 0 auto 6px;
       }
       .sign-name {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.6rem;
+        font-size: 0.8rem;
         font-weight: 700;
-        color: #1B5E20;
-        letter-spacing: 0.3px;
-        opacity: 0.8;
+        letter-spacing: 0.5px;
       }
       .sign-role {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.45rem;
-        color: #999;
+        font-size: 0.65rem;
+        color: #5a7a5a;
         text-transform: uppercase;
         letter-spacing: 1px;
-        font-weight: 500;
       }
 
-      /* RESPONSIVE */
-      @media (max-width: 900px) {
-        .left-column { width: 100px; left: 10px; }
-        .left-column .tech-label { font-size: 0.4rem; }
-        .left-column .tech-value { font-size: 0.5rem; }
-        .center-column { left: 130px; right: 130px; }
-        .student-name { font-size: 2.8rem; }
-        .project-name { font-size: 1.4rem; }
-        .right-column { width: 100px; right: 8px; }
-        .seal-circle { width: 60px; height: 60px; }
-        .seal-bold { font-size: 0.55rem; }
-        .medal { width: 55px; height: 55px; }
-        .medal-icon { font-size: 1.4rem; }
-        .signatures { left: 130px; right: 130px; }
-        .sign-name { font-size: 0.5rem; }
-        .seal-quote { font-size: 0.4rem; }
+      /* --- ID y Código --- */
+      .cert-footer {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 16px 0 12px 0;
+        padding-top: 12px;
+        border-top: 1px solid #d4c8b0;
+        flex-wrap: wrap;
+      }
+      .cert-id, .cert-code {
+        text-align: center;
+      }
+      .cert-footer .label {
+        font-size: 0.65rem;
+        color: #5a7a5a;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: block;
+      }
+      .cert-footer .value {
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        display: block;
+        margin-top: 2px;
       }
 
-      @media (max-width: 700px) {
-        .certificate { padding: 10px; }
-        .left-column { display: none; }
-        .center-column { left: 15px; right: 15px; top: 10px; bottom: 50px; }
-        .student-name { font-size: 2.2rem; }
-        .project-name { font-size: 1.2rem; }
-        .right-column { right: 5px; width: 80px; }
-        .seal-circle { width: 50px; height: 50px; }
-        .seal-bold { font-size: 0.45rem; }
-        .seal-title { font-size: 0.35rem; }
-        .seal-year { font-size: 0.4rem; }
-        .seal-quote { display: none; }
-        .medal { width: 45px; height: 45px; }
-        .medal-icon { font-size: 1.2rem; }
-        .medal-text { font-size: 0.35rem; }
-        .signatures { left: 15px; right: 15px; bottom: 8px; flex-direction: column; gap: 4px; }
-        .sign-name { font-size: 0.45rem; }
-        .sign-role { font-size: 0.35rem; }
-        .sign-line.gold { width: 40px; }
-        .watermark { display: none; }
-        .recognition-band .laurel { font-size: 0.6rem; }
-        .recognition-band .recognition-text { font-size: 0.5rem; }
+      /* --- Pie --- */
+      .cert-bottom {
+        font-size: 0.8rem;
+        color: #5a7a5a;
+        margin-top: 14px;
+        padding-top: 10px;
+        border-top: 1px solid #d4c8b0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .cert-bottom .url {
+        font-weight: 700;
+        color: #1a2e1a;
+        letter-spacing: 0.5px;
       }
 
-      /* BOTONES */
+      /* ==========================================================
+         BOTONES
+      ========================================================= */
       .actions {
         display: flex;
         gap: 12px;
@@ -839,7 +423,8 @@ import { of } from 'rxjs';
         justify-content: center;
         margin-top: 20px;
       }
-      .btn-primary, .btn-secondary {
+      .btn-primary,
+      .btn-secondary {
         padding: 12px 28px;
         border: none;
         border-radius: 40px;
@@ -852,33 +437,77 @@ import { of } from 'rxjs';
       .btn-primary {
         background: linear-gradient(135deg, #4cff9c 0%, #28a745 100%);
         color: #0a0a1a;
-        box-shadow: 0 4px 20px rgba(76,255,156,0.2);
+        box-shadow: 0 4px 20px rgba(76, 255, 156, 0.2);
       }
       .btn-primary:hover {
         transform: scale(1.02);
-        box-shadow: 0 8px 30px rgba(76,255,156,0.3);
+        box-shadow: 0 8px 30px rgba(76, 255, 156, 0.3);
       }
       .btn-secondary {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        color: rgba(255,255,255,0.6);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.6);
       }
       .btn-secondary:hover {
-        background: rgba(255,255,255,0.08);
-        border-color: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
       }
+
       .footer-text {
         margin-top: 24px;
         font-size: 12px;
-        color: rgba(255,255,255,0.2);
+        color: rgba(255, 255, 255, 0.2);
         text-align: center;
+      }
+
+      /* ==========================================================
+         RESPONSIVE
+      ========================================================= */
+      @media (max-width: 600px) {
+        .verification-container {
+          padding: 20px 12px;
+        }
+        .certificate-wrapper {
+          padding: 15px 10px;
+        }
+        .certificate {
+          padding: 20px 15px;
+        }
+        .cert-header .org-name {
+          font-size: 1.6rem;
+        }
+        .cert-title {
+          font-size: 1.2rem;
+        }
+        .cert-student-name {
+          font-size: 2rem;
+        }
+        .cert-project-name {
+          font-size: 1.4rem;
+        }
+        .sign-line {
+          width: 100px;
+        }
+        .cert-footer {
+          gap: 20px;
+        }
+        .cert-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+        .cert-signatures {
+          flex-direction: column;
+          align-items: center;
+        }
+        .signature {
+          min-width: auto;
+          width: 100%;
+        }
       }
     `
   ]
 })
 export class PublicVerificationComponent implements OnInit {
-  @ViewChild('certificate') certificateRef!: ElementRef<HTMLDivElement>;
-
   credential: Credential | null = null;
   project: Project | null = null;
   loading = true;
@@ -889,86 +518,105 @@ export class PublicVerificationComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private credentialService: CredentialService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
+    console.log('🔍 [PublicVerification] UUID recibido:', uuid);
     if (!uuid) {
       this.error = 'No se especificó un código de verificación.';
       this.errorTitle = 'Código faltante';
       this.loading = false;
+      this.cdr.detectChanges();
       return;
     }
     this.loadCredential(uuid);
   }
 
   private loadCredential(uuid: string): void {
+    console.log('🔍 [PublicVerification] Buscando credencial con UUID:', uuid);
     this.credentialService.getCredentialByUuid(uuid)
       .pipe(
         timeout(15000),
         catchError(err => {
-          console.error(err);
+          console.error('❌ [PublicVerification] Error en la petición:', err);
           this.error = '⚠️ Error de conexión. Verifica tu internet e intenta de nuevo.';
           this.errorTitle = 'Error de conexión';
           this.loading = false;
+          this.cdr.detectChanges();
           return of(null);
         })
       )
       .subscribe({
         next: (cred) => {
+          console.log('📄 [PublicVerification] Credencial obtenida:', cred);
           if (!cred) {
             this.error = '❌ Credencial no encontrada. Verifica el código.';
             this.errorTitle = 'No encontrada';
             this.loading = false;
+            this.cdr.detectChanges();
             return;
           }
           this.credential = cred;
+          console.log('✅ [PublicVerification] Credencial cargada, projectId:', cred.projectId);
           this.loadProject(cred.projectId);
         },
         error: (err) => {
-          console.error(err);
+          console.error('❌ [PublicVerification] Error al verificar:', err);
           this.error = '⚠️ Error al verificar la credencial. Intenta de nuevo.';
           this.errorTitle = 'Error interno';
           this.loading = false;
+          this.cdr.detectChanges();
         }
       });
   }
 
   private loadProject(projectId: string): void {
     if (!projectId) {
+      console.warn('⚠️ [PublicVerification] No hay projectId');
       this.error = 'La credencial no tiene un proyecto asociado.';
       this.errorTitle = 'Proyecto faltante';
       this.loading = false;
+      this.cdr.detectChanges();
       return;
     }
+    console.log('🔍 [PublicVerification] Buscando proyecto con ID:', projectId);
     this.projectService.getProject(projectId)
       .pipe(
         timeout(10000),
         catchError(err => {
-          console.error(err);
+          console.error('❌ [PublicVerification] Error al obtener proyecto:', err);
           this.error = '⚠️ Error al cargar el proyecto asociado.';
           this.errorTitle = 'Error al cargar proyecto';
           this.loading = false;
+          this.cdr.detectChanges();
           return of(null);
         })
       )
       .subscribe({
         next: (project) => {
+          console.log('📄 [PublicVerification] Proyecto obtenido:', project);
           if (!project) {
+            console.warn('⚠️ [PublicVerification] Proyecto no encontrado con ID:', projectId);
             this.error = 'El proyecto asociado a esta credencial ya no existe.';
             this.errorTitle = 'Proyecto eliminado';
             this.loading = false;
+            this.cdr.detectChanges();
             return;
           }
           this.project = project;
           this.loading = false;
+          console.log('✅ [PublicVerification] Carga completada');
+          this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error(err);
+          console.error('❌ [PublicVerification] Error al cargar proyecto:', err);
           this.error = '⚠️ Error al cargar el proyecto asociado.';
           this.errorTitle = 'Error al cargar proyecto';
           this.loading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -977,10 +625,13 @@ export class PublicVerificationComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
+  // ================================================================
+  //  MÉTODOS AUXILIARES PARA EL CERTIFICADO
+  // ================================================================
   getFormattedDate(dateValue: any): string {
     if (!dateValue) return new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
     const date = new Date(dateValue);
-    return `${date.getDate().toString().padStart(2, '0')} ${date.toLocaleString('es-ES', { month: 'long' })} ${date.getFullYear()}`;
+    return `${date.getDate().toString().padStart(2, '0')} de ${date.toLocaleString('es-ES', { month: 'long' })} de ${date.getFullYear()}`;
   }
 
   getCertId(credential: Credential, project: Project): string {
@@ -991,51 +642,39 @@ export class PublicVerificationComponent implements OnInit {
     return `RSL-${year}-${month}${day}-${suffix}`;
   }
 
-  // ==============================================================
-  //  LÓGICA DE MEDALLAS (oro, plata, bronce)
-  // ==============================================================
-  getMedalLevel(recognition: string | undefined): 'gold' | 'silver' | 'bronze' | null {
-    if (!recognition) return null;
-    const text = recognition.toLowerCase();
-    if (text.includes('oro') || text.includes('gold') || text.includes('primero') || text.includes('ganador')) return 'gold';
-    if (text.includes('plata') || text.includes('silver') || text.includes('segundo')) return 'silver';
-    if (text.includes('bronce') || text.includes('bronze') || text.includes('tercero')) return 'bronze';
-    return null;
-  }
-
-  getMedalClass(recognition: string | undefined): string {
-    const level = this.getMedalLevel(recognition);
-    return level ? level : '';
-  }
-
+  // ================================================================
+  //  GENERAR PDF (capturando el mismo contenedor visible)
+  // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
       alert('No hay datos para generar el PDF.');
       return;
     }
-    await new Promise(resolve => setTimeout(resolve, 200));
     try {
+      console.log('📄 [PublicVerification] Generando certificado oficial...');
       const container = document.getElementById('certificate-container');
       if (!container) throw new Error('Contenedor no encontrado');
+
+      // Capturar el contenedor (escala alta)
       const canvas = await html2canvas(container, {
-        scale: 3,
+        scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#FAF8F2',
-        width: container.scrollWidth,
-        height: container.scrollHeight,
-        allowTaint: false
+        backgroundColor: '#ffffff'
       });
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({
-        orientation: 'landscape',
+        orientation: 'portrait',
         unit: 'px',
         format: [canvas.width / 2, canvas.height / 2]
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`Certificado-${this.project.title.replace(/\s+/g, '-')}.pdf`);
+
+      console.log('✅ [PublicVerification] PDF descargado');
     } catch (error) {
-      console.error('Error al generar PDF:', error);
+      console.error('❌ [PublicVerification] Error al generar PDF:', error);
       alert('Error al generar el PDF. Intenta de nuevo.');
     }
   }
