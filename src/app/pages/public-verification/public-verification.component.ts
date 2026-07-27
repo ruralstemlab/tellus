@@ -47,6 +47,20 @@ import { of } from 'rxjs';
 
               <!-- ===== ENCABEZADO ===== -->
               <div class="cert-header">
+                <!-- Logo matraz (SIN defs/linearGradient) -->
+                <div class="logo-flask">
+                  <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 10 L50 10 L58 40 L68 70 Q68 95 40 95 Q12 95 12 70 L22 40 Z" fill="#e8f5e9" stroke="#1B5E20" stroke-width="1.5" opacity="0.8"/>
+                    <path d="M38 30 Q48 20 58 30 Q48 40 38 30" fill="#1B5E20" opacity="0.7"/>
+                    <path d="M32 40 Q42 30 52 40 Q42 50 32 40" fill="#2E7D32" opacity="0.8"/>
+                    <circle cx="20" cy="22" r="1.5" fill="#1B5E20" opacity="0.3"/>
+                    <circle cx="60" cy="20" r="1.5" fill="#1B5E20" opacity="0.2"/>
+                    <circle cx="16" cy="50" r="1.5" fill="#1B5E20" opacity="0.2"/>
+                    <circle cx="64" cy="48" r="1.5" fill="#1B5E20" opacity="0.2"/>
+                  </svg>
+                </div>
+
+                <!-- Nombre institucional -->
                 <div class="org">
                   <span class="org-name">
                     Rural <span class="steam-multicolor"><span class="s">S</span><span class="t">T</span><span class="e">E</span><span class="a">A</span><span class="m">M</span></span> Lab
@@ -54,8 +68,22 @@ import { of } from 'rxjs';
                   <span class="org-country">COLOMBIA</span>
                   <span class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</span>
                 </div>
-                <div class="header-line"></div>
+
+                <!-- Sello minimalista (SIN defs/linearGradient) -->
+                <div class="seal-minimal">
+                  <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="36" fill="none" stroke="#C8A24A" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#C8A24A" stroke-width="0.5" opacity="0.5"/>
+                    <text x="40" y="34" font-family="Georgia, serif" font-size="8" fill="#1B5E20" text-anchor="middle" letter-spacing="1.5" font-weight="600">TELLUS</text>
+                    <text x="40" y="48" font-family="Georgia, serif" font-size="6" fill="#666" text-anchor="middle" letter-spacing="1">ECOSISTEMA</text>
+                    <rect x="18" y="60" width="14" height="2" fill="#1B5E20" opacity="0.4"/>
+                    <rect x="48" y="60" width="14" height="2" fill="#1B5E20" opacity="0.4"/>
+                  </svg>
+                </div>
               </div>
+
+              <!-- ===== LÍNEA FINA ===== -->
+              <div class="header-line"></div>
 
               <!-- ===== CUERPO ===== -->
               <div class="cert-body">
@@ -270,17 +298,30 @@ import { of } from 'rxjs';
          ENCABEZADO
       ========================================================= */
       .cert-header {
-        text-align: center;
-        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0 6px 0;
         position: relative;
         z-index: 1;
-        flex-shrink: 0;
       }
+      .logo-flask {
+        width: 50px;
+        height: 60px;
+        flex-shrink: 0;
+        opacity: 0.8;
+      }
+      .logo-flask svg {
+        width: 100%;
+        height: 100%;
+      }
+
       .org {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 2px;
+        flex: 1;
       }
       .org-name {
         font-family: 'Cinzel', serif;
@@ -318,12 +359,26 @@ import { of } from 'rxjs';
         text-transform: uppercase;
         margin-top: 2px;
       }
+
+      .seal-minimal {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        opacity: 0.5;
+      }
+      .seal-minimal svg {
+        width: 100%;
+        height: 100%;
+      }
+
       .header-line {
         width: 80px;
         height: 1px;
         background: #C8A24A;
-        margin: 14px auto 0 auto;
+        margin: 8px auto 0 auto;
         opacity: 0.4;
+        position: relative;
+        z-index: 1;
       }
 
       /* ==========================================================
@@ -570,10 +625,15 @@ import { of } from 'rxjs';
         .org-country { font-size: 11px; letter-spacing: 7px; }
         .org-slogan { font-size: 10px; letter-spacing: 2px; }
         .project-label { font-size: 15px; }
+        .logo-flask { width: 40px; height: 50px; }
+        .seal-minimal { width: 40px; height: 40px; }
       }
 
       @media (max-width: 700px) {
         .tech-section { display: none; }
+        .cert-header { flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .logo-flask { width: 35px; height: 45px; }
+        .seal-minimal { width: 35px; height: 35px; }
         .certificate { padding: 25px 18px 18px 18px; min-height: 320px; }
         .student-name { font-size: 34px; }
         .project-name { font-size: 22px; }
@@ -585,11 +645,10 @@ import { of } from 'rxjs';
         .signature { width: 100%; }
         .sign-line { width: 60px; }
         .cert-footer { flex-direction: column; gap: 4px; text-align: center; font-size: 10px; }
-        .header-line { margin: 10px auto 0 auto; }
+        .header-line { margin: 6px auto 0 auto; }
         .org-country { font-size: 10px; letter-spacing: 5px; }
         .org-slogan { font-size: 9px; letter-spacing: 2px; }
         .project-label { font-size: 13px; }
-        .cert-header { margin-bottom: 4px; }
         .cert-date { font-size: 12px; }
       }
 
