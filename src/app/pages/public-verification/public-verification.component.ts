@@ -47,7 +47,7 @@ import { of } from 'rxjs';
 
               <!-- ===== MARCA DE AGUA ===== -->
               <div class="watermark">
-                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" width="180" height="240">
                   <path d="M100 30 L200 30 L220 90 L240 150 Q240 280 150 280 Q60 280 60 150 L80 90 Z" fill="none" stroke="#1E5631" stroke-width="2"/>
                   <path d="M130 100 Q160 70 190 100 Q160 130 130 100" fill="#1E5631" opacity="0.6"/>
                   <path d="M115 130 Q150 100 185 130 Q150 160 115 130" fill="#1E5631" opacity="0.8"/>
@@ -779,24 +779,61 @@ export class PublicVerificationComponent implements OnInit {
     return `RSL-${year}-${month}${day}-${suffix}`;
   }
 
+  // ================================================================
+  //  MÉTODO downloadPDF MEJORADO
+  // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
       alert('No hay datos para generar el PDF.');
       return;
     }
-    try {
-      const container = document.getElementById('certificate-container');
-      if (!container) throw new Error('Contenedor no encontrado');
 
+    try {
+      console.log('📄 [downloadPDF] Iniciando...');
+
+      const container = document.getElementById('certificate-container');
+      if (!container) {
+        throw new Error('❌ Contenedor #certificate-container no encontrado');
+      }
+
+      // Verificar dimensiones reales
+      const rect = container.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        throw new Error('El contenedor tiene dimensiones cero');
+      }
+      console.log(`📐 Dimensiones contenedor: ${rect.width}×${rect.height}`);
+
+      // Pequeño retardo para asegurar renderizado completo
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Capturar con opciones que evitan problemas de elementos vacíos
       const canvas = await html2canvas(container, {
         scale: 2.5,
         useCORS: true,
         logging: false,
         backgroundColor: '#FAF8F2',
         width: container.scrollWidth,
-        height: container.scrollHeight
+        height: container.scrollHeight,
+        allowTaint: false,
+        onclone: (clonedDoc) => {
+          // Eliminar temporalmente elementos con dimensiones 0
+          const all = clonedDoc.querySelectorAll('*');
+          all.forEach((el) => {
+            const style = (el as HTMLElement).style;
+            if (style.width === '0px' || style.height === '0px') {
+              (el as HTMLElement).style.display = 'none';
+            }
+          });
+        }
       });
 
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('El canvas generado tiene dimensiones cero');
+      }
+
+      console.log(`✅ Canvas generado: ${canvas.width}×${canvas.height}`);
+
+      // Generar PDF
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const pdf = new jsPDF({
         orientation: 'landscape',
@@ -805,9 +842,12 @@ export class PublicVerificationComponent implements OnInit {
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`Certificado-${this.project.title.replace(/\s+/g, '-')}.pdf`);
+
+      console.log('✅ PDF descargado correctamente');
+
     } catch (error) {
-      console.error('Error al generar PDF:', error);
-      alert('Error al generar el PDF. Intenta de nuevo.');
+      console.error('❌ Error en downloadPDF:', error);
+      alert('Error al generar el PDF. Detalles: ' + (error as Error).message);
     }
   }
 }
