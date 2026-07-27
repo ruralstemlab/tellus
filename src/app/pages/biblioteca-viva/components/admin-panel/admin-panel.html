@@ -153,7 +153,7 @@
           </button>
         </div>
 
-        <!-- Diploma preview 🔥 CAMBIO AQUÍ -->
+        <!-- Diploma preview -->
         <div *ngIf="showFullPreview && previewCredential" class="diploma-preview">
           <div class="diploma">
             <div class="diploma-border">
@@ -162,7 +162,6 @@
                   <span class="diploma-org">Rural STEAM Lab</span>
                   <span class="diploma-badge">🏆 {{ previewCredential.category }}</span>
                 </div>
-                <!-- 🔥 NUEVO TÍTULO CON MARCA ADMIN PREVIEW -->
                 <h1 class="diploma-title" style="color: red;">🔴 ADMIN PREVIEW - Diploma de Participación</h1>
                 <p class="diploma-recognition">{{ previewCredential.recognition }}</p>
                 <div class="diploma-recipient">
@@ -288,7 +287,7 @@
           </div>
         </div>
 
-        <!-- Diploma real (sin cambios aquí) -->
+        <!-- 🟢 DIPLOMA VIEW (CREDENCIAL EMITIDA) – SEGUNDA PRUEBA -->
         <div class="diploma-preview" style="margin-top: 20px;">
           <div class="diploma">
             <div class="diploma-border">
@@ -297,7 +296,8 @@
                   <span class="diploma-org">Rural STEAM Lab</span>
                   <span class="diploma-badge">🏆 {{ selectedProjectForView.category }}</span>
                 </div>
-                <h1 class="diploma-title">Diploma de Participación</h1>
+                <!-- 🔥 NUEVO TÍTULO CON MARCA ADMIN VIEW -->
+                <h1 class="diploma-title" style="color: green;">🟢 ADMIN VIEW - Diploma de Participación</h1>
                 <p class="diploma-recognition">
                   {{ selectedCredentialForView.recognition || 'Sin reconocimientos' }}
                 </p>

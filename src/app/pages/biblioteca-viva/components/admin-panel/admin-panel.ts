@@ -414,67 +414,128 @@ export class AdminPanelComponent implements OnInit {
     }
   }
 
-  // ============================
-  //  GENERAR PDF DEL DIPLOMA
-  // ============================
+  // ================================================================
+  //  GENERAR PDF DEL DIPLOMA (VERSIÓN PREMIUM TELLUS)
+  // ================================================================
   async downloadPDF(project: Project, credential: Credential): Promise<void> {
     try {
-      // Mostrar notificación de carga
-      this.showNotification('📄 Generando PDF...', 'info');
+      this.showNotification('📄 Generando PDF premium...', 'info');
 
-      // 1. Crear un contenedor temporal con el diploma
+      // Fechas seguras
+      const issueDate = credential.issueDate ? new Date(credential.issueDate) : new Date();
+      const formattedDate = issueDate.toLocaleDateString('es-ES');
+      const year = issueDate.getFullYear();
+
+      // 1. Crear un contenedor temporal con el diseño premium
       const container = document.createElement('div');
       container.style.position = 'fixed';
       container.style.left = '-9999px';
       container.style.top = '0';
       container.style.width = '800px';
-      container.style.background = '#fdf8f0';
-      container.style.padding = '30px';
+      container.style.background = '#fcf9f3';
+      container.style.padding = '20px';
       container.style.fontFamily = 'Georgia, serif';
+      container.style.borderRadius = '24px';
+      container.style.boxShadow = '0 20px 60px rgba(0,0,0,0.6)';
+
       container.innerHTML = `
-        <div style="border: 3px double #b8944a; border-radius: 12px; padding: 30px; background: #fffcf5; text-align: center;">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0d5c0; padding-bottom: 8px; margin-bottom: 16px;">
-            <span style="font-weight: 600; letter-spacing: 1px; color: #5a4a30;">Rural STEAM Lab</span>
-            <span style="background: #f0e6d0; padding: 2px 12px; border-radius: 20px; color: #5a4a30;">🏆 ${project.category || ''}</span>
-          </div>
-          <h1 style="font-size: 32px; font-weight: 700; color: #2a1f0c; margin: 8px 0;">Diploma de Participación</h1>
-          <p style="font-size: 18px; color: #5a4a30; font-style: italic; padding: 8px 0; border-top: 1px solid #e0d5c0; border-bottom: 1px solid #e0d5c0;">
-            ${credential.recognition || 'Sin reconocimientos'}
-          </p>
-          <div style="margin: 20px 0;">
-            <span style="display: block; font-size: 12px; color: #8a7a60; text-transform: uppercase; letter-spacing: 2px;">Otorgado a</span>
-            <span style="display: block; font-size: 36px; font-weight: 700; color: #1a1005; font-family: 'Georgia', serif;">${project.studentName || ''}</span>
-          </div>
-          <div style="display: flex; justify-content: space-around; margin: 16px 0; font-size: 14px; color: #5a4a30;">
-            <div><span style="display: block; font-size: 11px; text-transform: uppercase; color: #8a7a60;">Proyecto</span><strong>${project.title || ''}</strong></div>
-            <div><span style="display: block; font-size: 11px; text-transform: uppercase; color: #8a7a60;">Institución</span><strong>${project.institution || ''}</strong></div>
-            <div><span style="display: block; font-size: 11px; text-transform: uppercase; color: #8a7a60;">Fecha</span><strong>${new Date().toLocaleDateString('es-ES')}</strong></div>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; border-top: 1px solid #e0d5c0; padding-top: 16px;">
-            <div style="text-align: center;">
-              <div style="width: 120px; height: 1px; border-bottom: 2px solid #2a1f0c; margin: 0 auto 4px;"></div>
-              <span style="font-size: 11px; color: #8a7a60; letter-spacing: 1px;">Firma del Director</span>
+        <div style="border: 2px solid #d4af37; border-radius: 16px; padding: 28px 32px; background: rgba(255,255,255,0.92); text-align: center; position: relative;">
+          <!-- Encabezado -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.2); margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
+              <span style="font-size: 1.1rem; font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px; font-family: 'Georgia', serif;">Rural STEAM Lab</span>
+              <span style="font-size: 0.65rem; color: #5a7a5a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">🌱 Colombia</span>
             </div>
-            <div style="text-align: center;">
-              <div style="font-size: 32px;">📜</div>
-              <span style="font-size: 11px; color: #8a7a60; letter-spacing: 1px;">Sello</span>
+            <div style="display: flex; align-items: center; gap: 6px; background: rgba(212,175,55,0.08); padding: 4px 14px 4px 10px; border-radius: 40px; border: 1px solid rgba(212,175,55,0.15);">
+              <span style="font-size: 0.9rem;">🏆</span>
+              <span style="font-size: 0.7rem; font-weight: 600; color: #5a4a2a; text-transform: uppercase; letter-spacing: 0.5px;">${project.category || 'Concurso'}</span>
             </div>
-            <div style="text-align: center;">
-              <div style="font-size: 11px; color: #8a7a60; letter-spacing: 1px;">Código de verificación</div>
-              <div style="font-size: 12px; font-family: monospace; color: #2a1f0c; font-weight: bold;">${credential.verificationCode?.substring(0, 8) || 'N/A'}</div>
+          </div>
+
+          <!-- Línea decorativa -->
+          <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 0 auto 16px; border-radius: 2px;"></div>
+
+          <!-- Título -->
+          <h1 style="font-size: 2rem; font-weight: 700; color: #1a2e1a; margin: 4px 0 8px; font-family: 'Georgia', serif; letter-spacing: 1px;">Diploma de Participación</h1>
+
+          <!-- Reconocimiento -->
+          <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 1rem; color: #d4af37; font-weight: 600; padding: 4px 16px; border: 1px solid rgba(212,175,55,0.15); border-radius: 40px; background: rgba(212,175,55,0.04); margin-bottom: 16px;">
+            <span style="font-size: 1rem;">⭐</span> ${credential.recognition || 'Participación'}
+          </div>
+
+          <!-- Destinatario -->
+          <div style="margin: 12px 0 8px;">
+            <span style="display: block; font-size: 0.7rem; color: #8a7a6a; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">Otorgado a</span>
+            <span style="display: block; font-size: 2.4rem; font-weight: 700; color: #1a2e1a; font-family: 'Georgia', serif; letter-spacing: 1px; line-height: 1.2;">${project.studentName || 'Estudiante'}</span>
+          </div>
+
+          <!-- Proyecto -->
+          <div style="margin: 8px 0 16px;">
+            <span style="display: block; font-size: 0.7rem; color: #8a7a6a; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">Por su proyecto</span>
+            <span style="font-size: 1.1rem; font-weight: 600; color: #2a3a2a; font-style: italic;">“${project.title || ''}”</span>
+          </div>
+
+          <!-- Detalles -->
+          <div style="display: flex; justify-content: center; gap: 24px; margin: 16px 0 8px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <span style="font-size: 1.2rem;">🏫</span>
+              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Institución</span>
+              <span style="font-size: 0.8rem; font-weight: 500; color: #1a2a1a;">${project.institution || ''}</span>
             </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <span style="font-size: 1.2rem;">📅</span>
+              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Fecha</span>
+              <span style="font-size: 0.8rem; font-weight: 500; color: #1a2a1a;">${formattedDate}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <span style="font-size: 1.2rem;">🔑</span>
+              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Código</span>
+              <span style="font-size: 0.85rem; font-weight: 600; color: #2a4a2a; background: rgba(76,255,156,0.04); padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace;">${credential.verificationCode?.substring(0, 8) || 'N/A'}</span>
+            </div>
+          </div>
+
+          <!-- Línea decorativa corta -->
+          <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 20px auto 16px; border-radius: 2px;"></div>
+
+          <!-- Firmas y Sello -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px; padding-top: 12px; gap: 16px; flex-wrap: wrap; border-top: 1px solid rgba(212,175,55,0.08);">
+            <div style="text-align: center; flex: 1; min-width: 80px;">
+              <div style="width: 100px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 4px; opacity: 0.6;"></div>
+              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Firma del Director</span>
+            </div>
+            <div style="text-align: center; flex: 0 0 auto; margin: 0 8px;">
+              <div style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; background: rgba(212,175,55,0.04);">
+                <span style="font-size: 1.6rem;">🌿</span>
+              </div>
+              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Sello Oficial</span>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 80px;">
+              <div style="width: 100px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 4px; opacity: 0.6;"></div>
+              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Firma del Rector</span>
+            </div>
+          </div>
+
+          <!-- Pie de página -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(212,175,55,0.08); font-size: 0.7rem; color: #8a7a6a; letter-spacing: 0.5px;">
+            <span style="font-weight: 500; color: #1a2e1a;">Tellus · Biblioteca Viva</span>
+            <span style="font-weight: 300; color: #8a7a6a;">${year}</span>
           </div>
         </div>
       `;
+
       document.body.appendChild(container);
 
-      // 2. Capturar con html2canvas
+      // Esperamos un tick para que el DOM se pinte
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // 2. Capturar con html2canvas (alta calidad)
       const canvas = await html2canvas(container, {
         scale: 2,
         useCORS: true,
         logging: false,
         width: 800,
-        height: 600
+        height: container.scrollHeight,
+        backgroundColor: '#fcf9f3'
       });
       document.body.removeChild(container);
 
@@ -488,10 +549,10 @@ export class AdminPanelComponent implements OnInit {
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`Diploma-${project.title?.replace(/\s+/g, '-') || 'credential'}.pdf`);
 
-      this.showNotification('✅ PDF descargado correctamente.', 'success');
+      this.showNotification('✅ PDF premium descargado correctamente.', 'success');
 
     } catch (error) {
-      console.error('Error al generar PDF:', error);
+      console.error('Error al generar PDF premium:', error);
       this.showNotification('❌ Error al generar el PDF. Intenta de nuevo.', 'error');
     }
   }

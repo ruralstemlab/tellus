@@ -59,8 +59,10 @@ import { of } from 'rxjs';
                 <!-- Línea decorativa -->
                 <div class="decorative-line"></div>
 
-                <!-- Título -->
-                <h1 class="diploma-title">Diploma de Participación</h1>
+                <!-- Título modificado a ROJO para la prueba -->
+                <h1 class="diploma-title" style="color: red !important; background: none !important; -webkit-text-fill-color: red !important; background-clip: unset !important;">
+                  Diploma de Participación
+                </h1>
 
                 <!-- Reconocimiento -->
                 <div class="diploma-recognition" *ngIf="credential.recognition">
