@@ -42,9 +42,15 @@ import { of } from 'rxjs';
         <div class="certificate-preview" id="certificate-container">
           <div class="certificate-wrapper">
             <div class="certificate">
-              <!-- Encabezado -->
+              <!-- Encabezado con STEAM multicolor -->
               <div class="cert-header">
-                <div class="org-name">Rural STEAM Lab</div>
+                <div class="org-name">
+                  Rural 
+                  <span class="steam-color">
+                    <span class="s">S</span><span class="t">T</span><span class="e">E</span><span class="a">A</span><span class="m">M</span>
+                  </span>
+                  Lab
+                </div>
                 <div class="org-country">Colombia</div>
                 <div class="org-slogan">INVESTIGA · INNOVA · TRANSFORMA</div>
               </div>
@@ -247,6 +253,15 @@ import { of } from 'rxjs';
         letter-spacing: 3px;
         text-transform: uppercase;
       }
+      .org-name .steam-color {
+        font-weight: 800;
+      }
+      .org-name .s { color: #1976d2; }  /* Azul */
+      .org-name .t { color: #00bcd4; }  /* Celeste */
+      .org-name .e { color: #fdd835; }  /* Amarillo */
+      .org-name .a { color: #f57c00; }  /* Naranja */
+      .org-name .m { color: #388e3c; }  /* Verde */
+
       .cert-header .org-country {
         font-size: 0.9rem;
         color: #5a7a5a;
