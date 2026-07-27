@@ -1,51 +1,51 @@
 <div class="admin-panel">
-  <!-- Encabezado -->
+  <!-- NOTIFICACIONES -->
+  <div *ngIf="notification" class="notification" [class]="'notification-' + notification.type">
+    <span>{{ notification.message }}</span>
+    <button class="notification-close" (click)="closeNotification()">✕</button>
+  </div>
+
+  <!-- ENCABEZADO -->
   <header class="panel-header">
     <h1>🛡 Centro de Revisión de Apps</h1>
-    <p class="subtitle">Revisa las Apps enviadas por la comunidad Tellus antes de publicarlas en la Biblioteca Viva.</p>
+    <p class="subtitle">Revisa las aplicaciones enviadas por la comunidad Tellus antes de publicarlas en la Biblioteca Viva.</p>
   </header>
 
-  <!-- Pestañas -->
+  <!-- PESTAÑAS CON CONTADORES -->
   <div class="tabs">
-    <button
-      class="tab"
-      [class.active]="activeTab === 'pending'"
-      (click)="setTab('pending')"
-    >
-      🟡 En revisión <span class="badge">{{ pendingProjects.length }}</span>
+    <button class="tab" [class.active]="activeTab === 'pending'" (click)="setTab('pending')">
+      🟡 En revisión <span class="badge">{{ pendingCount }}</span>
     </button>
-    <button
-      class="tab"
-      [class.active]="activeTab === 'all'"
-      (click)="setTab('all')"
-    >
-      📚 Todas las Apps <span class="badge">{{ allProjects.length }}</span>
+    <button class="tab" [class.active]="activeTab === 'published'" (click)="setTab('published')">
+      📚 Publicadas <span class="badge">{{ publishedCount }}</span>
+      <span *ngIf="pendingEmissionCount > 0" class="badge-pending">
+        ⏳ {{ pendingEmissionCount }} por emitir
+      </span>
     </button>
   </div>
 
-  <!-- Spinner -->
+  <!-- SPINNER DE CARGA -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
     <p>Cargando aplicaciones…</p>
   </div>
 
-  <!-- Contenido -->
+  <!-- CONTENIDO PRINCIPAL -->
   <div *ngIf="!loading">
-    <!-- Pendientes -->
+
+    <!-- PESTAÑA: EN REVISIÓN (PENDIENTES) -->
     <div *ngIf="activeTab === 'pending'">
       <div *ngIf="pendingProjects.length === 0" class="empty-state">
         <span class="empty-icon">🎉</span>
-        <p>¡No hay Apps pendientes de revisión!</p>
-        <span class="empty-sub">Todas las Apps están al día.</span>
+        <p>¡No hay aplicaciones pendientes de revisión!</p>
+        <span class="empty-sub">Todas las apps están al día.</span>
       </div>
 
       <div class="cards-grid">
         <div class="app-card" *ngFor="let p of pendingProjects">
           <div class="card-image">
             <div class="app-icon">📱</div>
-            <span class="status-badge" [class]="getStatusClass(p.status)">
-              {{ getStatusLabel(p.status) }}
-            </span>
+            <span class="status-badge status-pending">En revisión</span>
           </div>
           <div class="card-body">
             <h3 class="app-title">{{ p.title }}</h3>
@@ -57,37 +57,33 @@
             </div>
             <div class="review-note">
               <label>💬 Comentario para el desarrollador</label>
-              <textarea
-                [(ngModel)]="reviewNotes[p.id!]"
-                placeholder="Escribe aquí tus observaciones…"
-                rows="2"
-              ></textarea>
+              <textarea [(ngModel)]="reviewNotes[p.id!]" placeholder="Escribe aquí tus observaciones…" rows="2"></textarea>
             </div>
             <div class="card-actions">
-              <button class="btn btn-view" (click)="viewProject(p)">👀 Vista previa</button>
-              <button class="btn btn-approve" (click)="approve(p)">✅ Aprobar</button>
-              <button class="btn btn-publish" (click)="publish(p)">🚀 Publicar</button>
-              <button class="btn btn-reject" (click)="reject(p)">🔄 Solicitar cambios</button>
+              <button class="btn btn-view" (click)="viewProject(p)">👁️ Vista previa</button>
+              <button class="btn btn-publish" (click)="publishProject(p)">🚀 Publicar</button>
+              <button class="btn btn-reject" (click)="requestChanges(p)">🔄 Solicitar cambios</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Todas -->
-    <div *ngIf="activeTab === 'all'">
-      <div *ngIf="allProjects.length === 0" class="empty-state">
+    <!-- PESTAÑA: PUBLICADAS -->
+    <div *ngIf="activeTab === 'published'">
+      <div *ngIf="publishedProjects.length === 0" class="empty-state">
         <span class="empty-icon">📭</span>
-        <p>No hay Apps registradas aún.</p>
+        <p>No hay aplicaciones publicadas aún.</p>
+        <span class="empty-sub">Las apps que publiques aparecerán aquí.</span>
       </div>
 
       <div class="cards-grid">
-        <div class="app-card" *ngFor="let p of allProjects">
+        <div class="app-card" *ngFor="let p of publishedProjects">
           <div class="card-image">
             <div class="app-icon">📱</div>
-            <span class="status-badge" [class]="getStatusClass(p.status)">
-              {{ getStatusLabel(p.status) }}
-            </span>
+            <span class="status-badge status-published">Publicado</span>
+            <span *ngIf="hasCredential(p.id)" class="credential-badge issued">✅ Credencial emitida</span>
+            <span *ngIf="!hasCredential(p.id)" class="credential-badge pending">⏳ Pendiente</span>
           </div>
           <div class="card-body">
             <h3 class="app-title">{{ p.title }}</h3>
@@ -98,13 +94,261 @@
               <span>📅 {{ p.uploadedAt | date:'dd/MM/yyyy' }}</span>
             </div>
             <div class="card-actions">
-              <button class="btn btn-view" (click)="viewProject(p)">👀 Vista previa</button>
-              <button *ngIf="p.status === 'pending'" class="btn btn-approve" (click)="approve(p)">✅ Aprobar</button>
-              <button *ngIf="p.status === 'pending'" class="btn btn-publish" (click)="publish(p)">🚀 Publicar</button>
-              <button *ngIf="p.status === 'pending'" class="btn btn-reject" (click)="reject(p)">🔄 Solicitar cambios</button>
+              <button class="btn btn-view" (click)="viewPublishedProject(p)">👁️ Ver aplicación</button>
+              <ng-container *ngIf="hasCredential(p.id); else noCredential">
+                <button class="btn btn-view-credential" (click)="viewCredential(p)">📄 Ver credencial</button>
+              </ng-container>
+              <ng-template #noCredential>
+                <button class="btn btn-emit" (click)="openEmitModal(p)">📜 Emitir credencial</button>
+              </ng-template>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL DE EMISIÓN DE CREDENCIAL                             -->
+  <!-- ========================================================== -->
+  <div *ngIf="showEmitModal && selectedProjectForEmit" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>📜 Emitir credencial</h2>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Resumen del proyecto -->
+        <div class="project-summary">
+          <div class="summary-row">
+            <span class="label">Proyecto:</span>
+            <span class="value">{{ selectedProjectForEmit.title }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Desarrollador:</span>
+            <span class="value">{{ selectedProjectForEmit.studentName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Institución:</span>
+            <span class="value">{{ selectedProjectForEmit.institution }}</span>
+          </div>
+        </div>
+
+        <!-- Reconocimientos -->
+        <div class="recognition-section">
+          <label>Reconocimientos</label>
+          <div class="recognition-grid">
+            <div class="recognition-item" [class.selected]="opt.selected" *ngFor="let opt of recognitionOptions" (click)="toggleRecognition(opt.value)">
+              <span class="rec-icon">{{ opt.icon }}</span>
+              <span class="rec-label">{{ opt.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón Vista previa -->
+        <div class="preview-trigger">
+          <button class="btn btn-preview" (click)="toggleFullPreview()">
+            {{ showFullPreview ? '🔽 Ocultar diploma' : '🖼️ Vista previa del diploma' }}
+          </button>
+        </div>
+
+        <!-- Diploma preview -->
+        <div *ngIf="showFullPreview && previewCredential" class="diploma-preview">
+          <div class="diploma">
+            <div class="diploma-border">
+              <div class="diploma-inner">
+                <div class="diploma-header">
+                  <span class="diploma-org">Rural STEAM Lab</span>
+                  <span class="diploma-badge">🏆 {{ previewCredential.category }}</span>
+                </div>
+                <h1 class="diploma-title">Diploma de Participación</h1>
+                <p class="diploma-recognition">{{ previewCredential.recognition }}</p>
+                <div class="diploma-recipient">
+                  <span class="label">Otorgado a</span>
+                  <span class="name">{{ previewCredential.studentName }}</span>
+                </div>
+                <div class="diploma-details">
+                  <div class="detail-item">
+                    <span class="label">Proyecto</span>
+                    <span class="value">{{ previewCredential.projectTitle }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Institución</span>
+                    <span class="value">{{ previewCredential.institution }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Fecha</span>
+                    <span class="value">{{ previewCredential.issueDate | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+                <div class="diploma-footer">
+                  <div class="signature">
+                    <div class="sign-line"></div>
+                    <span class="sign-label">Firma del Director</span>
+                  </div>
+                  <div class="seal">
+                    <span class="seal-icon">📜</span>
+                    <span class="seal-label">Sello</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="modalError" class="error-message">⚠️ {{ modalError }}</div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn-primary" (click)="emitCredential()" [disabled]="isEmitting">
+          {{ isEmitting ? 'Emitiendo...' : '✅ Emitir' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL DE VISUALIZACIÓN DE CREDENCIAL                       -->
+  <!-- ========================================================== -->
+  <div *ngIf="showViewCredentialModal && selectedCredentialForView && selectedProjectForView" class="modal-overlay" (click)="closeViewCredentialModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>📄 Credencial emitida</h2>
+        <button class="modal-close" (click)="closeViewCredentialModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Resumen de la credencial -->
+        <div class="project-summary">
+          <div class="summary-row">
+            <span class="label">Proyecto:</span>
+            <span class="value">{{ selectedProjectForView.title }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Desarrollador:</span>
+            <span class="value">{{ selectedProjectForView.studentName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Institución:</span>
+            <span class="value">{{ selectedProjectForView.institution }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Número:</span>
+            <span class="value">{{ selectedCredentialForView.credentialNumber }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Código de verificación:</span>
+            <span class="value" style="font-family: monospace; color: #4cff9c;">
+              {{ selectedCredentialForView.verificationCode }}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Reconocimientos:</span>
+            <span class="value">{{ selectedCredentialForView.recognition || 'Sin reconocimientos' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Fecha de emisión:</span>
+            <span class="value">{{ selectedCredentialForView.issueDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Estado:</span>
+            <span class="value" style="color: #4cff9c;">✅ {{ selectedCredentialForView.status === 'issued' ? 'Emitida' : selectedCredentialForView.status }}</span>
+          </div>
+
+          <!-- Estado del correo -->
+          <div class="summary-row" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; margin-top: 8px;">
+            <span class="label">📧 Correo:</span>
+            <span class="value">
+              <span *ngIf="selectedCredentialForView.emailSent === true" style="color: #4cff9c;">✅ Enviado</span>
+              <span *ngIf="selectedCredentialForView.emailSent === false && selectedCredentialForView.emailAttempts && selectedCredentialForView.emailAttempts > 0" style="color: #ff5252;">❌ Error</span>
+              <span *ngIf="selectedCredentialForView.emailSent === false && (!selectedCredentialForView.emailAttempts || selectedCredentialForView.emailAttempts === 0)" style="color: #ffc107;">⏳ Pendiente</span>
+              <span style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-left: 8px;">
+                ({{ selectedCredentialForView.emailAttempts || 0 }} intentos)
+              </span>
+            </span>
+          </div>
+          <div *ngIf="selectedCredentialForView.emailSentAt" class="summary-row">
+            <span class="label">Enviado el:</span>
+            <span class="value" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+              {{ selectedCredentialForView.emailSentAt | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+          <div *ngIf="selectedCredentialForView.emailError" class="summary-row">
+            <span class="label">Error:</span>
+            <span class="value" style="color: #ff5252; font-size: 0.85rem;">
+              {{ selectedCredentialForView.emailError }}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Destinatario:</span>
+            <span class="value" style="color: rgba(255,255,255,0.6);">{{ selectedProjectForView.studentEmail }}</span>
+          </div>
+        </div>
+
+        <!-- Diploma real -->
+        <div class="diploma-preview" style="margin-top: 20px;">
+          <div class="diploma">
+            <div class="diploma-border">
+              <div class="diploma-inner">
+                <div class="diploma-header">
+                  <span class="diploma-org">Rural STEAM Lab</span>
+                  <span class="diploma-badge">🏆 {{ selectedProjectForView.category }}</span>
+                </div>
+                <h1 class="diploma-title">Diploma de Participación</h1>
+                <p class="diploma-recognition">
+                  {{ selectedCredentialForView.recognition || 'Sin reconocimientos' }}
+                </p>
+                <div class="diploma-recipient">
+                  <span class="label">Otorgado a</span>
+                  <span class="name">{{ selectedProjectForView.studentName }}</span>
+                </div>
+                <div class="diploma-details">
+                  <div class="detail-item">
+                    <span class="label">Proyecto</span>
+                    <span class="value">{{ selectedProjectForView.title }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Institución</span>
+                    <span class="value">{{ selectedProjectForView.institution }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Fecha</span>
+                    <span class="value">{{ selectedCredentialForView.issueDate | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+                <div class="diploma-footer">
+                  <div class="signature">
+                    <div class="sign-line"></div>
+                    <span class="sign-label">Firma del Director</span>
+                  </div>
+                  <div class="seal">
+                    <span class="seal-icon">📜</span>
+                    <span class="seal-label">Sello</span>
+                  </div>
+                </div>
+                <div class="verification-code">
+                  <span class="code-label">Código de verificación</span>
+                  <div class="code-value">{{ selectedCredentialForView.verificationCode?.substring(0, 8) || 'N/A' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <!-- 📥 Descargar PDF -->
+        <button class="btn-secondary" style="background: rgba(76, 255, 156, 0.12); color: #4cff9c; border-color: rgba(76, 255, 156, 0.2);" (click)="downloadPDF(selectedProjectForView, selectedCredentialForView)">
+          📥 Descargar PDF
+        </button>
+        <!-- 📧 Reenviar correo -->
+        <button class="btn-secondary" style="background: rgba(100,149,237,0.12); color: #8ab4ff; border-color: rgba(100,149,237,0.2);" (click)="resendEmail()">
+          📧 Reenviar correo
+        </button>
+        <button class="btn-secondary" (click)="closeViewCredentialModal()">Cerrar</button>
+        <button class="btn-primary" (click)="closeViewCredentialModal()">✅ Listo</button>
       </div>
     </div>
   </div>

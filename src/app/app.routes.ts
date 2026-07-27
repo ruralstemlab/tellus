@@ -18,6 +18,9 @@ import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
 import { Arte } from './pages/laboratorios/arte/arte';
 import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
+// ✅ Importar el componente de verificación pública
+import { PublicVerificationComponent } from './pages/public-verification/public-verification.component';
+
 export const routes: Routes = [
 
   {
@@ -92,6 +95,14 @@ export const routes: Routes = [
     component: Tecnologia
   },
 
+  // ✅ NUEVA RUTA PÚBLICA PARA VERIFICACIÓN DE CREDENCIALES
+  // ¡IMPORTANTE! Debe ir ANTES del wildcard (**)
+  {
+    path: 'verificar/:uuid',
+    component: PublicVerificationComponent
+  },
+
+  // ⚠️ Wildcard: siempre al final
   {
     path: '**',
     redirectTo: 'home'
