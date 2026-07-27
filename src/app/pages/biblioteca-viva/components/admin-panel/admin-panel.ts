@@ -415,111 +415,129 @@ export class AdminPanelComponent implements OnInit {
   }
 
   // ================================================================
-  //  GENERAR PDF DEL DIPLOMA (VERSIÓN PREMIUM TELLUS)
+  //  GENERAR PDF DEL CERTIFICADO (VERSIÓN OFICIAL - ESTILO IMAGEN)
   // ================================================================
   async downloadPDF(project: Project, credential: Credential): Promise<void> {
     try {
-      this.showNotification('📄 Generando PDF premium...', 'info');
+      this.showNotification('📄 Generando certificado oficial...', 'info');
 
       // Fechas seguras
       const issueDate = credential.issueDate ? new Date(credential.issueDate) : new Date();
-      const formattedDate = issueDate.toLocaleDateString('es-ES');
-      const year = issueDate.getFullYear();
+      const formattedDate = issueDate.toLocaleDateString('es-ES', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      });
 
-      // 1. Crear un contenedor temporal con el diseño premium
+      // ID de certificado (usar credentialNumber o generar uno)
+      const certId = credential.credentialNumber || `RSL-${issueDate.getFullYear()}-${String(issueDate.getMonth() + 1).padStart(2, '0')}${String(issueDate.getDate()).padStart(2, '0')}-${String(project.id?.slice(0, 6) || '000001').toUpperCase()}`;
+
+      // Código de verificación (tomar los primeros 14 caracteres con guiones)
+      const verifCode = credential.verificationCode || 'A1B2-C3D4-E5F6';
+
+      // Reconocimiento (si no hay, usar texto genérico)
+      const recognition = credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA';
+
+      // 1. Crear un contenedor temporal con el diseño de certificado oficial
       const container = document.createElement('div');
       container.style.position = 'fixed';
       container.style.left = '-9999px';
       container.style.top = '0';
-      container.style.width = '800px';
-      container.style.background = '#fcf9f3';
-      container.style.padding = '20px';
-      container.style.fontFamily = 'Georgia, serif';
-      container.style.borderRadius = '24px';
-      container.style.boxShadow = '0 20px 60px rgba(0,0,0,0.6)';
+      container.style.width = '900px';
+      container.style.background = '#ffffff';
+      container.style.padding = '40px 50px';
+      container.style.fontFamily = 'Georgia, "Times New Roman", serif';
+      container.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
 
       container.innerHTML = `
-        <div style="border: 2px solid #d4af37; border-radius: 16px; padding: 28px 32px; background: rgba(255,255,255,0.92); text-align: center; position: relative;">
-          <!-- Encabezado -->
-          <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(212,175,55,0.2); margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
-              <span style="font-size: 1.1rem; font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px; font-family: 'Georgia', serif;">Rural STEAM Lab</span>
-              <span style="font-size: 0.65rem; color: #5a7a5a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">🌱 Colombia</span>
+        <div style="border: 3px double #1a2e1a; border-radius: 8px; padding: 30px 40px; background: #fffcf9; text-align: center;">
+
+          <!-- Encabezado: Rural STEAM Lab + eslogan -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 2.2rem; font-weight: 700; color: #1a2e1a; letter-spacing: 3px; text-transform: uppercase; font-family: 'Georgia', serif;">
+              Rural STEAM Lab
             </div>
-            <div style="display: flex; align-items: center; gap: 6px; background: rgba(212,175,55,0.08); padding: 4px 14px 4px 10px; border-radius: 40px; border: 1px solid rgba(212,175,55,0.15);">
-              <span style="font-size: 0.9rem;">🏆</span>
-              <span style="font-size: 0.7rem; font-weight: 600; color: #5a4a2a; text-transform: uppercase; letter-spacing: 0.5px;">${project.category || 'Concurso'}</span>
+            <div style="font-size: 0.9rem; color: #5a7a5a; letter-spacing: 8px; text-transform: uppercase; font-weight: 600; margin-top: 2px;">
+              Colombia
             </div>
-          </div>
-
-          <!-- Línea decorativa -->
-          <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 0 auto 16px; border-radius: 2px;"></div>
-
-          <!-- Título -->
-          <h1 style="font-size: 2rem; font-weight: 700; color: #1a2e1a; margin: 4px 0 8px; font-family: 'Georgia', serif; letter-spacing: 1px;">Diploma de Participación</h1>
-
-          <!-- Reconocimiento -->
-          <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 1rem; color: #d4af37; font-weight: 600; padding: 4px 16px; border: 1px solid rgba(212,175,55,0.15); border-radius: 40px; background: rgba(212,175,55,0.04); margin-bottom: 16px;">
-            <span style="font-size: 1rem;">⭐</span> ${credential.recognition || 'Participación'}
-          </div>
-
-          <!-- Destinatario -->
-          <div style="margin: 12px 0 8px;">
-            <span style="display: block; font-size: 0.7rem; color: #8a7a6a; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">Otorgado a</span>
-            <span style="display: block; font-size: 2.4rem; font-weight: 700; color: #1a2e1a; font-family: 'Georgia', serif; letter-spacing: 1px; line-height: 1.2;">${project.studentName || 'Estudiante'}</span>
-          </div>
-
-          <!-- Proyecto -->
-          <div style="margin: 8px 0 16px;">
-            <span style="display: block; font-size: 0.7rem; color: #8a7a6a; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">Por su proyecto</span>
-            <span style="font-size: 1.1rem; font-weight: 600; color: #2a3a2a; font-style: italic;">“${project.title || ''}”</span>
-          </div>
-
-          <!-- Detalles -->
-          <div style="display: flex; justify-content: center; gap: 24px; margin: 16px 0 8px; flex-wrap: wrap;">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-              <span style="font-size: 1.2rem;">🏫</span>
-              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Institución</span>
-              <span style="font-size: 0.8rem; font-weight: 500; color: #1a2a1a;">${project.institution || ''}</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-              <span style="font-size: 1.2rem;">📅</span>
-              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Fecha</span>
-              <span style="font-size: 0.8rem; font-weight: 500; color: #1a2a1a;">${formattedDate}</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-              <span style="font-size: 1.2rem;">🔑</span>
-              <span style="font-size: 0.6rem; text-transform: uppercase; color: #8a7a6a; letter-spacing: 1px; font-weight: 500;">Código</span>
-              <span style="font-size: 0.85rem; font-weight: 600; color: #2a4a2a; background: rgba(76,255,156,0.04); padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace;">${credential.verificationCode?.substring(0, 8) || 'N/A'}</span>
+            <div style="font-size: 0.8rem; color: #2a4a2a; letter-spacing: 3px; text-transform: uppercase; font-weight: 500; margin-top: 6px; border-top: 1px solid #d4c8b0; padding-top: 6px; display: inline-block; padding-left: 20px; padding-right: 20px;">
+              INVESTIGA · INNOVA · TRANSFORMA
             </div>
           </div>
 
-          <!-- Línea decorativa corta -->
-          <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 20px auto 16px; border-radius: 2px;"></div>
+          <!-- Línea divisoria -->
+          <hr style="border: none; border-top: 2px solid #1a2e1a; margin: 12px 0 20px 0; width: 60%;">
 
-          <!-- Firmas y Sello -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px; padding-top: 12px; gap: 16px; flex-wrap: wrap; border-top: 1px solid rgba(212,175,55,0.08);">
-            <div style="text-align: center; flex: 1; min-width: 80px;">
-              <div style="width: 100px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 4px; opacity: 0.6;"></div>
-              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Firma del Director</span>
+          <!-- Título principal: CERTIFICA QUE -->
+          <div style="font-size: 1.6rem; font-weight: 700; color: #1a2e1a; letter-spacing: 4px; text-transform: uppercase; margin: 8px 0 16px 0;">
+            CERTIFICA QUE
+          </div>
+
+          <!-- Nombre del participante -->
+          <div style="font-size: 2.6rem; font-weight: 700; color: #0a1a0a; font-family: 'Georgia', serif; letter-spacing: 1px; margin: 8px 0;">
+            ${project.studentName || 'Nombre del Participante'}
+          </div>
+
+          <!-- Texto de logro -->
+          <div style="font-size: 1.1rem; color: #2a3a2a; margin: 16px 0 8px 0; line-height: 1.6;">
+            ha desarrollado y publicado exitosamente el proyecto
+          </div>
+
+          <!-- Nombre del proyecto -->
+          <div style="font-size: 1.8rem; font-weight: 700; color: #1a2e1a; font-style: italic; font-family: 'Georgia', serif; margin: 6px 0 12px 0; border-bottom: 1px solid #d4c8b0; padding-bottom: 10px; display: inline-block;">
+            "${project.title || 'Nombre del Proyecto'}"
+          </div>
+
+          <div style="font-size: 1.0rem; color: #3a4a3a; margin: 12px 0 8px 0;">
+            en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, compromiso, pensamiento científico y espíritu de innovación.
+          </div>
+
+          <!-- Reconocimiento oficial -->
+          <div style="font-size: 1.1rem; font-weight: 700; color: #1a2e1a; letter-spacing: 2px; text-transform: uppercase; margin: 18px 0 12px 0; padding: 8px 20px; border: 1px solid #1a2e1a; display: inline-block;">
+            ${recognition}
+          </div>
+
+          <!-- Fecha de emisión -->
+          <div style="font-size: 1.0rem; color: #3a4a3a; margin: 16px 0 20px 0;">
+            Emitido el <strong>${formattedDate}</strong>
+          </div>
+
+          <!-- Firmas (tres líneas) -->
+          <div style="display: flex; justify-content: space-around; align-items: flex-end; margin: 24px 0 20px 0; padding-top: 16px; border-top: 1px solid #d4c8b0;">
+            <div style="text-align: center; flex: 1;">
+              <div style="width: 160px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 6px;"></div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px;">Henson Alberto Medina Castillo</div>
+              <div style="font-size: 0.65rem; color: #5a7a5a; text-transform: uppercase; letter-spacing: 1px;">Liderazgo Tecnológico y Desarrollo</div>
             </div>
-            <div style="text-align: center; flex: 0 0 auto; margin: 0 8px;">
-              <div style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; background: rgba(212,175,55,0.04);">
-                <span style="font-size: 1.6rem;">🌿</span>
-              </div>
-              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Sello Oficial</span>
+            <div style="text-align: center; flex: 1;">
+              <div style="width: 160px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 6px;"></div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px;">Uberto Manuel Gómez López</div>
+              <div style="font-size: 0.65rem; color: #5a7a5a; text-transform: uppercase; letter-spacing: 1px;">Liderazgo Académico e Investigación</div>
             </div>
-            <div style="text-align: center; flex: 1; min-width: 80px;">
-              <div style="width: 100px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 4px; opacity: 0.6;"></div>
-              <span style="font-size: 0.6rem; color: #8a7a6a; letter-spacing: 1px; text-transform: uppercase; font-weight: 500;">Firma del Rector</span>
+            <div style="text-align: center; flex: 1;">
+              <div style="width: 160px; height: 1px; border-bottom: 2px solid #1a2e1a; margin: 0 auto 6px;"></div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px;">Diana Marcela Alfonso Montañez</div>
+              <div style="font-size: 0.65rem; color: #5a7a5a; text-transform: uppercase; letter-spacing: 1px;">Liderazgo de Implementación y Calidad</div>
             </div>
           </div>
 
-          <!-- Pie de página -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(212,175,55,0.08); font-size: 0.7rem; color: #8a7a6a; letter-spacing: 0.5px;">
-            <span style="font-weight: 500; color: #1a2e1a;">Tellus · Biblioteca Viva</span>
-            <span style="font-weight: 300; color: #8a7a6a;">${year}</span>
+          <!-- ID y Código de verificación (dos columnas) -->
+          <div style="display: flex; justify-content: center; gap: 40px; margin: 16px 0 12px 0; padding-top: 12px; border-top: 1px solid #d4c8b0;">
+            <div style="text-align: center;">
+              <div style="font-size: 0.65rem; color: #5a7a5a; text-transform: uppercase; letter-spacing: 1px;">ID de Certificado</div>
+              <div style="font-size: 0.95rem; font-weight: 700; color: #1a2e1a; font-family: 'Courier New', monospace;">${certId}</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 0.65rem; color: #5a7a5a; text-transform: uppercase; letter-spacing: 1px;">Código de Verificación</div>
+              <div style="font-size: 0.95rem; font-weight: 700; color: #1a2e1a; font-family: 'Courier New', monospace; letter-spacing: 1px;">${verifCode}</div>
+            </div>
           </div>
+
+          <!-- Pie: URL y Ecosistema Tellus -->
+          <div style="font-size: 0.8rem; color: #5a7a5a; margin-top: 14px; padding-top: 10px; border-top: 1px solid #d4c8b0; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 500;">VERIFICA ESTE CERTIFICADO EN</span>
+            <span style="font-weight: 700; color: #1a2e1a; letter-spacing: 0.5px;">tellus.ruralsteamlab.com/verificar</span>
+            <span style="font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">ECOSISTEMA TELLUS</span>
+          </div>
+
         </div>
       `;
 
@@ -533,27 +551,27 @@ export class AdminPanelComponent implements OnInit {
         scale: 2,
         useCORS: true,
         logging: false,
-        width: 800,
-        height: container.scrollHeight,
-        backgroundColor: '#fcf9f3'
+        backgroundColor: '#ffffff',
+        width: container.scrollWidth,
+        height: container.scrollHeight
       });
       document.body.removeChild(container);
 
-      // 3. Generar PDF
+      // 3. Generar PDF en orientación vertical (retrato)
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({
-        orientation: 'landscape',
+        orientation: 'portrait',
         unit: 'px',
         format: [canvas.width / 2, canvas.height / 2]
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
-      pdf.save(`Diploma-${project.title?.replace(/\s+/g, '-') || 'credential'}.pdf`);
+      pdf.save(`Certificado-${project.title?.replace(/\s+/g, '-') || 'certificado'}.pdf`);
 
-      this.showNotification('✅ PDF premium descargado correctamente.', 'success');
+      this.showNotification('✅ Certificado oficial descargado correctamente.', 'success');
 
     } catch (error) {
-      console.error('Error al generar PDF premium:', error);
-      this.showNotification('❌ Error al generar el PDF. Intenta de nuevo.', 'error');
+      console.error('Error al generar certificado:', error);
+      this.showNotification('❌ Error al generar el certificado. Intenta de nuevo.', 'error');
     }
   }
 
