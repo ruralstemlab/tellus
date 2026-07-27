@@ -236,29 +236,34 @@ export class PublicVerificationComponent implements OnInit {
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
+    console.log('🔍 [PublicVerification] UUID recibido:', uuid);
     if (!uuid) {
       this.error = 'No se especificó un código de verificación.';
       this.loading = false;
+      console.warn('⚠️ [PublicVerification] No se proporcionó UUID');
       return;
     }
     this.loadCredential(uuid);
   }
 
   private loadCredential(uuid: string): void {
+    console.log('🔍 [PublicVerification] Buscando credencial con UUID:', uuid);
     this.credentialService.getCredentialByUuid(uuid).subscribe({
       next: (cred) => {
+        console.log('📄 [PublicVerification] Credencial obtenida:', cred);
         if (!cred) {
-          this.error = 'Credencial no encontrada. Verifica el código.';
+          this.error = '❌ Credencial no encontrada. Verifica el código.';
           this.loading = false;
+          console.warn('⚠️ [PublicVerification] Credencial no encontrada para UUID:', uuid);
           return;
         }
         this.credential = cred;
-        // Obtener el proyecto asociado
+        console.log('✅ [PublicVerification] Credencial cargada, projectId:', cred.projectId);
         this.loadProject(cred.projectId);
       },
       error: (err) => {
-        console.error(err);
-        this.error = 'Error al verificar la credencial. Intenta de nuevo.';
+        console.error('❌ [PublicVerification] Error al verificar:', err);
+        this.error = '⚠️ Error al verificar la credencial. Intenta de nuevo.';
         this.loading = false;
       }
     });
@@ -266,18 +271,21 @@ export class PublicVerificationComponent implements OnInit {
 
   private loadProject(projectId: string): void {
     if (!projectId) {
+      console.warn('⚠️ [PublicVerification] No hay projectId, asignando null');
       this.project = null;
       this.loading = false;
       return;
     }
+    console.log('🔍 [PublicVerification] Buscando proyecto con ID:', projectId);
     this.projectService.getProject(projectId).subscribe({
       next: (project) => {
-        // ✅ CORRECCIÓN: si el proyecto es undefined, asignar null
+        console.log('📄 [PublicVerification] Proyecto obtenido:', project);
         this.project = project || null;
         this.loading = false;
+        console.log('✅ [PublicVerification] Carga completada');
       },
       error: (err) => {
-        console.error(err);
+        console.error('❌ [PublicVerification] Error al cargar proyecto:', err);
         this.project = null;
         this.loading = false;
       }
@@ -294,6 +302,7 @@ export class PublicVerificationComponent implements OnInit {
       return;
     }
     try {
+      console.log('📄 [PublicVerification] Generando PDF...');
       const container = document.getElementById('diploma-container');
       if (!container) throw new Error('Contenedor no encontrado');
       const canvas = await html2canvas(container, { scale: 2, useCORS: true, logging: false });
@@ -305,8 +314,9 @@ export class PublicVerificationComponent implements OnInit {
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`Diploma-${this.project.title.replace(/\s+/g, '-')}.pdf`);
+      console.log('✅ [PublicVerification] PDF descargado');
     } catch (error) {
-      console.error(error);
+      console.error('❌ [PublicVerification] Error al generar PDF:', error);
       alert('Error al generar el PDF. Intenta de nuevo.');
     }
   }
