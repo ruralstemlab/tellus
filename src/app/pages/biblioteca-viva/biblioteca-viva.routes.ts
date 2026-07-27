@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-
 import { BibliotecaViva } from './biblioteca-viva';
 import { ParticiparComponent } from './components/participar/participar';
 import { GaleriaComponent } from './components/galeria/galeria';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
   {
@@ -20,6 +20,10 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    component: AdminDashboardComponent
+  },
+  {
+    path: 'admin/revision',
     component: AdminPanelComponent
   }
 ];

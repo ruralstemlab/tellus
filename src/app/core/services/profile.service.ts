@@ -1,102 +1,89 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
-
 import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
-
 import { UserProfile } from '../models/user-profile.model';
+import { setDoc, doc } from 'firebase/firestore';
+import { db } from '../../../environments/firebase.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
 
-  /**
-   * Perfil del usuario autenticado.
-   */
   private profileSubject = new BehaviorSubject<UserProfile | null>(null);
-
-  /**
-   * Observable público del perfil.
-   */
   readonly profile$ = this.profileSubject.asObservable();
 
-  /**
-   * Indica si el perfil aún se está cargando.
-   */
   private loadingSubject = new BehaviorSubject<boolean>(true);
-
-  /**
-   * Observable público del estado de carga.
-   */
   readonly loading$ = this.loadingSubject.asObservable();
 
   constructor(
-
     private authService: AuthService,
-
     private userService: UserService
-
   ) {
-
     this.initialize();
-
   }
 
-  /**
-   * Inicializa automáticamente el perfil
-   * cuando Firebase Authentication cambia de estado.
-   */
   private initialize(): void {
-
     this.authService.user$.subscribe(async (user) => {
-
       this.loadingSubject.next(true);
 
       if (!user) {
-
+        console.warn('❌ ProfileService: No hay usuario autenticado');
         this.profileSubject.next(null);
-
         this.loadingSubject.next(false);
-
         return;
-
       }
 
       try {
+        // Intentar obtener el perfil existente
+        let profile = await this.userService.getUser(user.uid);
 
-        const profile = await this.userService.getUser(user.uid);
+        // 🔥 Si no existe perfil, crearlo (solo en desarrollo)
+        if (!profile) {
+          console.warn('⚠️ ProfileService: Perfil no encontrado, creando uno automáticamente...');
 
+          const isLocalhost =
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1';
+
+          // En desarrollo, crear perfil de administrador
+          if (isLocalhost) {
+            profile = {
+              uid: user.uid,
+              name: user.displayName || 'Administrador Desarrollo',
+              email: user.email || 'admin@tellus.dev',
+              role: 'admin',
+              photoURL: user.photoURL || '',
+              active: true,
+              createdAt: new Date()
+            } as UserProfile;
+
+            // Guardar en Firestore
+            await setDoc(doc(db, 'users', user.uid), profile);
+            console.log('✅ ProfileService: Perfil de administrador creado en Firestore');
+          } else {
+            // En producción, no crear automáticamente (debe existir)
+            console.warn('⚠️ ProfileService: Perfil no encontrado en producción');
+            this.profileSubject.next(null);
+            this.loadingSubject.next(false);
+            return;
+          }
+        }
+
+        console.log('✅ ProfileService: Perfil cargado:', profile);
         this.profileSubject.next(profile);
 
-      }
-
-      catch (error) {
-
-        console.error('Error cargando perfil:', error);
-
+      } catch (error) {
+        console.error('❌ ProfileService: Error cargando perfil:', error);
         this.profileSubject.next(null);
-
-      }
-
-      finally {
-
+      } finally {
         this.loadingSubject.next(false);
-
       }
-
     });
-
   }
 
-  /**
-   * Perfil actual almacenado en memoria.
-   */
   get currentProfile(): UserProfile | null {
-
     return this.profileSubject.value;
-
   }
-
 }

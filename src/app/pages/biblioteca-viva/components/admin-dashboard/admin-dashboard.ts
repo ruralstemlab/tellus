@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { ProfileService } from '../../../../core/services/profile.service';
 import { UserProfile } from '../../../../core/models/user-profile.model';
 import { ProjectService } from '../../../../core/services/project.service';
 import { UserService } from '../../../../core/services/user.service';
-import { InstitutionService } from '../../../../core/services/institution.service'; // ✅ NUEVO
+import { InstitutionService } from '../../../../core/services/institution.service';
+// ✅ Ruta corregida (5 niveles hasta src)
+import { auth } from '../../../../../environments/firebase.config';
 
 interface DashboardStats {
   pending: number;
@@ -37,11 +39,21 @@ export class AdminDashboardComponent {
   showConvocatorias = false;
   developersList$: Observable<DeveloperInfo[]>;
 
+  get displayName(): string {
+    const profile = this.profileService.currentProfile;
+    if (profile?.name) return profile.name;
+    if (profile?.email) return profile.email;
+    const user = auth.currentUser;
+    if (user?.displayName) return user.displayName;
+    if (user?.email) return user.email;
+    return 'Administrador';
+  }
+
   constructor(
     private readonly profileService: ProfileService,
     private readonly projectService: ProjectService,
     private readonly userService: UserService,
-    private readonly institutionService: InstitutionService // ✅ NUEVO
+    private readonly institutionService: InstitutionService
   ) {
     this.profile$ = this.profileService.profile$;
     this.stats$ = this.loadStats().pipe(shareReplay(1));
@@ -52,9 +64,9 @@ export class AdminDashboardComponent {
     const pending$ = this.projectService.getProjects('pending').pipe(map(p => p.length));
     const published$ = this.projectService.getProjects('published').pipe(map(p => p.length));
     const users$ = this.userService.getUsers().pipe(map(u => u.length));
-
-    // 🔥 CAMBIO: Usar InstitutionService en lugar de UserService
-    const institutions$ = this.institutionService.getInstitutionsCount();
+    const institutions$ = this.institutionService.getInstitutions().pipe(
+      map(inst => inst.length)
+    );
 
     return combineLatest([pending$, published$, users$, institutions$]).pipe(
       map(([pending, published, users, institutions]) => ({
