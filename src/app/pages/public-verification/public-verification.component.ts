@@ -16,25 +16,33 @@ import { of } from 'rxjs';
   imports: [CommonModule],
   template: `
     <div class="verification-container">
+      <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
         <p>Verificando credencial...</p>
       </div>
+
+      <!-- Error -->
       <div *ngIf="error && !loading" class="error-state">
         <span class="error-icon">🔍</span>
         <h2>{{ errorTitle || 'Credencial no encontrada' }}</h2>
         <p>{{ error }}</p>
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
+
+      <!-- Certificado Premium Tellus V4.0 (sin QR, con medallas) -->
       <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
           <h1>🌿 Tellus</h1>
           <p class="subtitle">Rural STEAM Lab · Biblioteca Viva</p>
         </div>
+
         <div class="certificate-preview" id="certificate-container">
           <div class="certificate-wrapper">
             <div class="certificate" #certificate>
+
+              <!-- FONDO TEXTURADO CON ONDAS Y PARTÍCULAS -->
               <div class="cert-bg">
                 <svg class="waves" viewBox="0 0 1200 800" preserveAspectRatio="none">
                   <path d="M0,200 C300,100 500,400 800,200 C1000,100 1100,300 1200,200 L1200,800 L0,800 Z" fill="#1B5E20" opacity="0.02"/>
@@ -51,6 +59,8 @@ import { of } from 'rxjs';
                 <div class="corner corner-bl"></div>
                 <div class="corner corner-br"></div>
               </div>
+
+              <!-- MARCA DE AGUA (matraz) -->
               <div class="watermark">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path d="M75 40 L125 40 L145 80 L155 120 Q155 160 100 160 Q45 160 45 120 L55 80 Z" fill="none" stroke="#1B5E20" stroke-width="1.5" opacity="0.04"/>
@@ -61,6 +71,8 @@ import { of } from 'rxjs';
                   <text x="100" y="190" font-family="Georgia, serif" font-size="12" fill="#1B5E20" opacity="0.03" text-anchor="middle" letter-spacing="3">TELLUS</text>
                 </svg>
               </div>
+
+              <!-- COLUMNA IZQUIERDA (información técnica) -->
               <div class="left-column">
                 <div class="tech-block">
                   <span class="tech-label">ID DEL CERTIFICADO</span>
@@ -87,7 +99,10 @@ import { of } from 'rxjs';
                   <span class="tech-value url">tellus.ruralsteamlab.com/verificar</span>
                 </div>
               </div>
+
+              <!-- COLUMNA CENTRAL -->
               <div class="center-column">
+                <!-- LOGO TELLUS -->
                 <div class="logo-area">
                   <div class="logo-icon">
                     <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
@@ -117,19 +132,40 @@ import { of } from 'rxjs';
                   <div class="org-country">COLOMBIA</div>
                   <div class="org-slogan">INVESTIGA • INNOVA • TRANSFORMA</div>
                 </div>
+
+                <!-- Título CERTIFICA QUE -->
                 <div class="certifies">CERTIFICA QUE</div>
+
+                <!-- NOMBRE DEL PARTICIPANTE -->
                 <div class="student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
-                <div class="description">ha desarrollado y publicado exitosamente el proyecto</div>
+
+                <!-- Descripción -->
+                <div class="description">
+                  ha desarrollado y publicado exitosamente el proyecto
+                </div>
+
+                <!-- NOMBRE DEL PROYECTO -->
                 <div class="project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
-                <div class="project-text">en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, pensamiento científico, innovación y compromiso con la transformación digital de la educación.</div>
+
+                <!-- Texto descriptivo -->
+                <div class="project-text">
+                  en el <strong>Ecosistema Tellus</strong>, demostrando creatividad, pensamiento científico, innovación y compromiso con la transformación digital de la educación.
+                </div>
+
+                <!-- RECONOCIMIENTO con laureles -->
                 <div class="recognition-band">
                   <span class="laurel">🏛️</span>
                   <span class="recognition-text">{{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}</span>
                   <span class="laurel">🏛️</span>
                 </div>
+
+                <!-- Fecha -->
                 <div class="date">Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong></div>
               </div>
+
+              <!-- COLUMNA DERECHA (medalla + sello) -->
               <div class="right-column">
+                <!-- MEDALLA SEGÚN RECONOCIMIENTO -->
                 <div class="medal" [ngClass]="getMedalClass(credential.recognition)">
                   <div class="medal-inner">
                     <span class="medal-icon">
@@ -138,9 +174,13 @@ import { of } from 'rxjs';
                       <ng-container *ngIf="getMedalLevel(credential.recognition) === 'bronze'">🥉</ng-container>
                       <ng-container *ngIf="!getMedalLevel(credential.recognition)">🏆</ng-container>
                     </span>
-                    <span class="medal-text">{{ getMedalLevel(credential.recognition) ? getMedalLevel(credential.recognition).toUpperCase() : 'CERTIFICADO' }}</span>
+                    <span class="medal-text">
+                      {{ getMedalLevel(credential.recognition) ? getMedalLevel(credential.recognition).toUpperCase() : 'CERTIFICADO' }}
+                    </span>
                   </div>
                 </div>
+
+                <!-- SELLO OFICIAL -->
                 <div class="seal-premium">
                   <div class="seal-circle">
                     <div class="seal-content">
@@ -150,9 +190,13 @@ import { of } from 'rxjs';
                       <span class="seal-country">COLOMBIA</span>
                     </div>
                   </div>
-                  <div class="seal-quote">"La tecnología transforma,<br>pero son las ideas las que cambian el mundo."</div>
+                  <div class="seal-quote">
+                    "La tecnología transforma,<br>pero son las ideas las que cambian el mundo."
+                  </div>
                 </div>
               </div>
+
+              <!-- FIRMAS -->
               <div class="signatures">
                 <div class="signature">
                   <div class="sign-line gold"></div>
@@ -170,19 +214,28 @@ import { of } from 'rxjs';
                   <div class="sign-role">Directora de Operaciones</div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
+
+        <!-- BOTONES -->
         <div class="actions">
           <button class="btn-primary" (click)="downloadPDF()">📥 Descargar diploma (PDF)</button>
           <button class="btn-secondary" (click)="goHome()">🏠 Ir a Tellus</button>
         </div>
-        <div class="footer-text">🌿 Verifica esta credencial en cualquier momento en tellus.ruralsteamlab.com/verificar</div>
+
+        <div class="footer-text">
+          <span>🌿 Verifica esta credencial en cualquier momento en tellus.ruralsteamlab.com/verificar</span>
+        </div>
       </div>
     </div>
   `,
   styles: [
     `
+      /* ==========================================================
+         CONTENEDOR PRINCIPAL (fondo oscuro exterior)
+      ========================================================= */
       .verification-container {
         min-height: 100vh;
         background: linear-gradient(145deg, #0a0a1a 0%, #1a1a3e 100%);
@@ -194,9 +247,14 @@ import { of } from 'rxjs';
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         color: #fff;
       }
-      .loading-state, .error-state { text-align: center; padding: 40px; }
+
+      .loading-state, .error-state {
+        text-align: center;
+        padding: 40px;
+      }
       .spinner {
-        width: 48px; height: 48px;
+        width: 48px;
+        height: 48px;
         border: 4px solid rgba(255,255,255,0.1);
         border-top-color: #4cff9c;
         border-radius: 50%;
@@ -207,8 +265,15 @@ import { of } from 'rxjs';
       .error-state .error-icon { font-size: 48px; display: block; margin-bottom: 16px; }
       .error-state h2 { font-size: 24px; margin: 8px 0; }
       .error-state p { color: rgba(255,255,255,0.6); }
-      .credential-found { max-width: 1200px; width: 100%; }
-      .header { text-align: center; margin-bottom: 28px; }
+
+      .credential-found {
+        max-width: 1200px;
+        width: 100%;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 28px;
+      }
       .verified-badge {
         display: inline-block;
         background: rgba(76,255,156,0.12);
@@ -229,9 +294,22 @@ import { of } from 'rxjs';
         -webkit-text-fill-color: transparent;
         letter-spacing: -1px;
       }
-      .header .subtitle { font-size: 14px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
+      .header .subtitle {
+        font-size: 14px;
+        color: rgba(255,255,255,0.3);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 300;
+      }
 
-      .certificate-preview { margin: 20px 0; display: flex; justify-content: center; }
+      /* ==========================================================
+         CERTIFICADO PREMIUM V4.0
+      ========================================================= */
+      .certificate-preview {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+      }
       .certificate-wrapper {
         background: #FAF8F2;
         padding: 30px 30px;
@@ -254,13 +332,39 @@ import { of } from 'rxjs';
         font-family: 'Inter', 'Manrope', 'Plus Jakarta Sans', sans-serif;
       }
 
+      /* FONDO CON ONDAS Y PARTÍCULAS */
       .cert-bg {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
       }
-      .waves { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
-      .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+      .waves {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
       .particles span {
-        position: absolute; display: block; width: 4px; height: 4px; background: #1B5E20; border-radius: 50%; opacity: 0.04;
+        position: absolute;
+        display: block;
+        width: 4px;
+        height: 4px;
+        background: #1B5E20;
+        border-radius: 50%;
+        opacity: 0.04;
         animation: float 20s infinite alternate ease-in-out;
       }
       .particles span:nth-child(1) { top: 10%; left: 20%; animation-duration: 18s; }
@@ -275,13 +379,16 @@ import { of } from 'rxjs';
       .particles span:nth-child(10) { top: 75%; left: 15%; animation-duration: 20s; }
       .particles span:nth-child(11) { top: 45%; left: 50%; animation-duration: 22s; }
       .particles span:nth-child(12) { top: 85%; left: 75%; animation-duration: 18s; }
+
       @keyframes float {
         0% { transform: translate(0, 0) scale(1); }
         100% { transform: translate(30px, -30px) scale(1.5); }
       }
+
       .corner {
         position: absolute;
-        width: 40px; height: 40px;
+        width: 40px;
+        height: 40px;
         border: 1px solid #C8A24A;
         opacity: 0.15;
       }
@@ -290,31 +397,110 @@ import { of } from 'rxjs';
       .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
       .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
 
+      /* MARCA DE AGUA */
       .watermark {
-        position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 180px; height: 180px; z-index: 1; pointer-events: none; opacity: 0.08;
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 180px;
+        height: 180px;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.08;
       }
-      .watermark svg { width: 100%; height: 100%; }
+      .watermark svg {
+        width: 100%;
+        height: 100%;
+      }
 
+      /* COLUMNA IZQUIERDA */
       .left-column {
-        position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 130px; z-index: 2;
-        display: flex; flex-direction: column; gap: 4px;
-        border-right: 0.5px solid rgba(200,162,74,0.15); padding-right: 14px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 130px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-right: 0.5px solid rgba(200,162,74,0.15);
+        padding-right: 14px;
       }
-      .tech-block { text-align: left; }
-      .tech-label { font-size: 0.45rem; text-transform: uppercase; letter-spacing: 1.2px; color: #999; font-weight: 500; display: block; }
-      .tech-value { font-size: 0.6rem; font-weight: 600; color: #1B5E20; font-family: 'Courier New', monospace; display: block; word-break: break-word; line-height: 1.2; opacity: 0.8; }
-      .tech-value.status { color: #56C271; font-weight: 700; }
-      .tech-value.url { font-size: 0.5rem; opacity: 0.5; font-weight: 500; }
-      .tech-divider { border: none; border-top: 0.5px solid rgba(200,162,74,0.1); margin: 2px 0; }
+      .tech-block {
+        text-align: left;
+      }
+      .tech-label {
+        font-size: 0.45rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: #999;
+        font-weight: 500;
+        display: block;
+      }
+      .tech-value {
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: #1B5E20;
+        font-family: 'Courier New', monospace;
+        display: block;
+        word-break: break-word;
+        line-height: 1.2;
+        opacity: 0.8;
+      }
+      .tech-value.status {
+        color: #56C271;
+        font-weight: 700;
+      }
+      .tech-value.url {
+        font-size: 0.5rem;
+        opacity: 0.5;
+        font-weight: 500;
+      }
+      .tech-divider {
+        border: none;
+        border-top: 0.5px solid rgba(200,162,74,0.1);
+        margin: 2px 0;
+      }
 
+      /* COLUMNA CENTRAL */
       .center-column {
-        position: absolute; left: 180px; right: 170px; top: 20px; bottom: 70px; z-index: 2;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 10px;
+        position: absolute;
+        left: 180px;
+        right: 170px;
+        top: 20px;
+        bottom: 70px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 10px;
       }
-      .logo-area { margin-bottom: 2px; }
-      .logo-icon { width: 40px; height: 50px; margin: 0 auto 2px; }
-      .logo-icon svg { width: 100%; height: 100%; opacity: 0.7; }
-      .org-name { font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: 700; color: #1B5E20; letter-spacing: 0.5px; opacity: 0.6; }
+
+      .logo-area {
+        margin-bottom: 2px;
+      }
+      .logo-icon {
+        width: 40px;
+        height: 50px;
+        margin: 0 auto 2px;
+      }
+      .logo-icon svg {
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+      }
+      .org-name {
+        font-family: 'Georgia', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1B5E20;
+        letter-spacing: 0.5px;
+        opacity: 0.6;
+      }
       .org-name .rural { color: #1B5E20; }
       .org-name .steam { font-weight: 800; }
       .org-name .s { color: #1976d2; }
@@ -323,45 +509,188 @@ import { of } from 'rxjs';
       .org-name .a { color: #f57c00; }
       .org-name .m { color: #388e3c; }
       .org-name .lab { color: #1B5E20; }
-      .org-country { font-size: 0.6rem; letter-spacing: 6px; color: #1B5E20; font-weight: 500; opacity: 0.4; margin-top: -2px; }
-      .org-slogan { font-size: 0.55rem; letter-spacing: 2px; color: #1B5E20; opacity: 0.3; font-weight: 400; margin-top: -2px; }
 
-      .certifies { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 4px; color: #1B5E20; opacity: 0.5; font-weight: 600; margin-top: 2px; text-transform: uppercase; }
-      .student-name { font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 3.8rem; font-weight: 400; font-style: italic; color: #1B5E20; line-height: 1.1; margin: 2px 0 0 0; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-      .description { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: #666; font-weight: 400; letter-spacing: 0.3px; margin-top: 2px; }
-      .project-name { font-family: 'Georgia', serif; font-size: 1.8rem; font-weight: 400; font-style: italic; color: #1B5E20; margin: 0 0 0 0; opacity: 0.85; }
-      .project-text { font-family: 'Inter', sans-serif; font-size: 0.6rem; color: #888; max-width: 80%; line-height: 1.5; margin: 2px 0 4px 0; }
-      .project-text strong { color: #1B5E20; font-weight: 600; }
-      .recognition-band { display: flex; align-items: center; gap: 10px; margin: 2px 0 2px 0; }
-      .recognition-band .laurel { font-size: 0.8rem; opacity: 0.3; color: #C8A24A; }
-      .recognition-band .recognition-text { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; color: #1B5E20; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; border-top: 0.5px solid rgba(200,162,74,0.2); border-bottom: 0.5px solid rgba(200,162,74,0.2); padding: 2px 10px; }
-      .date { font-family: 'Inter', sans-serif; font-size: 0.6rem; color: #999; letter-spacing: 0.5px; margin-top: 2px; }
-      .date strong { color: #1B5E20; font-weight: 500; }
-
-      .right-column {
-        position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 130px; z-index: 2;
-        display: flex; flex-direction: column; align-items: center; gap: 6px;
+      .org-country {
+        font-size: 0.6rem;
+        letter-spacing: 6px;
+        color: #1B5E20;
+        font-weight: 500;
+        opacity: 0.4;
+        margin-top: -2px;
       }
+      .org-slogan {
+        font-size: 0.55rem;
+        letter-spacing: 2px;
+        color: #1B5E20;
+        opacity: 0.3;
+        font-weight: 400;
+        margin-top: -2px;
+      }
+
+      .certifies {
+        font-family: 'Cinzel', serif;
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+        color: #1B5E20;
+        opacity: 0.5;
+        font-weight: 600;
+        margin-top: 2px;
+        text-transform: uppercase;
+      }
+
+      .student-name {
+        font-family: 'Cormorant Garamond', 'Georgia', serif;
+        font-size: 3.8rem;
+        font-weight: 400;
+        font-style: italic;
+        color: #1B5E20;
+        line-height: 1.1;
+        margin: 2px 0 0 0;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      }
+
+      .description {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.7rem;
+        color: #666;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        margin-top: 2px;
+      }
+
+      .project-name {
+        font-family: 'Georgia', serif;
+        font-size: 1.8rem;
+        font-weight: 400;
+        font-style: italic;
+        color: #1B5E20;
+        margin: 0 0 0 0;
+        opacity: 0.85;
+      }
+
+      .project-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.6rem;
+        color: #888;
+        max-width: 80%;
+        line-height: 1.5;
+        margin: 2px 0 4px 0;
+      }
+      .project-text strong {
+        color: #1B5E20;
+        font-weight: 600;
+      }
+
+      .recognition-band {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 2px 0 2px 0;
+      }
+      .recognition-band .laurel {
+        font-size: 0.8rem;
+        opacity: 0.3;
+        color: #C8A24A;
+      }
+      .recognition-band .recognition-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #1B5E20;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        opacity: 0.7;
+        border-top: 0.5px solid rgba(200,162,74,0.2);
+        border-bottom: 0.5px solid rgba(200,162,74,0.2);
+        padding: 2px 10px;
+      }
+
+      .date {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.6rem;
+        color: #999;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+      .date strong {
+        color: #1B5E20;
+        font-weight: 500;
+      }
+
+      /* COLUMNA DERECHA */
+      .right-column {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 130px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+
       .medal {
-        width: 70px; height: 70px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: radial-gradient(circle at 30% 30%, #f7e9c8, #d4af37);
         border: 2px solid #b8942a;
         box-shadow: 0 4px 15px rgba(212,175,55,0.2);
         position: relative;
       }
-      .medal.gold { background: radial-gradient(circle at 30% 30%, #ffe082, #f9a825); border-color: #f57f17; }
-      .medal.silver { background: radial-gradient(circle at 30% 30%, #e0e0e0, #9e9e9e); border-color: #757575; }
-      .medal.bronze { background: radial-gradient(circle at 30% 30%, #ffcc80, #e65100); border-color: #bf360c; }
-      .medal-inner { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0; }
-      .medal-icon { font-size: 1.8rem; line-height: 1; }
-      .medal-text { font-family: 'Inter', sans-serif; font-size: 0.45rem; font-weight: 700; color: #1B5E20; letter-spacing: 0.5px; text-transform: uppercase; background: rgba(255,255,255,0.3); padding: 0 4px; border-radius: 2px; }
+      .medal.gold {
+        background: radial-gradient(circle at 30% 30%, #ffe082, #f9a825);
+        border-color: #f57f17;
+      }
+      .medal.silver {
+        background: radial-gradient(circle at 30% 30%, #e0e0e0, #9e9e9e);
+        border-color: #757575;
+      }
+      .medal.bronze {
+        background: radial-gradient(circle at 30% 30%, #ffcc80, #e65100);
+        border-color: #bf360c;
+      }
+      .medal-inner {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .medal-icon {
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+      .medal-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.45rem;
+        font-weight: 700;
+        color: #1B5E20;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.3);
+        padding: 0 4px;
+        border-radius: 2px;
+      }
 
-      .seal-premium { text-align: center; margin-top: 2px; }
+      .seal-premium {
+        text-align: center;
+        margin-top: 2px;
+      }
       .seal-circle {
-        width: 80px; height: 80px; border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
         border: 1.5px solid #C8A24A;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin: 0 auto;
         background: rgba(255,255,255,0.6);
         box-shadow: 0 2px 12px rgba(200,162,74,0.05);
@@ -369,26 +698,98 @@ import { of } from 'rxjs';
       }
       .seal-circle::after {
         content: '';
-        position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
-        border: 0.5px solid rgba(200,162,74,0.2); border-radius: 50%;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+        border: 0.5px solid rgba(200,162,74,0.2);
+        border-radius: 50%;
       }
-      .seal-content { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
-      .seal-title { font-size: 0.45rem; letter-spacing: 1px; color: #999; font-weight: 500; }
-      .seal-bold { font-size: 0.7rem; font-weight: 800; color: #1B5E20; letter-spacing: 1.5px; }
-      .seal-year { font-size: 0.5rem; font-weight: 600; color: #C8A24A; letter-spacing: 2px; }
-      .seal-country { font-size: 0.4rem; letter-spacing: 2px; color: #999; font-weight: 500; }
-      .seal-quote { font-family: 'Georgia', serif; font-size: 0.5rem; font-style: italic; color: #aaa; text-align: center; line-height: 1.3; margin-top: 4px; max-width: 120px; }
+      .seal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.1;
+      }
+      .seal-title {
+        font-size: 0.45rem;
+        letter-spacing: 1px;
+        color: #999;
+        font-weight: 500;
+      }
+      .seal-bold {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #1B5E20;
+        letter-spacing: 1.5px;
+      }
+      .seal-year {
+        font-size: 0.5rem;
+        font-weight: 600;
+        color: #C8A24A;
+        letter-spacing: 2px;
+      }
+      .seal-country {
+        font-size: 0.4rem;
+        letter-spacing: 2px;
+        color: #999;
+        font-weight: 500;
+      }
 
+      .seal-quote {
+        font-family: 'Georgia', serif;
+        font-size: 0.5rem;
+        font-style: italic;
+        color: #aaa;
+        text-align: center;
+        line-height: 1.3;
+        margin-top: 4px;
+        max-width: 120px;
+      }
+
+      /* FIRMAS */
       .signatures {
-        position: absolute; bottom: 12px; left: 180px; right: 170px; z-index: 2;
-        display: flex; justify-content: space-around; align-items: flex-end;
-        padding-top: 8px; border-top: 0.5px solid rgba(200,162,74,0.1);
+        position: absolute;
+        bottom: 12px;
+        left: 180px;
+        right: 170px;
+        z-index: 2;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        padding-top: 8px;
+        border-top: 0.5px solid rgba(200,162,74,0.1);
       }
-      .signature { text-align: center; flex: 1; }
-      .sign-line.gold { width: 70px; height: 1.5px; background: linear-gradient(90deg, #C8A24A, #d4af37); margin: 0 auto 3px auto; opacity: 0.4; }
-      .sign-name { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; color: #1B5E20; letter-spacing: 0.3px; opacity: 0.8; }
-      .sign-role { font-family: 'Inter', sans-serif; font-size: 0.45rem; color: #999; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+      .signature {
+        text-align: center;
+        flex: 1;
+      }
+      .sign-line.gold {
+        width: 70px;
+        height: 1.5px;
+        background: linear-gradient(90deg, #C8A24A, #d4af37);
+        margin: 0 auto 3px auto;
+        opacity: 0.4;
+      }
+      .sign-name {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #1B5E20;
+        letter-spacing: 0.3px;
+        opacity: 0.8;
+      }
+      .sign-role {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.45rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
 
+      /* RESPONSIVE */
       @media (max-width: 900px) {
         .left-column { width: 100px; left: 10px; }
         .left-column .tech-label { font-size: 0.4rem; }
@@ -405,6 +806,7 @@ import { of } from 'rxjs';
         .sign-name { font-size: 0.5rem; }
         .seal-quote { font-size: 0.4rem; }
       }
+
       @media (max-width: 700px) {
         .certificate { padding: 10px; }
         .left-column { display: none; }
@@ -429,25 +831,48 @@ import { of } from 'rxjs';
         .recognition-band .recognition-text { font-size: 0.5rem; }
       }
 
+      /* BOTONES */
       .actions {
-        display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
       }
       .btn-primary, .btn-secondary {
-        padding: 12px 28px; border: none; border-radius: 40px; font-size: 15px; font-weight: 600;
-        cursor: pointer; transition: all 0.25s ease; font-family: 'Inter', system-ui, sans-serif;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 40px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       .btn-primary {
         background: linear-gradient(135deg, #4cff9c 0%, #28a745 100%);
-        color: #0a0a1a; box-shadow: 0 4px 20px rgba(76,255,156,0.2);
+        color: #0a0a1a;
+        box-shadow: 0 4px 20px rgba(76,255,156,0.2);
       }
-      .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(76,255,156,0.3); }
+      .btn-primary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 30px rgba(76,255,156,0.3);
+      }
       .btn-secondary {
         background: rgba(255,255,255,0.04);
         border: 1px solid rgba(255,255,255,0.08);
         color: rgba(255,255,255,0.6);
       }
-      .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
-      .footer-text { margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.2); text-align: center; }
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.15);
+      }
+      .footer-text {
+        margin-top: 24px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.2);
+        text-align: center;
+      }
     `
   ]
 })
@@ -566,6 +991,9 @@ export class PublicVerificationComponent implements OnInit {
     return `RSL-${year}-${month}${day}-${suffix}`;
   }
 
+  // ==============================================================
+  //  LÓGICA DE MEDALLAS (oro, plata, bronce)
+  // ==============================================================
   getMedalLevel(recognition: string | undefined): 'gold' | 'silver' | 'bronze' | null {
     if (!recognition) return null;
     const text = recognition.toLowerCase();
