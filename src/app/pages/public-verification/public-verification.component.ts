@@ -30,7 +30,7 @@ import { of } from 'rxjs';
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
 
-      <!-- Certificado Tellus V3.1 - Premium Edition (mejorado sin romper) -->
+      <!-- Certificado Tellus V3.2 - Jerarquía invertida -->
       <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
@@ -38,15 +38,14 @@ import { of } from 'rxjs';
           <p class="subtitle">Rural STEAM Lab · Biblioteca Viva</p>
         </div>
 
-        <!-- Contenedor del certificado -->
         <div class="certificate-preview" id="certificate-container">
           <div class="certificate-wrapper">
             <div class="certificate">
 
-              <!-- ========== FONDO TEXTURADO (papel) ========== -->
+              <!-- FONDO TEXTURADO -->
               <div class="cert-bg"></div>
 
-              <!-- ========== MARCA DE AGUA MUY SUTIL ========== -->
+              <!-- MARCA DE AGUA -->
               <div class="watermark">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path d="M75 50 L125 50 L145 90 L155 130 Q155 170 100 170 Q45 170 45 130 L55 90 Z" fill="none" stroke="#1B5E20" stroke-width="1" opacity="0.04"/>
@@ -54,7 +53,7 @@ import { of } from 'rxjs';
                 </svg>
               </div>
 
-              <!-- ========== ENCABEZADO ========== -->
+              <!-- ENCABEZADO -->
               <div class="cert-header">
                 <div class="logo-flask">
                   <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
@@ -74,6 +73,7 @@ import { of } from 'rxjs';
                   </svg>
                 </div>
 
+                <!-- INSTITUCIÓN (más grande) -->
                 <div class="org-name">
                   <span class="rural">Rural</span>
                   <span class="steam">
@@ -96,7 +96,7 @@ import { of } from 'rxjs';
 
               <div class="header-divider"></div>
 
-              <!-- ========== NOMBRE DEL PARTICIPANTE ========== -->
+              <!-- ========== NOMBRE DEL PARTICIPANTE (ahora más pequeño) ========== -->
               <div class="cert-student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
               <div class="gold-line"></div>
 
@@ -122,7 +122,7 @@ import { of } from 'rxjs';
                 Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong>
               </div>
 
-              <!-- ========== COLUMNA IZQUIERDA (info técnica) ========== -->
+              <!-- ========== COLUMNA IZQUIERDA ========== -->
               <div class="tech-info">
                 <div class="tech-item">
                   <span class="tech-label">ID de Certificado</span>
@@ -179,7 +179,7 @@ import { of } from 'rxjs';
           </div>
         </div>
 
-        <!-- ========== BOTONES ========== -->
+        <!-- BOTONES -->
         <div class="actions">
           <button class="btn-primary" (click)="downloadPDF()">📥 Descargar diploma (PDF)</button>
           <button class="btn-secondary" (click)="goHome()">🏠 Ir a Tellus</button>
@@ -194,7 +194,7 @@ import { of } from 'rxjs';
   styles: [
     `
       /* ==========================================================
-         CONTENEDOR PRINCIPAL (fondo oscuro)
+         CONTENEDOR PRINCIPAL
       ========================================================= */
       .verification-container {
         min-height: 100vh;
@@ -266,7 +266,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         CERTIFICADO V3.1 - PREMIUM EDITION (MEJORADO)
+         CERTIFICADO V3.2 - JERARQUÍA INVERTIDA
       ========================================================= */
       .certificate-preview {
         margin: 20px 0;
@@ -296,7 +296,7 @@ import { of } from 'rxjs';
         box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 0 40px rgba(196, 155, 61, 0.02);
       }
 
-      /* ========== FONDO TEXTURADO ========== */
+      /* ===== FONDO ===== */
       .cert-bg {
         position: absolute;
         top: 0;
@@ -312,7 +312,7 @@ import { of } from 'rxjs';
         z-index: 0;
       }
 
-      /* ========== MARCA DE AGUA ========== */
+      /* ===== MARCA DE AGUA ===== */
       .watermark {
         position: absolute;
         right: 20px;
@@ -330,15 +330,16 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         ENCABEZADO
+         ENCABEZADO - INSTITUCIÓN MÁS GRANDE
       ========================================================= */
       .cert-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 0 10px 0;
+        padding: 0 0 8px 0;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .logo-flask {
         width: 50px;
@@ -351,15 +352,16 @@ import { of } from 'rxjs';
         height: 100%;
       }
       .org-name {
-        font-size: 1.8rem;
+        font-size: 2.6rem;
         font-weight: 700;
-        letter-spacing: 1.5px;
+        letter-spacing: 2px;
         font-family: 'Cinzel', serif;
         color: #1a4a1a;
         text-align: center;
         flex: 1;
-        opacity: 0.75;
+        opacity: 0.8;
         text-transform: uppercase;
+        line-height: 1.1;
       }
       .org-name .rural { color: #1a4a1a; }
       .org-name .steam { font-weight: 800; }
@@ -383,8 +385,8 @@ import { of } from 'rxjs';
 
       .header-divider {
         border: none;
-        border-top: 0.5px solid rgba(196, 155, 61, 0.25);
-        margin: 0 0 12px 0;
+        border-top: 0.5px solid rgba(196, 155, 61, 0.2);
+        margin: 0 0 10px 0;
         position: relative;
         z-index: 1;
         width: 60%;
@@ -392,17 +394,17 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         NOMBRE DEL PARTICIPANTE
+         NOMBRE DEL PARTICIPANTE (AHORA MÁS PEQUEÑO)
       ========================================================= */
       .cert-student-name {
-        font-size: 72px;
+        font-size: 48px;
         font-weight: 600;
         font-family: 'Cormorant Garamond', 'Georgia', serif;
         color: #1a4a1a;
         text-align: center;
-        letter-spacing: 1.5px;
-        margin: 6px 0 0 0;
-        line-height: 1.08;
+        letter-spacing: 1px;
+        margin: 4px 0 0 0;
+        line-height: 1.1;
         position: relative;
         z-index: 1;
         font-style: italic;
@@ -412,7 +414,7 @@ import { of } from 'rxjs';
         width: 140px;
         height: 2px;
         background: linear-gradient(90deg, transparent, #c49b3d, transparent);
-        margin: 0 auto 10px auto;
+        margin: 0 auto 8px auto;
         border-radius: 2px;
         opacity: 0.5;
       }
@@ -464,7 +466,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         RECONOCIMIENTO (banda mejorada)
+         RECONOCIMIENTO
       ========================================================= */
       .recognition-band {
         display: flex;
@@ -507,7 +509,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         COLUMNA IZQUIERDA (info técnica mejorada)
+         COLUMNA IZQUIERDA
       ========================================================= */
       .tech-info {
         position: absolute;
@@ -571,7 +573,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         FIRMAS (mejoradas)
+         FIRMAS
       ========================================================= */
       .cert-signatures {
         display: flex;
@@ -619,7 +621,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         PIE (mejorado)
+         PIE
       ========================================================= */
       .cert-footer {
         display: flex;
@@ -649,7 +651,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         RESPONSIVE (mejorado)
+         RESPONSIVE
       ========================================================= */
       @media (max-width: 850px) {
         .tech-info {
@@ -674,8 +676,8 @@ import { of } from 'rxjs';
         .watermark { display: none; }
         .logo-flask { width: 35px; height: 45px; }
         .seal-minimal { width: 40px; height: 40px; }
-        .org-name { font-size: 1.4rem; letter-spacing: 1px; }
-        .cert-student-name { font-size: 50px; }
+        .org-name { font-size: 2rem; letter-spacing: 1.5px; }
+        .cert-student-name { font-size: 38px; }
         .cert-project-name { font-size: 34px; }
         .cert-description { max-width: 95%; font-size: 0.9rem; }
         .certificate { padding: 18px; }
@@ -690,8 +692,8 @@ import { of } from 'rxjs';
       }
 
       @media (max-width: 600px) {
-        .org-name { font-size: 1.1rem; letter-spacing: 0.5px; }
-        .cert-student-name { font-size: 38px; }
+        .org-name { font-size: 1.5rem; letter-spacing: 1px; }
+        .cert-student-name { font-size: 30px; }
         .cert-project-name { font-size: 26px; }
         .cert-description { font-size: 0.8rem; }
         .recognition-text { font-size: 0.65rem; letter-spacing: 1px; }
