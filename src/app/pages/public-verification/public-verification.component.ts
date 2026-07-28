@@ -30,7 +30,7 @@ import { of } from 'rxjs';
         <button class="btn-secondary" (click)="goHome()">Volver al inicio</button>
       </div>
 
-      <!-- Certificado Tellus V3.0 - Solo ajuste de fuentes -->
+      <!-- Certificado Tellus V3.0 - Rediseño de diseño -->
       <div *ngIf="!loading && credential && project" class="credential-found">
         <div class="header">
           <span class="verified-badge">✅ Credencial verificada</span>
@@ -45,7 +45,7 @@ import { of } from 'rxjs';
               <!-- FONDO TEXTURADO -->
               <div class="cert-bg"></div>
 
-              <!-- MARCA DE AGUA (la misma que funcionaba) -->
+              <!-- MARCA DE AGUA -->
               <div class="watermark">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path d="M75 50 L125 50 L145 90 L155 130 Q155 170 100 170 Q45 170 45 130 L55 90 Z" fill="none" stroke="#1B5E20" stroke-width="1" opacity="0.04"/>
@@ -53,7 +53,7 @@ import { of } from 'rxjs';
                 </svg>
               </div>
 
-              <!-- ENCABEZADO -->
+              <!-- ========== ENCABEZADO (rediseñado) ========== -->
               <div class="cert-header">
                 <div class="logo-flask">
                   <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +73,6 @@ import { of } from 'rxjs';
                   </svg>
                 </div>
 
-                <!-- ===== Rural STEAM Lab - AHORA MÁS GRANDE ===== -->
                 <div class="org-name">
                   <span class="rural">Rural</span>
                   <span class="steam">
@@ -81,6 +80,10 @@ import { of } from 'rxjs';
                   </span>
                   <span class="lab">Lab</span>
                 </div>
+
+                <!-- ===== NUEVO: subtítulo y lema ===== -->
+                <div class="org-subtitle">COLOMBIA</div>
+                <div class="org-motto">INVESTIGA · INNOVA · TRANSFORMA</div>
 
                 <div class="seal-minimal">
                   <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
@@ -96,33 +99,33 @@ import { of } from 'rxjs';
 
               <div class="header-divider"></div>
 
-              <!-- ===== NOMBRE DEL PARTICIPANTE - MÁS PEQUEÑO Y EN UNA LÍNEA ===== -->
+              <!-- ========== NOMBRE DEL PARTICIPANTE (protagonista) ========== -->
               <div class="cert-student-name">{{ project.studentName || 'Nombre del Participante' }}</div>
               <div class="gold-line"></div>
 
-              <!-- ===== NOMBRE DEL PROYECTO ===== -->
+              <!-- ========== PROYECTO ========== -->
               <div class="cert-project-name">“{{ project.title || 'Nombre del Proyecto' }}”</div>
               <div class="gold-line-short"></div>
 
-              <!-- ===== DESCRIPCIÓN ===== -->
+              <!-- ========== DESCRIPCIÓN ========== -->
               <div class="cert-description">
                 ha desarrollado y publicado exitosamente el proyecto
                 <span class="light-text">en el Ecosistema Tellus, demostrando creatividad, compromiso, pensamiento científico y espíritu de innovación.</span>
               </div>
 
-              <!-- ===== RECONOCIMIENTO ===== -->
+              <!-- ========== RECONOCIMIENTO ========== -->
               <div class="recognition-band">
                 <div class="recognition-line"></div>
                 <span class="recognition-text">{{ credential.recognition || 'RECONOCIMIENTO OFICIAL DE INNOVACIÓN EDUCATIVA' }}</span>
                 <div class="recognition-line"></div>
               </div>
 
-              <!-- ===== FECHA ===== -->
+              <!-- ========== FECHA ========== -->
               <div class="cert-date">
                 Emitido el <strong>{{ getFormattedDate(credential.issueDate) }}</strong>
               </div>
 
-              <!-- ===== COLUMNA IZQUIERDA ===== -->
+              <!-- ========== COLUMNA IZQUIERDA ========== -->
               <div class="tech-info">
                 <div class="tech-item">
                   <span class="tech-label">ID de Certificado</span>
@@ -138,7 +141,7 @@ import { of } from 'rxjs';
                 </div>
               </div>
 
-              <!-- ===== FIRMAS ===== -->
+              <!-- ========== FIRMAS ========== -->
               <div class="cert-signatures">
                 <div class="signature">
                   <div class="sign-line gold"></div>
@@ -248,7 +251,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         CERTIFICADO V3.0 - CON AJUSTE DE FUENTES (sin sombras extra)
+         CERTIFICADO - DISEÑO REDISEÑADO
       ========================================================= */
       .certificate-preview {
         margin: 20px 0;
@@ -312,16 +315,18 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         ENCABEZADO - CON FUENTES AJUSTADAS
+         ENCABEZADO - REDISEÑADO
       ========================================================= */
       .cert-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0 0 6px 0;
+        justify-content: space-between;
+        padding: 15px 0 25px;
         position: relative;
         z-index: 1;
+        flex-wrap: wrap;
       }
+
       .logo-flask {
         width: 50px;
         height: 60px;
@@ -333,33 +338,56 @@ import { of } from 'rxjs';
         height: 100%;
       }
 
-      /* ===== TÍTULO INSTITUCIONAL (más grande) ===== */
       .org-name {
-        font-size: 2.8rem;          /* antes 1.6rem */
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        font-family: 'Cinzel', 'Georgia', serif;
-        color: #1B5E20;
-        text-align: center;
         flex: 1;
-        opacity: 0.8;
-        text-transform: uppercase;
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        font-size: 3rem;
+        font-weight: 700;
         line-height: 1.1;
+        letter-spacing: 0.5px;
+        text-transform: none;
+        color: #1B5E20;
       }
       .org-name .rural { color: #1B5E20; }
-      .org-name .steam { font-weight: 800; }
-      .org-name .s { color: #1976d2; }
-      .org-name .t { color: #00bcd4; }
-      .org-name .e { color: #fdd835; }
-      .org-name .a { color: #f57c00; }
-      .org-name .m { color: #388e3c; }
       .org-name .lab { color: #1B5E20; }
+      .org-name .steam {
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .org-name .s { color: #1976D2; }
+      .org-name .t { color: #00BCD4; }
+      .org-name .e { color: #FDD835; }
+      .org-name .a { color: #FB8C00; }
+      .org-name .m { color: #43A047; }
+
+      /* Nuevos elementos */
+      .org-subtitle {
+        text-align: center;
+        font-size: 0.85rem;
+        letter-spacing: 8px;
+        margin-top: 6px;
+        color: #777;
+        font-family: 'Inter', sans-serif;
+        width: 100%;
+      }
+      .org-motto {
+        text-align: center;
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        margin-top: 8px;
+        color: #999;
+        text-transform: uppercase;
+        font-family: 'Inter', sans-serif;
+        width: 100%;
+      }
 
       .seal-minimal {
         width: 50px;
         height: 50px;
         flex-shrink: 0;
         opacity: 0.5;
+        margin-left: 8px;
       }
       .seal-minimal svg {
         width: 100%;
@@ -368,34 +396,29 @@ import { of } from 'rxjs';
 
       .header-divider {
         border: none;
-        border-top: 0.8px solid rgba(200, 162, 74, 0.15);
-        margin: 0 0 8px 0;
+        border-top: 0.8px solid rgba(200, 162, 74, 0.2);
+        margin: 0 0 16px 0;
         position: relative;
         z-index: 1;
       }
 
       /* ==========================================================
-         NOMBRE DEL PARTICIPANTE (más pequeño y en una línea)
+         NOMBRE DEL PARTICIPANTE (protagonista)
       ========================================================= */
       .cert-student-name {
-        font-size: 2rem;            /* antes 72px ≈ 4.5rem */
-        font-weight: 400;
-        font-family: 'Cormorant Garamond', 'Georgia', serif;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4rem;        /* 64px */
+        font-style: italic;
+        font-weight: 600;
         color: #1B5E20;
         text-align: center;
-        letter-spacing: 1px;
-        margin: 4px 0 0 0;
-        line-height: 1.2;
+        line-height: 1.1;
+        letter-spacing: 0.5px;
+        margin: 18px auto 8px;
+        max-width: 80%;
+        white-space: normal;
         position: relative;
         z-index: 1;
-        font-style: italic;
-        opacity: 0.95;
-        white-space: nowrap;         /* <-- una sola línea */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 85%;
-        margin-left: auto;
-        margin-right: auto;
       }
       .gold-line {
         width: 120px;
@@ -407,25 +430,25 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         NOMBRE DEL PROYECTO
+         PROYECTO
       ========================================================= */
       .cert-project-name {
-        font-size: 2.2rem;          /* ajustado para armonía */
-        font-weight: 400;
-        color: #1B5E20;
-        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.5rem;      /* 40px */
         font-style: italic;
-        margin: 2px 0 0 0;
+        font-weight: 600;
+        color: #2E7D32;
+        text-align: center;
+        margin: 18px 0 8px;
+        line-height: 1.2;
         position: relative;
         z-index: 1;
-        opacity: 0.85;
-        font-family: 'Cormorant Garamond', 'Georgia', serif;
       }
       .gold-line-short {
         width: 80px;
         height: 1.5px;
         background: linear-gradient(90deg, transparent, #C8A24A, transparent);
-        margin: 0 auto 6px auto;
+        margin: 0 auto 8px auto;
         border-radius: 2px;
         opacity: 0.4;
       }
@@ -434,19 +457,19 @@ import { of } from 'rxjs';
          DESCRIPCIÓN
       ========================================================= */
       .cert-description {
-        font-size: 0.9rem;
-        color: #666;
+        max-width: 68%;
+        margin: 18px auto;
         text-align: center;
-        max-width: 70%;
-        margin: 6px auto 8px auto;
-        line-height: 1.5;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #555;
         font-family: 'Georgia', serif;
         position: relative;
         z-index: 1;
       }
       .cert-description .light-text {
         color: #999;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
       }
 
       /* ==========================================================
@@ -456,8 +479,8 @@ import { of } from 'rxjs';
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin: 6px 0 6px 0;
+        gap: 16px;
+        margin: 28px 0;
         position: relative;
         z-index: 1;
       }
@@ -468,26 +491,28 @@ import { of } from 'rxjs';
         opacity: 0.3;
       }
       .recognition-text {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #1B5E20;
-        letter-spacing: 1.5px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #C8A24A;
+        letter-spacing: 3px;
         text-transform: uppercase;
         font-family: 'Georgia', serif;
-        opacity: 0.7;
+        opacity: 0.8;
       }
 
       /* ==========================================================
          FECHA
       ========================================================= */
       .cert-date {
-        font-size: 0.8rem;
+        font-size: 1rem;
         color: #666;
         text-align: center;
-        margin: 2px 0 10px 0;
+        margin-top: 18px;
+        margin-bottom: 8px;
         position: relative;
         z-index: 1;
         letter-spacing: 0.5px;
+        font-family: 'Georgia', serif;
       }
 
       /* ==========================================================
@@ -496,7 +521,7 @@ import { of } from 'rxjs';
       .tech-info {
         position: absolute;
         left: 20px;
-        top: 100px;
+        top: 135px;
         bottom: 50px;
         width: 140px;
         display: flex;
@@ -518,6 +543,7 @@ import { of } from 'rxjs';
         color: #999;
         display: block;
         font-weight: 500;
+        font-family: 'Inter', sans-serif;
       }
       .tech-value {
         font-size: 0.65rem;
@@ -541,19 +567,19 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         FIRMAS (sin sombras extra)
+         FIRMAS
       ========================================================= */
       .cert-signatures {
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        margin-top: auto;
-        padding-top: 10px;
+        margin-top: 45px;
+        padding-top: 25px;
         border-top: 0.8px solid rgba(200, 162, 74, 0.1);
         position: relative;
         z-index: 1;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 12px;
       }
       .signature {
         text-align: center;
@@ -565,24 +591,26 @@ import { of } from 'rxjs';
         width: 80px;
         height: 2px;
         background: linear-gradient(90deg, #C8A24A, #d4af37);
-        margin: 0 auto 4px auto;
+        margin: 0 auto 6px auto;
         border-radius: 2px;
         opacity: 0.4;
-        /* sin box-shadow */
       }
       .sign-name {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         font-weight: 700;
         color: #1B5E20;
         letter-spacing: 0.3px;
         opacity: 0.8;
+        font-family: 'Inter', sans-serif;
       }
       .sign-role {
-        font-size: 0.5rem;
+        font-size: 0.55rem;
         color: #999;
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: 500;
+        font-family: 'Inter', sans-serif;
+        margin-top: 2px;
       }
 
       /* ==========================================================
@@ -610,25 +638,31 @@ import { of } from 'rxjs';
         .logo-flask { width: 35px; height: 45px; }
         .seal-minimal { width: 40px; height: 40px; }
         .org-name { font-size: 2.2rem; }
-        .cert-student-name { font-size: 1.6rem; white-space: normal; max-width: 95%; }
-        .cert-project-name { font-size: 1.8rem; }
-        .cert-description { max-width: 100%; font-size: 0.8rem; }
+        .cert-student-name { font-size: 3rem; max-width: 95%; }
+        .cert-project-name { font-size: 2rem; }
+        .cert-description { max-width: 100%; font-size: 0.9rem; }
         .certificate { padding: 15px; }
         .cert-signatures { flex-direction: column; align-items: center; }
         .signature { min-width: auto; width: 100%; }
-        .recognition-text { font-size: 0.65rem; letter-spacing: 0.5px; }
+        .recognition-text { font-size: 0.8rem; letter-spacing: 1.5px; }
         .recognition-line { width: 20px; }
         .header-divider { margin: 0; }
         .tech-label { font-size: 0.4rem; }
         .tech-value { font-size: 0.55rem; }
+        .org-subtitle { font-size: 0.7rem; letter-spacing: 5px; }
+        .org-motto { font-size: 0.7rem; letter-spacing: 2px; }
+        .cert-date { font-size: 0.85rem; }
+        .sign-name { font-size: 0.7rem; }
       }
 
       @media (max-width: 600px) {
         .org-name { font-size: 1.6rem; }
-        .cert-student-name { font-size: 1.3rem; }
-        .cert-project-name { font-size: 1.4rem; }
-        .cert-description { font-size: 0.7rem; }
-        .recognition-text { font-size: 0.5rem; }
+        .cert-student-name { font-size: 2.2rem; }
+        .cert-project-name { font-size: 1.5rem; }
+        .cert-description { font-size: 0.8rem; }
+        .recognition-text { font-size: 0.65rem; }
+        .sign-name { font-size: 0.6rem; }
+        .sign-role { font-size: 0.5rem; }
       }
 
       /* ==========================================================
@@ -802,9 +836,6 @@ export class PublicVerificationComponent implements OnInit {
     return `RSL-${year}-${month}${day}-${suffix}`;
   }
 
-  // ================================================================
-  //  MÉTODO downloadPDF (el mismo que funcionaba)
-  // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
       alert('No hay datos para generar el PDF.');
