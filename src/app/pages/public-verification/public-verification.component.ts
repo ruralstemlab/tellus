@@ -141,7 +141,9 @@ import { of } from 'rxjs';
                 </div>
               </div>
 
-              <!-- ========== FIRMAS ========== -->
+              <!-- ==========================================================
+                   FIRMAS - AHORA CON ESPACIO GARANTIZADO
+              ========================================================== -->
               <div class="cert-signatures">
                 <div class="signature">
                   <div class="sign-line gold"></div>
@@ -251,7 +253,7 @@ import { of } from 'rxjs';
       }
 
       /* ==========================================================
-         CERTIFICADO - DISEÑO REDISEÑADO (con relación A4 horizontal)
+         CERTIFICADO - DISEÑO REDISEÑADO (con firmas visibles)
       ========================================================= */
       .certificate-preview {
         margin: 20px 0;
@@ -261,13 +263,11 @@ import { of } from 'rxjs';
       }
       .certificate-wrapper {
         background: #FAF8F2;
-        padding: 20px 20px;
+        padding: 15px 15px;
         border-radius: 12px;
         box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
         width: 100%;
         max-width: 1000px;
-        /* 🔥 Relación de aspecto A4 horizontal: 1.414:1 */
-        aspect-ratio: 1.414 / 1;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -275,18 +275,18 @@ import { of } from 'rxjs';
       .certificate {
         position: relative;
         background: #FAF8F2;
-        padding: 20px 25px 18px 25px;
+        padding: 18px 22px 15px 22px;
         border-radius: 6px;
         font-family: 'Georgia', 'Times New Roman', serif;
         color: #1B5E20;
         overflow: hidden;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 1.414 / 1; /* A4 horizontal */
         display: flex;
         flex-direction: column;
         border: 0.8px solid rgba(200, 162, 74, 0.2);
-        border-width: 0.8px 1.2px 1.2px 0.8px;
         box-shadow: inset 0 0 0 1px rgba(200, 162, 74, 0.05);
+        min-height: 0; /* Evita desbordamiento */
       }
 
       /* ===== FONDO TEXTURADO ===== */
@@ -307,11 +307,11 @@ import { of } from 'rxjs';
       /* ===== MARCA DE AGUA ===== */
       .watermark {
         position: absolute;
-        right: 20px;
+        right: 15px;
         top: 50%;
         transform: translateY(-50%);
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
         opacity: 0.06;
         pointer-events: none;
         z-index: 0;
@@ -328,15 +328,16 @@ import { of } from 'rxjs';
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 15px 0 25px;
+        padding: 6px 0 12px 0;
         position: relative;
         z-index: 1;
         flex-wrap: wrap;
+        flex-shrink: 0;
       }
 
       .logo-flask {
-        width: 50px;
-        height: 60px;
+        width: 45px;
+        height: 55px;
         flex-shrink: 0;
         opacity: 0.7;
       }
@@ -349,7 +350,7 @@ import { of } from 'rxjs';
         flex: 1;
         text-align: center;
         font-family: 'Cinzel', serif;
-        font-size: 3rem;
+        font-size: 2.6rem;
         font-weight: 700;
         line-height: 1.1;
         letter-spacing: 0.5px;
@@ -368,21 +369,20 @@ import { of } from 'rxjs';
       .org-name .a { color: #FB8C00; }
       .org-name .m { color: #43A047; }
 
-      /* Nuevos elementos */
       .org-subtitle {
         text-align: center;
-        font-size: 0.85rem;
-        letter-spacing: 8px;
-        margin-top: 6px;
+        font-size: 0.7rem;
+        letter-spacing: 6px;
+        margin-top: 2px;
         color: #777;
         font-family: 'Inter', sans-serif;
         width: 100%;
       }
       .org-motto {
         text-align: center;
-        font-size: 0.8rem;
-        letter-spacing: 3px;
-        margin-top: 8px;
+        font-size: 0.65rem;
+        letter-spacing: 2.5px;
+        margin-top: 4px;
         color: #999;
         text-transform: uppercase;
         font-family: 'Inter', sans-serif;
@@ -390,8 +390,8 @@ import { of } from 'rxjs';
       }
 
       .seal-minimal {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         flex-shrink: 0;
         opacity: 0.5;
         margin-left: 8px;
@@ -403,10 +403,11 @@ import { of } from 'rxjs';
 
       .header-divider {
         border: none;
-        border-top: 0.8px solid rgba(200, 162, 74, 0.2);
-        margin: 0 0 16px 0;
+        border-top: 0.6px solid rgba(200, 162, 74, 0.2);
+        margin: 0 0 10px 0;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
 
       /* ==========================================================
@@ -414,26 +415,28 @@ import { of } from 'rxjs';
       ========================================================= */
       .cert-student-name {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 4rem;        /* 64px */
+        font-size: 3.4rem;
         font-style: italic;
         font-weight: 600;
         color: #1B5E20;
         text-align: center;
         line-height: 1.1;
         letter-spacing: 0.5px;
-        margin: 18px auto 8px;
+        margin: 6px auto 4px;
         max-width: 80%;
         white-space: normal;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .gold-line {
-        width: 120px;
+        width: 100px;
         height: 2px;
         background: linear-gradient(90deg, transparent, #C8A24A, transparent);
-        margin: 0 auto 8px auto;
+        margin: 0 auto 6px auto;
         border-radius: 2px;
         opacity: 0.6;
+        flex-shrink: 0;
       }
 
       /* ==========================================================
@@ -441,23 +444,25 @@ import { of } from 'rxjs';
       ========================================================= */
       .cert-project-name {
         font-family: 'Cormorant Garamond', serif;
-        font-size: 2.5rem;      /* 40px */
+        font-size: 2.2rem;
         font-style: italic;
         font-weight: 600;
         color: #2E7D32;
         text-align: center;
-        margin: 18px 0 8px;
+        margin: 10px 0 4px;
         line-height: 1.2;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .gold-line-short {
-        width: 80px;
+        width: 70px;
         height: 1.5px;
         background: linear-gradient(90deg, transparent, #C8A24A, transparent);
-        margin: 0 auto 8px auto;
+        margin: 0 auto 6px auto;
         border-radius: 2px;
         opacity: 0.4;
+        flex-shrink: 0;
       }
 
       /* ==========================================================
@@ -465,18 +470,19 @@ import { of } from 'rxjs';
       ========================================================= */
       .cert-description {
         max-width: 68%;
-        margin: 18px auto;
+        margin: 6px auto 8px;
         text-align: center;
-        font-size: 1rem;
-        line-height: 1.7;
+        font-size: 0.85rem;
+        line-height: 1.5;
         color: #555;
         font-family: 'Georgia', serif;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .cert-description .light-text {
         color: #999;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
       }
 
       /* ==========================================================
@@ -486,22 +492,23 @@ import { of } from 'rxjs';
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
-        margin: 28px 0;
+        gap: 14px;
+        margin: 10px 0 6px;
         position: relative;
         z-index: 1;
+        flex-shrink: 0;
       }
       .recognition-line {
-        width: 40px;
-        height: 0.8px;
+        width: 35px;
+        height: 0.5px;
         background: #C8A24A;
         opacity: 0.3;
       }
       .recognition-text {
-        font-size: 1rem;
+        font-size: 0.8rem;
         font-weight: 700;
         color: #C8A24A;
-        letter-spacing: 3px;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
         font-family: 'Georgia', serif;
         opacity: 0.8;
@@ -511,49 +518,50 @@ import { of } from 'rxjs';
          FECHA
       ========================================================= */
       .cert-date {
-        font-size: 1rem;
+        font-size: 0.85rem;
         color: #666;
         text-align: center;
-        margin-top: 18px;
-        margin-bottom: 8px;
+        margin-top: 6px;
+        margin-bottom: 6px;
         position: relative;
         z-index: 1;
         letter-spacing: 0.5px;
         font-family: 'Georgia', serif;
+        flex-shrink: 0;
       }
 
       /* ==========================================================
-         COLUMNA IZQUIERDA
+         COLUMNA IZQUIERDA (técnica)
       ========================================================= */
       .tech-info {
         position: absolute;
-        left: 20px;
-        top: 135px;
-        bottom: 50px;
-        width: 140px;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 110px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 6px;
+        gap: 4px;
         z-index: 1;
-        border-right: 0.8px solid rgba(200, 162, 74, 0.1);
-        padding-right: 12px;
+        border-right: 0.5px solid rgba(200, 162, 74, 0.1);
+        padding-right: 10px;
       }
       .tech-item {
         text-align: left;
-        padding: 2px 0;
+        padding: 1px 0;
       }
       .tech-label {
-        font-size: 0.45rem;
+        font-size: 0.4rem;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         color: #999;
         display: block;
         font-weight: 500;
         font-family: 'Inter', sans-serif;
       }
       .tech-value {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
         font-weight: 600;
         color: #1B5E20;
         font-family: 'Courier New', monospace;
@@ -563,61 +571,62 @@ import { of } from 'rxjs';
         opacity: 0.8;
       }
       .tech-value.url {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
         font-family: 'Courier New', monospace;
         font-weight: 600;
         color: #1B5E20;
         opacity: 0.6;
       }
       .verify-link {
-        margin-top: 2px;
+        margin-top: 1px;
       }
 
       /* ==========================================================
-         FIRMAS
+         FIRMAS - CON ESPACIO SUFICIENTE
       ========================================================= */
       .cert-signatures {
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        margin-top: 45px;
-        padding-top: 25px;
-        border-top: 0.8px solid rgba(200, 162, 74, 0.1);
+        margin-top: auto;      /* Empuja las firmas hacia abajo */
+        padding-top: 10px;
+        border-top: 0.5px solid rgba(200, 162, 74, 0.12);
         position: relative;
         z-index: 1;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 8px;
+        flex-shrink: 0;
       }
       .signature {
         text-align: center;
         flex: 1;
-        min-width: 130px;
+        min-width: 100px;
         position: relative;
       }
       .sign-line.gold {
-        width: 80px;
-        height: 2px;
+        width: 60px;
+        height: 1.5px;
         background: linear-gradient(90deg, #C8A24A, #d4af37);
-        margin: 0 auto 6px auto;
+        margin: 0 auto 4px auto;
         border-radius: 2px;
         opacity: 0.4;
       }
       .sign-name {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
         font-weight: 700;
         color: #1B5E20;
         letter-spacing: 0.3px;
-        opacity: 0.8;
+        opacity: 0.85;
         font-family: 'Inter', sans-serif;
       }
       .sign-role {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
         color: #999;
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: 500;
         font-family: 'Inter', sans-serif;
-        margin-top: 2px;
+        margin-top: 1px;
       }
 
       /* ==========================================================
@@ -625,55 +634,61 @@ import { of } from 'rxjs';
       ========================================================= */
       @media (max-width: 850px) {
         .certificate-wrapper {
+          padding: 10px;
+        }
+        .certificate {
           aspect-ratio: auto;
+          min-height: 400px;
           padding: 15px;
         }
         .tech-info {
           position: relative;
           left: auto;
           top: auto;
+          transform: none;
           width: 100%;
           flex-direction: row;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 8px;
+          gap: 4px 10px;
           border-right: none;
           padding-right: 0;
-          margin: 6px 0;
+          margin: 4px 0;
         }
         .tech-item {
           flex: 1 0 45%;
           text-align: center;
+          padding: 1px 0;
         }
         .watermark { display: none; }
         .logo-flask { width: 35px; height: 45px; }
         .seal-minimal { width: 40px; height: 40px; }
-        .org-name { font-size: 2.2rem; }
-        .cert-student-name { font-size: 3rem; max-width: 95%; }
-        .cert-project-name { font-size: 2rem; }
-        .cert-description { max-width: 100%; font-size: 0.9rem; }
-        .certificate { padding: 15px; }
-        .cert-signatures { flex-direction: column; align-items: center; }
-        .signature { min-width: auto; width: 100%; }
-        .recognition-text { font-size: 0.8rem; letter-spacing: 1.5px; }
+        .org-name { font-size: 2rem; }
+        .cert-student-name { font-size: 2.6rem; max-width: 95%; }
+        .cert-project-name { font-size: 1.8rem; }
+        .cert-description { max-width: 95%; font-size: 0.8rem; }
+        .recognition-text { font-size: 0.7rem; letter-spacing: 1.5px; }
         .recognition-line { width: 20px; }
-        .header-divider { margin: 0; }
-        .tech-label { font-size: 0.4rem; }
-        .tech-value { font-size: 0.55rem; }
-        .org-subtitle { font-size: 0.7rem; letter-spacing: 5px; }
-        .org-motto { font-size: 0.7rem; letter-spacing: 2px; }
-        .cert-date { font-size: 0.85rem; }
-        .sign-name { font-size: 0.7rem; }
+        .org-subtitle { font-size: 0.6rem; letter-spacing: 4px; }
+        .org-motto { font-size: 0.55rem; letter-spacing: 2px; }
+        .cert-date { font-size: 0.8rem; }
+        .sign-name { font-size: 0.6rem; }
+        .sign-role { font-size: 0.45rem; }
+        .sign-line.gold { width: 50px; }
+        .cert-signatures { gap: 6px; }
       }
 
       @media (max-width: 600px) {
-        .org-name { font-size: 1.6rem; }
-        .cert-student-name { font-size: 2.2rem; }
-        .cert-project-name { font-size: 1.5rem; }
-        .cert-description { font-size: 0.8rem; }
-        .recognition-text { font-size: 0.65rem; }
-        .sign-name { font-size: 0.6rem; }
-        .sign-role { font-size: 0.5rem; }
+        .org-name { font-size: 1.4rem; }
+        .cert-student-name { font-size: 2rem; }
+        .cert-project-name { font-size: 1.4rem; }
+        .cert-description { font-size: 0.7rem; }
+        .recognition-text { font-size: 0.55rem; letter-spacing: 1px; }
+        .sign-name { font-size: 0.55rem; }
+        .sign-role { font-size: 0.4rem; }
+        .certificate { padding: 10px; }
+        .tech-label { font-size: 0.35rem; }
+        .tech-value { font-size: 0.5rem; }
       }
 
       /* ==========================================================
@@ -848,7 +863,7 @@ export class PublicVerificationComponent implements OnInit {
   }
 
   // ================================================================
-  //  MÉTODO downloadPDF - FORMATO A4 HORIZONTAL GARANTIZADO
+  //  MÉTODO downloadPDF - FORMATO A4 HORIZONTAL CON FIRMAS VISIBLES
   // ================================================================
   async downloadPDF(): Promise<void> {
     if (!this.credential || !this.project) {
@@ -869,36 +884,27 @@ export class PublicVerificationComponent implements OnInit {
         height: container.scrollHeight
       });
 
-      // Dimensiones del canvas capturado
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
 
-      // Definir tamaño A4 horizontal en mm (297x210) con un margen de 5mm
-      const pdfWidth = 287; // 297 - 10
-      const pdfHeight = 200; // 210 - 10
+      // Tamaño A4 horizontal en mm (297x210) con márgenes de 5 mm
+      const pdfWidth = 287;
+      const pdfHeight = 200;
 
-      // Calcular la relación de aspecto del canvas
-      const canvasRatio = canvasWidth / canvasHeight;
-      const pdfRatio = pdfWidth / pdfHeight;
+      // Calcular factor de escala para que la imagen quepa exactamente en la página
+      const scaleX = pdfWidth / canvasWidth;
+      const scaleY = pdfHeight / canvasHeight;
+      const scale = Math.min(scaleX, scaleY); // Escala para que quepa completa
 
-      let finalWidth, finalHeight;
-      if (canvasRatio > pdfRatio) {
-        // Ajustar por ancho
-        finalWidth = pdfWidth;
-        finalHeight = pdfWidth / canvasRatio;
-      } else {
-        // Ajustar por alto
-        finalHeight = pdfHeight;
-        finalWidth = pdfHeight * canvasRatio;
-      }
+      const finalWidth = canvasWidth * scale;
+      const finalHeight = canvasHeight * scale;
 
-      // Centrar la imagen en la página A4
+      // Centrar la imagen
       const offsetX = (pdfWidth - finalWidth) / 2;
       const offsetY = (pdfHeight - finalHeight) / 2;
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-      // Crear PDF en orientación horizontal (landscape) con tamaño A4 en mm
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
@@ -908,7 +914,6 @@ export class PublicVerificationComponent implements OnInit {
       // Añadir la imagen escalada y centrada
       pdf.addImage(imgData, 'JPEG', offsetX, offsetY, finalWidth, finalHeight);
 
-      // Guardar el PDF
       pdf.save(`Certificado-${this.project.title.replace(/\s+/g, '-')}.pdf`);
 
     } catch (error) {
