@@ -252,6 +252,18 @@ service cloud.firestore {
     }
 
 
+    // Estadísticas públicas de Biblioteca Viva.
+    // Cualquier visitante puede leerlas.
+    // Solo un administrador puede modificarlas.
+    match /publicStats/{documentId} {
+
+      allow read: if true;
+
+      allow write: if isAdmin();
+    }
+
+
+    // Regla de seguridad por defecto.
     match /{document=**} {
       allow read, write: if false;
     }
