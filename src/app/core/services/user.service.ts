@@ -10,6 +10,7 @@ import {
   QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { Observable, from, map } from 'rxjs';
+
 import { db } from '../../../environments/firebase.config';
 import { UserProfile } from '../models/user-profile.model';
 
@@ -18,7 +19,19 @@ export interface UserData {
   name: string;
   email: string;
   role: 'student' | 'teacher' | 'admin';
+
+  /**
+   * Institución del usuario.
+   * Se mantiene como texto por compatibilidad
+   * con Biblioteca Viva.
+   */
   institution?: string;
+
+  /**
+   * Campo heredado de perfiles anteriores.
+   */
+  school?: string;
+
   active: boolean;
   createdAt: Date;
 }
@@ -27,56 +40,121 @@ export interface UserData {
   providedIn: 'root',
 })
 export class UserService {
-  private collectionName = 'users';
+  private readonly collectionName = 'users';
 
+  /**
+   * Obtener todos los usuarios.
+   */
   getUsers(): Observable<UserData[]> {
     const ref = collection(db, this.collectionName);
+
     return from(getDocs(ref)).pipe(
-      map((snapshot) => {
-        return snapshot.docs.map((docSnap: QueryDocumentSnapshot<DocumentData>) => {
-          const data = docSnap.data();
-          return {
-            uid: docSnap.id,
-            name: data['name'] || '',
-            email: data['email'] || '',
-            role: data['role'] || 'student',
-            institution: data['institution'] || '',
-            active: data['active'] ?? true,
-            createdAt: data['createdAt']?.toDate ? data['createdAt'].toDate() : new Date(),
-          } as UserData;
-        });
-      })
+      map((snapshot) =>
+        snapshot.docs.map(
+          (docSnap: QueryDocumentSnapshot<DocumentData>) => {
+            const data = docSnap.data();
+
+            return {
+              uid: docSnap.id,
+              name: data['name'] || '',
+              email: data['email'] || '',
+              role: data['role'] || 'student',
+
+              institution: data['institution'] || '',
+              school: data['school'] || '',
+
+              active: data['active'] ?? true,
+
+              createdAt: data['createdAt']?.toDate
+                ? data['createdAt'].toDate()
+                : new Date(),
+            } as UserData;
+          }
+        )
+      )
     );
   }
 
+  /**
+   * Obtener un usuario específico por UID.
+   */
   async getUser(uid: string): Promise<UserProfile | null> {
     const ref = doc(db, this.collectionName, uid);
     const docSnap = await getDoc(ref);
-    if (!docSnap.exists()) return null;
+
+    if (!docSnap.exists()) {
+      return null;
+    }
+
     const data = docSnap.data();
+
     return {
       uid: docSnap.id,
+
       name: data['name'] || '',
+
       email: data['email'] || '',
+
       role: data['role'] || 'student',
+
+      /**
+       * Compatibilidad con Biblioteca Viva.
+       */
+      institution: data['institution'] || '',
+
+      /**
+       * Compatibilidad con perfiles antiguos.
+       */
+      school: data['school'] || '',
+
       photoURL: data['photoURL'] || '',
+
       active: data['active'] ?? true,
-      createdAt: data['createdAt']?.toDate ? data['createdAt'].toDate() : new Date(),
+
+      createdAt: data['createdAt']?.toDate
+        ? data['createdAt'].toDate()
+        : new Date(),
     } as UserProfile;
   }
 
+  /**
+   * Contar desarrolladores.
+   *
+   * Se consideran desarrolladores:
+   * - estudiantes
+   * - docentes
+   */
   getDevelopersCount(): Observable<number> {
     const ref = collection(db, this.collectionName);
-    const q = query(ref, where('role', 'in', ['student', 'teacher']));
-    return from(getDocs(q)).pipe(map((snapshot) => snapshot.size));
+
+    const q = query(
+      ref,
+      where('role', 'in', ['student', 'teacher'])
+    );
+
+    return from(getDocs(q)).pipe(
+      map((snapshot) => snapshot.size)
+    );
   }
 
+  /**
+   * Contar instituciones representadas
+   * en los perfiles de usuarios.
+   *
+   * Este método mantiene la lógica actual
+   * de Biblioteca Viva.
+   */
   getInstitutionsCount(): Observable<number> {
     return this.getUsers().pipe(
       map((users) => {
         const institutions = users
-          .map((u) => u.institution)
-          .filter((inst) => inst && inst.trim() !== '');
+          .map((user) => user.institution)
+          .filter(
+            (institution): institution is string =>
+              !!institution &&
+              institution.trim() !== ''
+          );
+
         return new Set(institutions).size;
       })
     );

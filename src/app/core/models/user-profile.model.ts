@@ -1,5 +1,4 @@
 export interface UserProfile {
-
   uid: string;
 
   name: string;
@@ -8,12 +7,21 @@ export interface UserProfile {
 
   role: 'teacher' | 'student' | 'admin';
 
-  school: string;
+  /**
+   * Institución educativa del usuario.
+   * Se mantiene como texto para compatibilidad con Biblioteca Viva.
+   */
+  institution?: string;
+
+  /**
+   * Campo heredado.
+   * Se mantiene opcional para no romper perfiles existentes.
+   */
+  school?: string;
 
   photoURL: string;
 
   active: boolean;
 
   createdAt: Date;
-
 }
