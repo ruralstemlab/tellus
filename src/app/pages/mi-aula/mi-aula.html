@@ -1,214 +1,102 @@
-<main class="mi-aula-page">
+<main class="mi-aula-page" [class.loaded]="isLoaded()">
 
+  <!-- ============================================
+       HERO
+  ============================================ -->
   <section class="hero">
-
     <div class="hero-content">
-
-      <span class="eyebrow">
-        🌱 Tellus Learning
-      </span>
-
       <h1>
-        Mi Aula
+        ¡Hola, {{ userName() }}!
+        <span class="wave">👋</span>
       </h1>
-
-      <p class="hero-title">
-        Tu espacio para aprender, explorar y avanzar.
+      <p class="hero-subtitle">
+        Hoy es un gran día para aprender algo nuevo.
       </p>
-
-      <p class="hero-description">
-        Aquí encontrarás tus experiencias de aprendizaje,
-        actividades, recursos y progreso dentro del ecosistema Tellus.
-      </p>
-
     </div>
-
     <div class="hero-orbit" aria-hidden="true">
       <div class="orbit orbit-1"></div>
       <div class="orbit orbit-2"></div>
-
-      <div class="core">
-        🌱
-      </div>
+      <div class="core">🌱</div>
     </div>
-
   </section>
 
+  <!-- ============================================
+       EXPERIENCIA
+  ============================================ -->
+  <section class="experience-section">
 
-  <section class="quick-stats">
-
-    <article class="stat-card">
-      <span class="stat-icon">🚀</span>
-
-      <div>
-        <strong>0</strong>
-        <span>Experiencias</span>
-      </div>
-    </article>
-
-    <article class="stat-card">
-      <span class="stat-icon">📚</span>
-
-      <div>
-        <strong>0</strong>
-        <span>Actividades</span>
-      </div>
-    </article>
-
-    <article class="stat-card">
-      <span class="stat-icon">📊</span>
-
-      <div>
-        <strong>0%</strong>
-        <span>Progreso</span>
-      </div>
-    </article>
-
-    <article class="stat-card">
-      <span class="stat-icon">🏆</span>
-
-      <div>
-        <strong>0</strong>
-        <span>Logros</span>
-      </div>
-    </article>
-
-  </section>
-
-
-  <section class="section-header">
-
-    <div>
-      <span class="section-kicker">
-        APRENDIZAJE
+    <!-- Encabezado -->
+    <div class="experience-header">
+      <span class="experience-badge">
+        EXPERIENCIA DE APRENDIZAJE
       </span>
-
-      <h2>
-        Mis experiencias
-      </h2>
-
-      <p>
-        Continúa una experiencia o descubre nuevos retos de aprendizaje.
+      <h2>{{ experience().name }}</h2>
+      <p class="experience-desc">
+        {{ experience().description }}
       </p>
     </div>
 
-  </section>
-
-
-  @if (!hasExperiences) {
-
-    <section class="empty-state">
-
-      <div class="empty-icon">
-        🌱
+    <!-- Etapa actual -->
+    <div class="current-stage">
+      <div class="stage-label">
+        <span>¿Qué estoy haciendo?</span>
       </div>
-
-      <h3>
-        Tu aula está comenzando a crecer
-      </h3>
-
-      <p>
-        Cuando tus docentes asignen experiencias de aprendizaje,
-        aparecerán aquí.
-      </p>
-
-      <div class="empty-hint">
-        <span>1</span>
-        <span>Experiencia</span>
-
-        <span class="arrow">→</span>
-
-        <span>2</span>
-        <span>Etapas</span>
-
-        <span class="arrow">→</span>
-
-        <span>3</span>
-        <span>Actividades</span>
+      <div class="stage-card">
+        <div class="stage-info">
+          <span class="stage-type">
+            {{ experience().currentStage.name }}
+          </span>
+          <p>{{ experience().currentStage.description }}</p>
+        </div>
+        <button class="btn-continue" (click)="onContinue()">
+          Continuar →
+        </button>
       </div>
+    </div>
 
-    </section>
-
-  }
-
-
-  <section class="learning-grid">
-
-    <article class="learning-card">
-
-      <div class="card-icon">
-        📚
+    <!-- Ciclo de aprendizaje -->
+    <div class="learning-cycle">
+      <h3>CICLO DE APRENDIZAJE</h3>
+      <div class="cycle-steps">
+        <div class="cycle-step" *ngFor="let step of experience().cycleSteps">
+          <span class="step-number">{{ step.number }}</span>
+          <div>
+            <strong>{{ step.title }}</strong>
+            <p>{{ step.description }}</p>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="card-content">
-
-        <span class="card-label">
-          APRENDER
-        </span>
-
-        <h3>
-          Mis experiencias
-        </h3>
-
-        <p>
-          Explora las experiencias de aprendizaje que tus docentes
-          han preparado para ti.
-        </p>
-
+    <!-- Progreso -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <h3>Mi progreso</h3>
+        <span class="progress-percent">{{ progressPercent() }}</span>
       </div>
-
-    </article>
-
-
-    <article class="learning-card">
-
-      <div class="card-icon">
-        🎯
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progress()"></div>
       </div>
-
-      <div class="card-content">
-
-        <span class="card-label">
-          AVANZAR
-        </span>
-
-        <h3>
-          Mi progreso
-        </h3>
-
-        <p>
-          Consulta tus avances, actividades completadas y resultados.
-        </p>
-
+      <div class="progress-details">
+        <span>{{ experience().completedStages }} etapa completada</span>
+        <span>{{ experience().totalStages - experience().completedStages }} por completar</span>
       </div>
+    </div>
 
-    </article>
-
-
-    <article class="learning-card">
-
-      <div class="card-icon">
-        🧠
+    <!-- Logro próximo -->
+    <div class="next-achievement">
+      <div class="achievement-icon">🏆</div>
+      <div>
+        <h4>Logro próximo</h4>
+        <p>{{ experience().nextAchievement.description }}</p>
+        <div class="achievement-progress">
+          <div class="progress-bar small">
+            <div class="progress-fill" [style.width.%]="experience().nextAchievement.progress"></div>
+          </div>
+          <span>{{ experience().nextAchievement.progress }}%</span>
+        </div>
       </div>
-
-      <div class="card-content">
-
-        <span class="card-label">
-          EXPLORAR
-        </span>
-
-        <h3>
-          Recursos
-        </h3>
-
-        <p>
-          Accede a materiales, simulaciones, lecturas y recursos
-          asociados a tus experiencias.
-        </p>
-
-      </div>
-
-    </article>
+    </div>
 
   </section>
 
