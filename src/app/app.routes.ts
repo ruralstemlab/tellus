@@ -9,6 +9,7 @@ import { ForgotPassword } from './pages/authentication/forgot-password/forgot-pa
 import { ResetPassword } from './pages/authentication/reset-password/reset-password';
 
 import { Home } from './pages/home/home';
+import { MiAula } from './pages/mi-aula/mi-aula';
 
 import { Laboratorios } from './pages/laboratorios/laboratorios';
 
@@ -18,7 +19,7 @@ import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
 import { Arte } from './pages/laboratorios/arte/arte';
 import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
-// ✅ Importar el componente de verificación pública
+// Importar el componente de verificación pública
 import { PublicVerificationComponent } from './pages/public-verification/public-verification.component';
 
 export const routes: Routes = [
@@ -59,10 +60,18 @@ export const routes: Routes = [
     component: Home
   },
 
+  // ===== MI AULA / TELLUS LEARNING =====
+  {
+    path: 'mi-aula',
+    component: MiAula
+  },
+
   // ===== BIBLIOTECA VIVA CON LAZY LOADING =====
   {
     path: 'biblioteca-viva',
-    loadChildren: () => import('./pages/biblioteca-viva/biblioteca-viva.routes').then(m => m.routes)
+    loadChildren: () =>
+      import('./pages/biblioteca-viva/biblioteca-viva.routes')
+        .then(m => m.routes)
   },
 
   {
@@ -95,14 +104,15 @@ export const routes: Routes = [
     component: Tecnologia
   },
 
-  // ✅ NUEVA RUTA PÚBLICA PARA VERIFICACIÓN DE CREDENCIALES
-  // ¡IMPORTANTE! Debe ir ANTES del wildcard (**)
+  // ===== VERIFICACIÓN PÚBLICA DE CREDENCIALES =====
+  // Debe estar antes del wildcard
   {
     path: 'verificar/:uuid',
     component: PublicVerificationComponent
   },
 
-  // ⚠️ Wildcard: siempre al final
+  // ===== WILDCARD =====
+  // Siempre debe quedar al final
   {
     path: '**',
     redirectTo: 'home'
