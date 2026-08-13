@@ -1,103 +1,411 @@
-<main class="mi-aula-page" [class.loaded]="isLoaded()">
+<app-navbar></app-navbar>
 
-  <!-- ============================================
+<main class="mi-aula-page">
+
+  <!-- ==========================================================
        HERO
-  ============================================ -->
+  ========================================================== -->
+
   <section class="hero">
+
     <div class="hero-content">
+
+      <span class="hero-eyebrow">
+        TELLUS LEARNING
+      </span>
+
       <h1>
         ¡Hola, {{ userName() }}!
-        <span class="wave">👋</span>
+        <span
+          class="wave"
+          aria-hidden="true"
+        >
+          👋
+        </span>
       </h1>
+
       <p class="hero-subtitle">
         Hoy es un gran día para aprender algo nuevo.
       </p>
+
     </div>
-    <div class="hero-orbit" aria-hidden="true">
+
+
+    <div
+      class="hero-orbit"
+      aria-hidden="true"
+    >
+
       <div class="orbit orbit-1"></div>
+
       <div class="orbit orbit-2"></div>
-      <div class="core">🌱</div>
+
+      <div class="core">
+        🌱
+      </div>
+
     </div>
+
   </section>
 
-  <!-- ============================================
+
+  <!-- ==========================================================
        EXPERIENCIA
-  ============================================ -->
+  ========================================================== -->
+
   <section class="experience-section">
 
-    <!-- Encabezado -->
-    <div class="experience-header">
+
+    <!-- ========================================================
+         ENCABEZADO
+    ======================================================== -->
+
+    <header class="experience-header">
+
       <span class="experience-badge">
         EXPERIENCIA DE APRENDIZAJE
       </span>
-      <h2>{{ experience().name }}</h2>
+
+      <h2>
+        {{ experienceTitle() }}
+      </h2>
+
       <p class="experience-desc">
-        {{ experience().description }}
+        {{ experienceDescription() }}
       </p>
-    </div>
 
-    <!-- Etapa actual -->
-    <div class="current-stage">
+    </header>
+
+
+    <!-- ========================================================
+         MOMENTO ACTUAL
+    ======================================================== -->
+
+    <section class="current-stage">
+
       <div class="stage-label">
-        <span>¿Qué estoy haciendo?</span>
+
+        <span class="label-dot"></span>
+
+        ESTÁS AQUÍ
+
       </div>
+
+
       <div class="stage-card">
+
+
+        <div class="stage-number">
+
+          {{ currentMoment()?.order || 1 }}
+
+        </div>
+
+
+        <div class="stage-icon">
+
+          {{
+            currentMoment()
+              ? getMomentIcon(currentMoment()!)
+              : '🌱'
+          }}
+
+        </div>
+
+
         <div class="stage-info">
+
           <span class="stage-type">
-            {{ experience().currentStage.name }}
+
+            {{ currentMomentTitle() }}
+
           </span>
-          <p>{{ experience().currentStage.description }}</p>
+
+          <p>
+
+            {{ currentMomentDescription() }}
+
+          </p>
+
         </div>
-        <button class="btn-continue" (click)="onContinue()">
-          Continuar →
+
+
+        <button
+          class="btn-continue"
+          type="button"
+          (click)="onContinue()"
+        >
+
+          <span>
+            Comenzar
+          </span>
+
+          <span aria-hidden="true">
+            →
+          </span>
+
         </button>
-      </div>
-    </div>
 
-    <!-- Ciclo de aprendizaje -->
-    <div class="learning-cycle">
-      <h3>CICLO DE APRENDIZAJE</h3>
-      <div class="cycle-steps">
-        <div class="cycle-step" *ngFor="let step of experience().cycleSteps">
-          <span class="step-number">{{ step.number }}</span>
-          <div>
-            <strong>{{ step.title }}</strong>
-            <p>{{ step.description }}</p>
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         CICLO DE APRENDIZAJE
+    ======================================================== -->
+
+    <section class="learning-cycle">
+
+
+      <header class="cycle-header">
+
+        <span class="cycle-eyebrow">
+          TELLUS LEARNING
+        </span>
+
+        <h3>
+          Ciclo de aprendizaje
+        </h3>
+
+        <p>
+          Aprende, experimenta, comprende y vuelve a comenzar.
+        </p>
+
+      </header>
+
+
+      <div class="cycle-container">
+
+
+        <!-- ANILLOS -->
+
+        <div
+          class="cycle-ring cycle-ring-outer"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="cycle-ring cycle-ring-inner"
+          aria-hidden="true"
+        ></div>
+
+
+        <!-- TRAYECTORIA -->
+
+        <div
+          class="cycle-track"
+          aria-hidden="true"
+        ></div>
+
+
+        <!-- MOMENTOS -->
+
+        <button
+          type="button"
+          class="cycle-step"
+          *ngFor="
+            let moment of orderedMoments();
+            trackBy: trackByMomentId
+          "
+          [class.current]="isCurrent(moment)"
+          [class.completed]="isCompleted(moment)"
+          [class.locked]="isLocked(moment)"
+          [attr.aria-label]="moment.title"
+          (click)="goToMoment(moment.id)"
+        >
+
+          <span class="step-icon">
+
+            {{ getMomentIcon(moment) }}
+
+          </span>
+
+
+          <span class="step-number">
+
+            {{ moment.order }}
+
+          </span>
+
+
+          <span class="step-content">
+
+            <strong>
+              {{ moment.title }}
+            </strong>
+
+            <small>
+              {{
+                moment.subtitle ||
+                moment.description
+              }}
+            </small>
+
+          </span>
+
+        </button>
+
+
+        <!-- CENTRO -->
+
+        <div class="cycle-center">
+
+          <div class="cycle-center-ring">
+
+            <span
+              class="cycle-center-icon"
+              aria-hidden="true"
+            >
+              🌱
+            </span>
+
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Progreso -->
-    <div class="progress-section">
+          <strong>
+            APRENDER
+          </strong>
+
+          <span>
+            volver a experimentar
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         PROGRESO
+    ======================================================== -->
+
+    <section class="progress-section">
+
+
       <div class="progress-header">
-        <h3>Mi progreso</h3>
-        <span class="progress-percent">{{ progressPercent() }}</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="progress()"></div>
-      </div>
-      <div class="progress-details">
-        <span>{{ experience().completedStages }} etapa completada</span>
-        <span>{{ experience().totalStages - experience().completedStages }} por completar</span>
-      </div>
-    </div>
 
-    <!-- Logro próximo -->
-    <div class="next-achievement">
-      <div class="achievement-icon">🏆</div>
-      <div>
-        <h4>Logro próximo</h4>
-        <p>{{ experience().nextAchievement.description }}</p>
-        <div class="achievement-progress">
-          <div class="progress-bar small">
-            <div class="progress-fill" [style.width.%]="experience().nextAchievement.progress"></div>
-          </div>
-          <span>{{ experience().nextAchievement.progress }}%</span>
+        <div>
+
+          <span class="progress-label">
+            MI PROGRESO
+          </span>
+
+          <h3>
+            {{ progressLabel() }}
+          </h3>
+
         </div>
+
+
+        <strong class="progress-percent">
+
+          {{ progressPercentage() }}%
+
+        </strong>
+
       </div>
-    </div>
+
+
+      <div
+        class="progress-segments"
+        aria-label="Progreso de la experiencia"
+      >
+
+        <span
+          *ngFor="
+            let moment of orderedMoments();
+            trackBy: trackByMomentId
+          "
+          class="progress-segment"
+          [class.completed]="isCompleted(moment)"
+          [class.current]="isCurrent(moment)"
+        ></span>
+
+      </div>
+
+
+      <div class="progress-legend">
+
+        <span>
+
+          <i class="legend-dot completed"></i>
+
+          Completado
+
+        </span>
+
+
+        <span>
+
+          <i class="legend-dot current"></i>
+
+          Actual
+
+        </span>
+
+
+        <span>
+
+          <i class="legend-dot locked"></i>
+
+          Por descubrir
+
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         LOGRO
+    ======================================================== -->
+
+    <section class="cycle-status">
+
+      <div class="status-icon">
+        🏆
+      </div>
+
+
+      <div class="status-content">
+
+        <span class="status-eyebrow">
+          LOGRO PRÓXIMO
+        </span>
+
+        <h3>
+          ¡Científico en acción!
+        </h3>
+
+        <p>
+          Completa el laboratorio físico y registra tus datos.
+        </p>
+
+
+        <div class="achievement-progress">
+
+          <div class="achievement-bar">
+
+            <span></span>
+
+          </div>
+
+          <strong>
+            25%
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
 
   </section>
 
 </main>
+
+<app-footer></app-footer>

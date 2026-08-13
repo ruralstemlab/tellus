@@ -54,10 +54,16 @@ export class ActivityService {
     })) as Activity[];
   }
 
-  async getByStageId(stageId: string): Promise<Activity[]> {
+  // ============================================================
+  // TELLUS LEARNING — NUEVA ARQUITECTURA
+  // ============================================================
+
+  async getByMomentId(
+    momentId: string,
+  ): Promise<Activity[]> {
     const activitiesQuery = query(
       this.activitiesCollection,
-      where('stageId', '==', stageId),
+      where('momentId', '==', momentId),
       orderBy('order', 'asc'),
     );
 
@@ -85,6 +91,40 @@ export class ActivityService {
       ...document.data(),
     })) as Activity[];
   }
+
+  // ============================================================
+  // LEGACY
+  // ============================================================
+  //
+  // Se mantiene temporalmente durante la migración de
+  // Stage → Moment.
+  //
+  // No utilizar en código nuevo.
+  // ============================================================
+
+  /**
+   * @deprecated Usar getByMomentId().
+   */
+  async getByStageId(
+    stageId: string,
+  ): Promise<Activity[]> {
+    const activitiesQuery = query(
+      this.activitiesCollection,
+      where('stageId', '==', stageId),
+      orderBy('order', 'asc'),
+    );
+
+    const snapshot = await getDocs(activitiesQuery);
+
+    return snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data(),
+    })) as Activity[];
+  }
+
+  // ============================================================
+  // CRUD
+  // ============================================================
 
   async create(
     activity: Omit<Activity, 'id'>,

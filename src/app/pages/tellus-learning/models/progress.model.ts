@@ -1,28 +1,70 @@
+// ============================================================
+// TELLUS LEARNING — PROGRESS
+// ============================================================
+//
+// Progress NO se persiste inicialmente en Firestore.
+// Se calcula a partir de:
+//
+//   Moments + Activities + Submissions + Interactions
+//
+// mediante calculateProgress().
+//
+// Este modelo representa únicamente el estado derivado
+// que necesita la interfaz.
+// ============================================================
+
 export interface Progress {
-  id: string;
+  // ----------------------------------------------------------
+  // Contexto
+  // ----------------------------------------------------------
 
   experienceId: string;
+
   studentId: string;
 
-  completedStageIds: string[];
+  // ----------------------------------------------------------
+  // Momento actual
+  // ----------------------------------------------------------
+
+  currentMomentId: string | null;
+
+  // ----------------------------------------------------------
+  // Momentos completados
+  // ----------------------------------------------------------
+
+  completedMomentIds: string[];
+
+  // ----------------------------------------------------------
+  // Actividades completadas
+  // ----------------------------------------------------------
 
   completedActivityIds: string[];
 
-  currentStageId?: string;
+  // ----------------------------------------------------------
+  // Última actividad registrada
+  // ----------------------------------------------------------
 
-  currentActivityId?: string;
+  lastActivityId: string | null;
 
-  totalActivities: number;
+  lastUpdatedAt: Date;
 
-  completedActivities: number;
+  // ----------------------------------------------------------
+  // Progreso pedagógico principal
+  // ----------------------------------------------------------
+
+  totalMoments: number;
+
+  completedMomentsCount: number;
 
   progressPercentage: number;
 
-  averageScore?: number;
+  // ----------------------------------------------------------
+  // Progreso secundario de actividades
+  // ----------------------------------------------------------
 
-  lastSubmissionId?: string;
+  totalRequiredActivities: number;
 
-  lastEvaluationId?: string;
+  completedRequiredActivitiesCount: number;
 
-  updatedAt: unknown;
+  activityProgressPercentage: number;
 }

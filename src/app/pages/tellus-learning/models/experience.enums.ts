@@ -1,3 +1,12 @@
+// ============================================================
+// TELLUS LEARNING — ENUMS Y TIPOS BASE
+// ============================================================
+
+
+// ============================================================
+// EXPERIENCIAS
+// ============================================================
+
 export type ExperienceStatus =
   | 'draft'
   | 'review'
@@ -33,26 +42,45 @@ export type ExperienceDifficulty =
   | 'intermedio'
   | 'avanzado';
 
-export type StageType =
+
+// ============================================================
+// MOMENTOS — CICLO CIRCULAR TELLUS
+// ============================================================
+
+export type MomentType =
   | 'motivacion'
   | 'exploracion'
   | 'prediccion'
   | 'experimentacion'
-  | 'analisis'
-  | 'creacion'
-  | 'actividad'
-  | 'evaluacion'
-  | 'reflexion'
-  | 'cierre'
-  | 'custom';
+  | 'construccion'
+  | 'analisis_evaluacion'
+  | 'reflexion';
+
+
+// ============================================================
+// ACTIVIDADES
+// ============================================================
 
 export type ActivityType =
+  | 'video'
+  | 'questionnaire'
+  | 'preinforme'
+  | 'lab_physical'
+  | 'simulation'
+  | 'data_analysis'
+  | 'evaluation'
+  | 'reflection'
+
+  // Compatibilidad con arquitectura anterior
   | 'quiz'
   | 'open'
-  | 'simulation'
   | 'evidence'
-  | 'reflection'
   | 'external';
+
+
+// ============================================================
+// SUBMISSIONS
+// ============================================================
 
 export type SubmissionStatus =
   | 'draft'
@@ -60,13 +88,33 @@ export type SubmissionStatus =
   | 'evaluated'
   | 'returned';
 
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+
 export type FeedbackType =
   | 'teacher'
   | 'system';
 
+export type FeedbackVisibility =
+  | 'student'
+  | 'teacher'
+  | 'private';
+
+
+// ============================================================
+// EVALUACIÓN
+// ============================================================
+
 export type EvaluationStatus =
   | 'in_progress'
   | 'completed';
+
+
+// ============================================================
+// RECURSOS
+// ============================================================
 
 export type ResourceType =
   | 'document'
@@ -76,7 +124,12 @@ export type ResourceType =
   | 'simulation'
   | 'download';
 
-export type FeedbackVisibility =
-  | 'student'
-  | 'teacher'
-  | 'private';
+
+// ============================================================
+// COMPATIBILIDAD LEGACY
+// ============================================================
+
+/**
+ * @deprecated Usar MomentType.
+ */
+export type StageType = MomentType;
