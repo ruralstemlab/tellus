@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './core/guards/admin.guard';
 
 import { Landing } from './pages/landing/landing';
 
@@ -11,6 +10,8 @@ import { ResetPassword } from './pages/authentication/reset-password/reset-passw
 import { Home } from './pages/home/home';
 import { MiAula } from './pages/mi-aula/mi-aula';
 
+import { MomentComponent } from './pages/tellus-learning/moment/moment';
+
 import { Laboratorios } from './pages/laboratorios/laboratorios';
 
 import { Matematicas } from './pages/laboratorios/matematicas/matematicas';
@@ -19,16 +20,24 @@ import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
 import { Arte } from './pages/laboratorios/arte/arte';
 import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
-// Importar el componente de verificación pública
 import { PublicVerificationComponent } from './pages/public-verification/public-verification.component';
 
 export const routes: Routes = [
+
+  // ==========================================================
+  // REDIRECCIÓN INICIAL
+  // ==========================================================
 
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
   },
+
+
+  // ==========================================================
+  // PÚBLICO
+  // ==========================================================
 
   {
     path: 'landing',
@@ -55,24 +64,47 @@ export const routes: Routes = [
     component: ResetPassword
   },
 
+
+  // ==========================================================
+  // HOME
+  // ==========================================================
+
   {
     path: 'home',
     component: Home
   },
 
-  // ===== MI AULA / TELLUS LEARNING =====
+
+  // ==========================================================
+  // TELLUS LEARNING
+  // ==========================================================
+
   {
     path: 'mi-aula',
     component: MiAula
   },
 
-  // ===== BIBLIOTECA VIVA CON LAZY LOADING =====
+  {
+    path: 'experiencia/:experienceId/momento/:momentId',
+    component: MomentComponent
+  },
+
+
+  // ==========================================================
+  // BIBLIOTECA VIVA
+  // ==========================================================
+
   {
     path: 'biblioteca-viva',
     loadChildren: () =>
       import('./pages/biblioteca-viva/biblioteca-viva.routes')
         .then(m => m.routes)
   },
+
+
+  // ==========================================================
+  // LABORATORIOS
+  // ==========================================================
 
   {
     path: 'laboratorios',
@@ -104,15 +136,21 @@ export const routes: Routes = [
     component: Tecnologia
   },
 
-  // ===== VERIFICACIÓN PÚBLICA DE CREDENCIALES =====
-  // Debe estar antes del wildcard
+
+  // ==========================================================
+  // VERIFICACIÓN PÚBLICA
+  // ==========================================================
+
   {
     path: 'verificar/:uuid',
     component: PublicVerificationComponent
   },
 
-  // ===== WILDCARD =====
-  // Siempre debe quedar al final
+
+  // ==========================================================
+  // WILDCARD
+  // ==========================================================
+
   {
     path: '**',
     redirectTo: 'home'

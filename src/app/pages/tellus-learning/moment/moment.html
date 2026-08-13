@@ -1,0 +1,459 @@
+<app-navbar></app-navbar>
+
+<main class="moment-page">
+
+  <!-- ==========================================================
+       BARRA SUPERIOR
+  ========================================================== -->
+
+  <section class="moment-topbar">
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="backToClassroom()"
+    >
+      <span class="back-icon">←</span>
+      <span>Mi aula</span>
+    </button>
+
+    <div class="experience-context">
+
+      <span class="context-label">
+        TELLUS LEARNING
+      </span>
+
+      <strong>
+        {{ experience.title }}
+      </strong>
+
+    </div>
+
+    <div class="moment-counter">
+
+      <span>MOMENTO</span>
+
+      <strong>
+        {{ currentMoment()?.order || 1 }}
+        /
+        {{ moments.length }}
+      </strong>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       LÍNEA DE PROGRESO
+  ========================================================== -->
+
+  <section
+    class="experience-progress"
+    aria-label="Progreso de la experiencia"
+  >
+
+    <div class="progress-line">
+
+      <span
+        *ngFor="
+          let moment of moments;
+          trackBy: trackByMomentId
+        "
+        class="progress-node"
+        [class.active]="
+          moment.order === currentMoment()?.order
+        "
+        [class.completed]="
+          moment.order < (currentMoment()?.order || 1)
+        "
+      >
+
+        <span>
+          {{ moment.order }}
+        </span>
+
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       HERO
+  ========================================================== -->
+
+  <section class="moment-hero">
+
+    <div class="hero-copy">
+
+      <span class="moment-eyebrow">
+        MOMENTO {{ currentMoment()?.order || 1 }}
+      </span>
+
+      <div class="moment-title-row">
+
+        <div
+          class="moment-icon"
+          aria-hidden="true"
+        >
+          💡
+        </div>
+
+        <div>
+
+          <h1>
+            {{ currentMoment()?.title || 'Motivación' }}
+          </h1>
+
+          <p class="moment-subtitle">
+            {{
+              currentMoment()?.subtitle
+              || 'Despierta tu curiosidad'
+            }}
+          </p>
+
+        </div>
+
+      </div>
+
+      <p class="moment-description">
+        {{
+          currentMoment()?.description
+          || 'Observa el fenómeno y conecta el problema con situaciones de tu entorno.'
+        }}
+      </p>
+
+      <div class="moment-meta">
+
+        <span>
+          ⏱ 15 min
+        </span>
+
+        <span>
+          🎯 Objetivo de aprendizaje
+        </span>
+
+        <span>
+          🔬 Física
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         VISUAL
+    ========================================================= -->
+
+    <div
+      class="trajectory-visual"
+      aria-hidden="true"
+    >
+
+      <div class="sky-glow"></div>
+
+      <div class="trajectory-grid"></div>
+
+      <div class="trajectory-line"></div>
+
+      <div class="trajectory-ball">
+        ⚽
+      </div>
+
+      <div class="trajectory-ground"></div>
+
+      <div class="visual-label label-start">
+        LANZAMIENTO
+      </div>
+
+      <div class="visual-label label-end">
+        TRAYECTORIA
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       RETO
+  ========================================================== -->
+
+  <section class="challenge-card">
+
+    <div
+      class="challenge-icon"
+      aria-hidden="true"
+    >
+      🎯
+    </div>
+
+    <div class="challenge-content">
+
+      <span class="section-eyebrow">
+        TU RETO
+      </span>
+
+      <h2>
+        Observa antes de explicar
+      </h2>
+
+      <p>
+        Antes de aprender las ecuaciones, observa el fenómeno.
+        Piensa en lo que ocurre cuando un objeto es lanzado al aire.
+      </p>
+
+      <div class="challenge-question">
+
+        <span
+          class="question-mark"
+          aria-hidden="true"
+        >
+          ?
+        </span>
+
+        <strong>
+          ¿Puedes explicar y predecir cómo cambia la trayectoria
+          de un objeto lanzado al aire?
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       ACTIVIDAD
+  ========================================================== -->
+
+  <section class="activity-card">
+
+    <div class="activity-header">
+
+      <div>
+
+        <span class="section-eyebrow">
+          ACTIVIDAD
+        </span>
+
+        <h2>
+          Mira, piensa y descubre
+        </h2>
+
+      </div>
+
+      <span class="activity-status">
+
+        {{
+          acknowledged()
+            ? '✓ Registrado'
+            : 'Pendiente'
+        }}
+
+      </span>
+
+    </div>
+
+
+    <div class="activity-body">
+
+      <div class="observation-card">
+
+        <div
+          class="observation-icon"
+          aria-hidden="true"
+        >
+          👀
+        </div>
+
+        <div>
+
+          <h3>
+            Observa el fenómeno
+          </h3>
+
+          <p>
+            Mira una situación cotidiana en la que un objeto
+            describe una trayectoria curva en el aire.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="thinking-grid">
+
+        <article class="thinking-item">
+
+          <span class="thinking-number">
+            01
+          </span>
+
+          <strong>
+            ¿Qué observas?
+          </strong>
+
+          <p>
+            Describe con tus propias palabras la trayectoria.
+          </p>
+
+        </article>
+
+
+        <article class="thinking-item">
+
+          <span class="thinking-number">
+            02
+          </span>
+
+          <strong>
+            ¿Qué podría cambiarla?
+          </strong>
+
+          <p>
+            Piensa en la velocidad, el ángulo y la altura.
+          </p>
+
+        </article>
+
+
+        <article class="thinking-item">
+
+          <span class="thinking-number">
+            03
+          </span>
+
+          <strong>
+            ¿Dónde terminará?
+          </strong>
+
+          <p>
+            Antes de calcular, atrévete a predecir.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       REFLEXIÓN
+  ========================================================== -->
+
+  <section class="reflection-card">
+
+    <div
+      class="reflection-icon"
+      aria-hidden="true"
+    >
+      🌱
+    </div>
+
+    <div class="reflection-content">
+
+      <span class="section-eyebrow">
+        PIENSA
+      </span>
+
+      <h2>
+        La curiosidad es el comienzo
+      </h2>
+
+      <p>
+        Todavía no necesitas conocer la fórmula.
+        Primero queremos conocer tus ideas.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="acknowledge-button"
+      [class.done]="acknowledged()"
+      (click)="acknowledgeChallenge()"
+    >
+
+      <span>
+        {{
+          acknowledged()
+            ? '¡Listo!'
+            : 'He observado el fenómeno'
+        }}
+      </span>
+
+      <span aria-hidden="true">
+        {{
+          acknowledged()
+            ? '✓'
+            : '→'
+        }}
+      </span>
+
+    </button>
+
+  </section>
+
+
+  <!-- ==========================================================
+       NAVEGACIÓN
+  ========================================================== -->
+
+  <section class="moment-navigation">
+
+    <button
+      type="button"
+      class="secondary-button"
+      (click)="backToClassroom()"
+    >
+      ← Volver a Mi Aula
+    </button>
+
+
+    <div class="navigation-info">
+
+      <span>
+        SIGUIENTE
+      </span>
+
+      <strong>
+        {{
+          nextMoment()?.title
+          || 'Fin de la experiencia'
+        }}
+      </strong>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="primary-button"
+      [disabled]="!acknowledged()"
+      (click)="continue()"
+    >
+
+      <span>
+        Continuar
+      </span>
+
+      <span aria-hidden="true">
+        →
+      </span>
+
+    </button>
+
+  </section>
+
+</main>
+
+<app-footer></app-footer>
