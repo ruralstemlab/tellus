@@ -3,57 +3,50 @@ import {
   Component,
   computed,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-
-import { ProfileService } from '../../core/services/profile.service';
-import { UserProfile } from '../../core/models/user-profile.model';
+import { Router } from '@angular/router';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
 
 import {
-  MOVIMIENTO_PARABOLICO_MOCK,
-} from '../tellus-learning/data/movimiento-parabolico.mock';
+  getAllExperiences,
+} from '../tellus-learning/data/experience-registry';
 
 import {
-  Activity,
+  Experience,
   Moment,
-  Submission,
-  Progress,
 } from '../tellus-learning/models';
 
 
 @Component({
   selector: 'app-mi-aula',
+
   standalone: true,
 
   imports: [
     CommonModule,
-    RouterModule,
     Navbar,
     Footer,
   ],
 
   templateUrl: './mi-aula.html',
 
-  styleUrls: ['./mi-aula.scss'],
+  styleUrls: [
+    './mi-aula.scss',
+  ],
 
   changeDetection:
     ChangeDetectionStrategy.OnPush,
 })
-export class MiAula implements OnInit {
+export class MiAula {
 
   // ============================================================
-  // SERVICIOS
+  // INYECCIONES
   // ============================================================
-
-  private readonly profileService =
-    inject(ProfileService);
 
   private readonly router =
     inject(Router);
@@ -63,208 +56,77 @@ export class MiAula implements OnInit {
   // USUARIO
   // ============================================================
 
-  readonly profile =
-    signal<UserProfile | null>(null);
-
   readonly userName =
-    computed(
-      () =>
-        this.profile()?.name ||
-        'Santiago'
+    signal('Estudiante');
+
+
+  // ============================================================
+  // EXPERIENCIAS
+  // ============================================================
+
+  readonly experiences =
+    getAllExperiences();
+
+
+  // ============================================================
+  // EXPERIENCIA SELECCIONADA
+  // ============================================================
+
+  readonly selectedExperienceId =
+    signal<string>(
+      this.experiences[0]?.experience.id
+      ?? ''
     );
 
 
   // ============================================================
-  // EXPERIENCIA
+  // EXPERIENCIA ACTUAL
   // ============================================================
 
   readonly experience =
-    MOVIMIENTO_PARABOLICO_MOCK.experience;
-
-  readonly moments =
-    MOVIMIENTO_PARABOLICO_MOCK.moments;
-
-  readonly activities =
-    MOVIMIENTO_PARABOLICO_MOCK.activities;
-
-
-  // ============================================================
-  // TEXTOS
-  // ============================================================
-
-  readonly experienceTitle =
-    computed(
-      () => this.experience.title
-    );
-
-  readonly experienceDescription =
-    computed(
-      () => this.experience.description
-    );
-
-
-  // ============================================================
-  // ESTADO DEL ESTUDIANTE
-  // ============================================================
-
-  readonly submissions =
-    signal<Submission[]>([]);
-
-  readonly interactions =
-    signal<Set<string>>(
-      new Set<string>()
-    );
-
-
-  // ============================================================
-  // MOMENTOS ORDENADOS
-  // ============================================================
-
-  readonly orderedMoments =
-    computed(
-      () =>
-        [...this.moments].sort(
-          (a, b) =>
-            a.order - b.order
-        )
-    );
-
-
-  // ============================================================
-  // ACTIVIDADES REQUERIDAS
-  // ============================================================
-
-  readonly requiredActivities =
-    computed(
-      () =>
-        this.activities.filter(
-          activity =>
-            activity.config
-              .requiredForCompletion
-        )
-    );
-
-
-  // ============================================================
-  // ACTIVIDADES COMPLETADAS
-  // ============================================================
-
-  readonly completedActivityIds =
     computed(() => {
 
-      const completed =
-        new Set<string>();
+      const selectedId =
+        this.selectedExperienceId();
 
-
-      // --------------------------------------------------------
-      // SUBMISSIONS
-      // --------------------------------------------------------
-
-      for (
-        const submission
-        of this.submissions()
-      ) {
-
-        if (
-          submission.status ===
-            'submitted' ||
-          submission.status ===
-            'evaluated' ||
-          submission.status ===
-            'returned'
-        ) {
-
-          completed.add(
-            submission.activityId
-          );
-
-        }
-
-      }
-
-
-      // --------------------------------------------------------
-      // INTERACCIONES
-      // --------------------------------------------------------
-
-      for (
-        const interactionId
-        of this.interactions()
-      ) {
-
-        completed.add(
-          interactionId
-        );
-
-      }
-
-
-      return [
-        ...completed
-      ];
+      return (
+        this.experiences.find(
+          item =>
+            item.experience.id ===
+            selectedId
+        )
+        ?? null
+      );
 
     });
 
 
   // ============================================================
-  // MOMENTOS COMPLETADOS
+  // MOMENTOS
   // ============================================================
 
-  readonly completedMomentIds =
+  readonly moments =
     computed(() => {
 
-      const completedActivities =
-        new Set(
-          this.completedActivityIds()
-        );
+      return (
+        this.experience()?.moments
+        ?? []
+      );
 
-      const completedMoments:
-        string[] = [];
-
-
-      for (
-        const moment
-        of this.orderedMoments()
-      ) {
-
-        const momentActivities =
-          this.activities.filter(
-            activity =>
-              activity.momentId ===
-                moment.id &&
-              activity.config
-                .requiredForCompletion
-          );
+    });
 
 
-        if (
-          momentActivities.length === 0
-        ) {
-          continue;
-        }
+  // ============================================================
+  // ACTIVIDADES
+  // ============================================================
 
+  readonly activities =
+    computed(() => {
 
-        const allCompleted =
-          momentActivities.every(
-            activity =>
-              completedActivities.has(
-                activity.id
-              )
-          );
-
-
-        if (allCompleted) {
-
-          completedMoments.push(
-            moment.id
-          );
-
-        }
-
-      }
-
-
-      return completedMoments;
+      return (
+        this.experience()?.activities
+        ?? []
+      );
 
     });
 
@@ -276,191 +138,141 @@ export class MiAula implements OnInit {
   readonly currentMoment =
     computed(() => {
 
-      const completed =
-        new Set(
-          this.completedMomentIds()
-        );
-
+      const moments =
+        this.moments();
 
       return (
-        this.orderedMoments().find(
+        moments.find(
           moment =>
-            !completed.has(
-              moment.id
-            )
+            moment.order === 1
         )
-        ??
-        this.orderedMoments()[0]
-        ??
-        null
+        ?? moments[0]
+        ?? null
       );
 
     });
 
 
   // ============================================================
-  // PROGRESO
+  // SELECCIONAR EXPERIENCIA
   // ============================================================
 
-  readonly progress =
-    computed<Progress>(() => {
+  selectExperience(
+    experienceId: string,
+  ): void {
 
-      const totalMoments =
-        this.orderedMoments().length;
+    const exists =
+      this.experiences.some(
+        item =>
+          item.experience.id ===
+          experienceId
+      );
 
-      const completedMomentsCount =
-        this.completedMomentIds()
-          .length;
+    if (!exists) {
+      return;
+    }
 
-      const totalRequiredActivities =
-        this.requiredActivities()
-          .length;
-
-      const completedRequiredActivitiesCount =
-        this.completedActivityIds()
-          .filter(
-            activityId =>
-              this.requiredActivities()
-                .some(
-                  activity =>
-                    activity.id ===
-                    activityId
-                )
-          )
-          .length;
-
-
-      const progressPercentage =
-        totalMoments > 0
-          ? Math.round(
-              (
-                completedMomentsCount /
-                totalMoments
-              ) * 100
-            )
-          : 0;
-
-
-      const activityProgressPercentage =
-        totalRequiredActivities > 0
-          ? Math.round(
-              (
-                completedRequiredActivitiesCount /
-                totalRequiredActivities
-              ) * 100
-            )
-          : 0;
-
-
-      const lastSubmission =
-        this.submissions()
-          .at(-1);
-
-
-      return {
-
-        experienceId:
-          this.experience.id,
-
-        studentId:
-          this.profile()?.uid ||
-          'unknown',
-
-        currentMomentId:
-          this.currentMoment()?.id ??
-          null,
-
-        completedMomentIds:
-          this.completedMomentIds(),
-
-        completedActivityIds:
-          this.completedActivityIds(),
-
-        lastActivityId:
-          lastSubmission?.activityId ??
-          null,
-
-        lastUpdatedAt:
-          new Date(),
-
-        totalMoments,
-
-        completedMomentsCount,
-
-        progressPercentage,
-
-        totalRequiredActivities,
-
-        completedRequiredActivitiesCount,
-
-        activityProgressPercentage,
-
-      };
-
-    });
-
-
-  // ============================================================
-  // DATOS DE VISTA
-  // ============================================================
-
-  readonly completedMomentsCount =
-    computed(
-      () =>
-        this.progress()
-          .completedMomentsCount
+    this.selectedExperienceId.set(
+      experienceId
     );
 
-
-  readonly totalMoments =
-    computed(
-      () =>
-        this.progress()
-          .totalMoments
-    );
-
-
-  readonly progressPercentage =
-    computed(
-      () =>
-        this.progress()
-          .progressPercentage
-    );
-
-
-  readonly progressLabel =
-    computed(
-      () =>
-        `${this.completedMomentsCount()} de ${this.totalMoments()} momentos completados`
-    );
+  }
 
 
   // ============================================================
-  // MOMENTO ACTUAL — TEXTO
+  // COMENZAR EXPERIENCIA
   // ============================================================
 
-  readonly currentMomentTitle =
-    computed(
-      () =>
-        this.currentMoment()?.title ??
-        'Comenzar experiencia'
+  onContinue(): void {
+
+    const experience =
+      this.experience();
+
+    const firstMoment =
+      this.moments()[0];
+
+    if (
+      !experience ||
+      !firstMoment
+    ) {
+
+      console.warn(
+        'No se puede iniciar la experiencia.'
+      );
+
+      return;
+    }
+
+    this.router.navigate([
+      '/experiencia',
+      experience.experience.id,
+      'momento',
+      firstMoment.id,
+    ]);
+
+  }
+
+
+  // ============================================================
+  // IR A UN MOMENTO
+  // ============================================================
+
+  goToMoment(
+    momentId: string,
+  ): void {
+
+    const experience =
+      this.experience();
+
+    if (!experience) {
+      return;
+    }
+
+    const moment =
+      experience.moments.find(
+        item =>
+          item.id === momentId
+      );
+
+    if (!moment) {
+      return;
+    }
+
+    this.router.navigate([
+      '/experiencia',
+      experience.experience.id,
+      'momento',
+      moment.id,
+    ]);
+
+  }
+
+
+  // ============================================================
+  // MOMENTOS ORDENADOS
+  // ============================================================
+
+  orderedMoments(): Moment[] {
+
+    return [
+      ...this.moments()
+    ].sort(
+      (a, b) =>
+        a.order - b.order
     );
 
-
-  readonly currentMomentDescription =
-    computed(
-      () =>
-        this.currentMoment()?.description ??
-        'Inicia la experiencia de aprendizaje.'
-    );
+  }
 
 
   // ============================================================
-  // ICONOS DEL CICLO
+  // ICONO DEL MOMENTO
   // ============================================================
 
-  readonly momentIcons:
-    Record<string, string> = {
+  getMomentIcon(
+    moment: Moment,
+  ): string {
+
+    const icons: Record<string, string> = {
 
       motivacion: '💡',
 
@@ -468,7 +280,7 @@ export class MiAula implements OnInit {
 
       prediccion: '🎯',
 
-      experimentacion: '🎮',
+      experimentacion: '🧪',
 
       construccion: '🧠',
 
@@ -478,172 +290,225 @@ export class MiAula implements OnInit {
 
     };
 
-
-  // ============================================================
-  // ICONO DEL MOMENTO
-  // ============================================================
-
-  getMomentIcon(
-    moment: Moment
-  ): string {
-
-    const type =
-      String(moment.type);
-
     return (
-      this.momentIcons[type]
-      ??
-      this.getFallbackIcon(
-        moment.order
-      )
-    );
-
-  }
-
-
-  private getFallbackIcon(
-    order: number
-  ): string {
-
-    const icons = [
-      '💡',
-      '🔎',
-      '🎯',
-      '🎮',
-      '🧠',
-      '📊',
-      '🌎',
-    ];
-
-    return (
-      icons[order - 1] ??
-      '🌱'
+      icons[moment.type]
+      ?? '🌱'
     );
 
   }
 
 
   // ============================================================
-  // ESTADOS VISUALES
+  // EXPERIENCIA — ICONO
+  // ============================================================
+
+  getExperienceIcon(
+    experience: Experience,
+  ): string {
+
+    if (
+      experience.id ===
+      'agua-territorio'
+    ) {
+      return '💧';
+    }
+
+    if (
+      experience.id ===
+      'exp-movimiento-parabolico'
+    ) {
+      return '🏹';
+    }
+
+    return '🌱';
+
+  }
+
+
+  // ============================================================
+  // EXPERIENCIA — TEMA
+  // ============================================================
+
+  getExperienceTheme(
+    experience: Experience,
+  ): string {
+
+    if (
+      experience.id ===
+      'agua-territorio'
+    ) {
+      return 'water';
+    }
+
+    if (
+      experience.id ===
+      'exp-movimiento-parabolico'
+    ) {
+      return 'parabolic';
+    }
+
+    return 'default';
+
+  }
+
+
+  // ============================================================
+  // MOMENTO ACTUAL
+  // ============================================================
+
+  isCurrent(
+    moment: Moment,
+  ): boolean {
+
+    return (
+      moment.order ===
+      this.currentMoment()?.order
+    );
+
+  }
+
+
+  // ============================================================
+  // MOMENTO COMPLETADO
   // ============================================================
 
   isCompleted(
-    moment: Moment
+    moment: Moment,
   ): boolean {
 
-    return this.progress()
-      .completedMomentIds
-      .includes(moment.id);
-
-  }
-
-
-  isCurrent(
-    moment: Moment
-  ): boolean {
+    const currentOrder =
+      this.currentMoment()?.order
+      ?? 1;
 
     return (
-      this.progress()
-        .currentMomentId ===
-      moment.id
+      moment.order <
+      currentOrder
     );
 
   }
 
+
+  // ============================================================
+  // MOMENTO BLOQUEADO
+  // ============================================================
 
   isLocked(
-    moment: Moment
+    moment: Moment,
   ): boolean {
 
+    const currentOrder =
+      this.currentMoment()?.order
+      ?? 1;
+
     return (
-      !this.isCompleted(moment) &&
-      !this.isCurrent(moment)
+      moment.order >
+      currentOrder + 1
     );
 
   }
 
 
   // ============================================================
-  // NAVEGACIÓN
+  // TÍTULO DEL MOMENTO
   // ============================================================
 
-  onContinue(): void {
+  currentMomentTitle(): string {
 
-    const moment =
-      this.currentMoment();
+    return (
+      this.currentMoment()?.title
+      ?? 'Comienza tu experiencia'
+    );
 
-    if (!moment) {
-      return;
+  }
+
+
+  // ============================================================
+  // DESCRIPCIÓN
+  // ============================================================
+
+  currentMomentDescription(): string {
+
+    return (
+      this.currentMoment()?.description
+      ?? 'Selecciona una experiencia para comenzar.'
+    );
+
+  }
+
+
+  // ============================================================
+  // PROGRESO
+  // ============================================================
+
+  progressPercentage(): number {
+
+    const total =
+      this.moments().length;
+
+    if (!total) {
+      return 0;
     }
 
+    const current =
+      this.currentMoment()?.order
+      ?? 1;
 
-    this.router.navigate([
-      '/experiencia',
-      this.experience.id,
-      'momento',
-      moment.id,
-    ]);
+    return Math.round(
+      ((current - 1) / total) * 100
+    );
 
   }
 
 
-  goToMoment(
-    momentId: string
-  ): void {
+  // ============================================================
+  // ETIQUETA PROGRESO
+  // ============================================================
 
-    const moment =
-      this.moments.find(
-        item =>
-          item.id === momentId
-      );
+  progressLabel(): string {
 
+    const current =
+      this.currentMoment()?.order
+      ?? 1;
 
-    if (
-      !moment ||
-      this.isLocked(moment)
-    ) {
-      return;
+    const total =
+      this.moments().length;
+
+    if (!total) {
+      return 'Sin momentos';
     }
 
+    if (current === 1) {
+      return 'Primer momento';
+    }
 
-    this.router.navigate([
-      '/experiencia',
-      this.experience.id,
-      'momento',
-      momentId,
-    ]);
+    return `Momento ${current} de ${total}`;
 
   }
 
 
   // ============================================================
-  // LIFECYCLE
+  // TRACK BY EXPERIENCIA
   // ============================================================
 
-  ngOnInit(): void {
+  trackByExperienceId(
+    _index: number,
+    item: {
+      experience: Experience;
+    },
+  ): string {
 
-    this.profileService
-      .profile$
-      .subscribe(
-        profile => {
-
-          this.profile.set(
-            profile
-          );
-
-        }
-      );
+    return item.experience.id;
 
   }
 
 
   // ============================================================
-  // TRACK BY
+  // TRACK BY MOMENTO
   // ============================================================
 
   trackByMomentId(
     _index: number,
-    moment: Moment
+    moment: Moment,
   ): string {
 
     return moment.id;

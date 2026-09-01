@@ -1,78 +1,79 @@
 <app-navbar></app-navbar>
 
-<main class="moment-page">
+<main
+  class="moment-page"
+  [ngClass]="'theme-' + experienceTheme()"
+>
 
-  <!-- ==========================================================
-       BARRA SUPERIOR
-  ========================================================== -->
+  <!-- ========================================================
+       NAVEGACIÓN
+  ========================================================= -->
 
-  <section class="moment-topbar">
+  <section class="moment-navigation">
 
     <button
       type="button"
       class="back-button"
       (click)="backToClassroom()"
     >
-      <span class="back-icon">←</span>
-      <span>Mi aula</span>
+
+      <span>←</span>
+
+      Volver a Mi Aula
+
     </button>
 
-    <div class="experience-context">
 
-      <span class="context-label">
-        TELLUS LEARNING
+    <div class="moment-progress">
+
+      <span class="progress-label">
+        MOMENTO
       </span>
 
-      <strong>
-        {{ experience.title }}
-      </strong>
+      <div class="progress-steps">
+
+        <button
+          *ngFor="
+            let moment of moments();
+            trackBy: trackByMomentId
+          "
+          type="button"
+          class="progress-step"
+
+          [class.current]="
+            isCurrent(moment)
+          "
+
+          [class.completed]="
+            isCompleted(moment)
+          "
+
+          [class.locked]="
+            isLocked(moment)
+          "
+
+          (click)="
+            goToMoment(moment.id)
+          "
+        >
+
+          {{ moment.order }}
+
+        </button>
+
+      </div>
 
     </div>
+
 
     <div class="moment-counter">
 
-      <span>MOMENTO</span>
-
       <strong>
-        {{ currentMoment()?.order || 1 }}
-        /
-        {{ moments.length }}
+        {{ currentOrder() }}
       </strong>
 
-    </div>
-
-  </section>
-
-
-  <!-- ==========================================================
-       LÍNEA DE PROGRESO
-  ========================================================== -->
-
-  <section
-    class="experience-progress"
-    aria-label="Progreso de la experiencia"
-  >
-
-    <div class="progress-line">
-
-      <span
-        *ngFor="
-          let moment of moments;
-          trackBy: trackByMomentId
-        "
-        class="progress-node"
-        [class.active]="
-          moment.order === currentMoment()?.order
-        "
-        [class.completed]="
-          moment.order < (currentMoment()?.order || 1)
-        "
-      >
-
-        <span>
-          {{ moment.order }}
-        </span>
-
+      <span>
+        de {{ totalMoments() }}
       </span>
 
     </div>
@@ -80,63 +81,86 @@
   </section>
 
 
-  <!-- ==========================================================
+  <!-- ========================================================
        HERO
-  ========================================================== -->
+  ========================================================= -->
 
   <section class="moment-hero">
 
     <div class="hero-copy">
 
-      <span class="moment-eyebrow">
-        MOMENTO {{ currentMoment()?.order || 1 }}
+      <span class="mission-label">
+        MISIÓN {{ currentOrder() }}
       </span>
 
-      <div class="moment-title-row">
 
-        <div
-          class="moment-icon"
-          aria-hidden="true"
-        >
-          💡
-        </div>
+      <span class="experience-label">
 
-        <div>
+        <span>
+          {{ experienceIcon() }}
+        </span>
 
-          <h1>
-            {{ currentMoment()?.title || 'Motivación' }}
-          </h1>
+        {{ experienceThemeLabel() }}
 
-          <p class="moment-subtitle">
-            {{
-              currentMoment()?.subtitle
-              || 'Despierta tu curiosidad'
-            }}
-          </p>
+      </span>
 
-        </div>
 
-      </div>
+      <h1>
+        {{ currentMomentTitle() }}
+      </h1>
 
-      <p class="moment-description">
-        {{
-          currentMoment()?.description
-          || 'Observa el fenómeno y conecta el problema con situaciones de tu entorno.'
-        }}
+
+      <div class="hero-divider"></div>
+
+
+      <h2
+        *ngIf="
+          currentMoment()?.subtitle
+        "
+      >
+
+        {{ currentMoment()?.subtitle }}
+
+      </h2>
+
+
+      <p class="hero-description">
+
+        {{ currentMomentDescription() }}
+
       </p>
 
-      <div class="moment-meta">
+
+      <div class="hero-meta">
 
         <span>
-          ⏱ 15 min
+
+          <strong>◷</strong>
+
+          {{ getDuration() }} min
+
         </span>
 
-        <span>
-          🎯 Objetivo de aprendizaje
-        </span>
 
         <span>
-          🔬 Física
+
+          <strong>◈</strong>
+
+          {{ getSubject() }}
+
+        </span>
+
+
+        <span
+          *ngIf="
+            getGradeLevel()
+          "
+        >
+
+          <strong>◆</strong>
+
+          {{ getGradeLevel() }}
+
         </span>
 
       </div>
@@ -144,33 +168,71 @@
     </div>
 
 
-    <!-- ========================================================
-         VISUAL
-    ========================================================= -->
+    <!-- IMAGEN -->
 
-    <div
-      class="trajectory-visual"
-      aria-hidden="true"
-    >
+    <div class="hero-visual">
 
-      <div class="sky-glow"></div>
+      <div class="visual-glow"></div>
 
-      <div class="trajectory-grid"></div>
+      <div class="visual-frame">
 
-      <div class="trajectory-line"></div>
+        <ng-container
+          *ngIf="
+            currentMomentImage();
+            else defaultVisual
+          "
+        >
 
-      <div class="trajectory-ball">
-        ⚽
-      </div>
+          <img
+            class="moment-image"
 
-      <div class="trajectory-ground"></div>
+            [src]="
+              currentMomentImage()
+            "
 
-      <div class="visual-label label-start">
-        LANZAMIENTO
-      </div>
+            [alt]="
+              currentMomentTitle()
+            "
+          />
 
-      <div class="visual-label label-end">
-        TRAYECTORIA
+        </ng-container>
+
+
+        <ng-template
+          #defaultVisual
+        >
+
+          <div class="default-visual">
+
+            <span>
+              {{ experienceIcon() }}
+            </span>
+
+            <strong>
+              {{ experienceThemeLabel() }}
+            </strong>
+
+            <small>
+              TELLUS LEARNING
+            </small>
+
+          </div>
+
+        </ng-template>
+
+
+        <div class="visual-caption">
+
+          <span>
+            {{ experienceIcon() }}
+          </span>
+
+          <span>
+            EXPLORA · DESCUBRE · COMPRENDE
+          </span>
+
+        </div>
+
       </div>
 
     </div>
@@ -178,18 +240,16 @@
   </section>
 
 
-  <!-- ==========================================================
+  <!-- ========================================================
        RETO
-  ========================================================== -->
+  ========================================================= -->
 
   <section class="challenge-card">
 
-    <div
-      class="challenge-icon"
-      aria-hidden="true"
-    >
-      🎯
+    <div class="challenge-icon">
+      {{ experienceIcon() }}
     </div>
+
 
     <div class="challenge-content">
 
@@ -197,27 +257,74 @@
         TU RETO
       </span>
 
+
       <h2>
-        Observa antes de explicar
+
+        {{
+          experienceTheme() === 'water'
+
+            ? 'Observa el agua antes de explicarla'
+
+            : experienceTheme() === 'parabolic'
+
+              ? 'Observa antes de explicar el movimiento'
+
+              : experienceTheme() === 'circuits'
+
+                ? 'Observa la energía antes de explicarla'
+
+                : 'Observa antes de explicar'
+        }}
+
       </h2>
 
+
       <p>
-        Antes de aprender las ecuaciones, observa el fenómeno.
-        Piensa en lo que ocurre cuando un objeto es lanzado al aire.
+
+        {{
+          experienceTheme() === 'water'
+
+            ? 'Explora cómo llega, se almacena, se distribuye y se utiliza el agua en tu territorio.'
+
+            : experienceTheme() === 'parabolic'
+
+              ? 'Observa la trayectoria y descubre qué variables pueden cambiar el movimiento.'
+
+              : experienceTheme() === 'circuits'
+
+                ? 'Observa cómo circula la energía y descubre qué elementos permiten construir un circuito.'
+
+                : 'Explora el fenómeno, encuentra pistas y construye tus primeras ideas.'
+        }}
+
       </p>
+
 
       <div class="challenge-question">
 
-        <span
-          class="question-mark"
-          aria-hidden="true"
-        >
+        <span class="question-mark">
           ?
         </span>
 
+
         <strong>
-          ¿Puedes explicar y predecir cómo cambia la trayectoria
-          de un objeto lanzado al aire?
+
+          {{
+            experienceTheme() === 'water'
+
+              ? '¿Qué puedes descubrir sobre el agua que utilizamos todos los días?'
+
+              : experienceTheme() === 'parabolic'
+
+                ? '¿Qué factores pueden cambiar la trayectoria de un objeto lanzado al aire?'
+
+                : experienceTheme() === 'circuits'
+
+                  ? '¿Qué necesita un circuito para que la corriente pueda circular?'
+
+                  : '¿Qué puedes descubrir si observas antes de buscar una respuesta?'
+          }}
+
         </strong>
 
       </div>
@@ -227,117 +334,162 @@
   </section>
 
 
-  <!-- ==========================================================
-       ACTIVIDAD
-  ========================================================== -->
+  <!-- ========================================================
+       ACTIVIDADES
+  ========================================================= -->
 
-  <section class="activity-card">
+  <section class="activities-section">
 
-    <div class="activity-header">
+    <header class="section-header">
 
       <div>
 
         <span class="section-eyebrow">
-          ACTIVIDAD
+          TU RECORRIDO
         </span>
 
+
         <h2>
-          Mira, piensa y descubre
+          Explora, piensa y descubre
         </h2>
 
+
+        <p>
+          Cada actividad aporta una nueva pista a tu misión.
+        </p>
+
       </div>
 
-      <span class="activity-status">
 
-        {{
-          acknowledged()
-            ? '✓ Registrado'
-            : 'Pendiente'
-        }}
+      <div class="activity-count">
 
-      </span>
+        <strong>
+          {{ currentActivities().length }}
+        </strong>
 
-    </div>
+        <span>
+          actividades
+        </span>
+
+      </div>
+
+    </header>
 
 
-    <div class="activity-body">
+    <div class="activity-grid">
 
-      <div class="observation-card">
+      <article
+        *ngFor="
+          let activity of currentActivities();
+          trackBy: trackByActivityId
+        "
+        class="activity-card"
+        (click)="
+          openActivity(activity)
+        "
+      >
 
-        <div
-          class="observation-icon"
-          aria-hidden="true"
-        >
-          👀
+        <div class="activity-number">
+          {{ activity.order }}
         </div>
 
-        <div>
+
+        <div class="activity-icon">
+
+          {{
+            getActivityIcon(
+              activity.type
+            )
+          }}
+
+        </div>
+
+
+        <div class="activity-content">
+
+          <span class="activity-type">
+
+            {{
+              getActivityTypeLabel(
+                activity
+              )
+            }}
+
+          </span>
+
 
           <h3>
-            Observa el fenómeno
+            {{ activity.title }}
           </h3>
 
-          <p>
-            Mira una situación cotidiana en la que un objeto
-            describe una trayectoria curva en el aire.
+
+          <p
+            *ngIf="
+              activity.description
+            "
+          >
+
+            {{ activity.description }}
+
           </p>
+
+
+          <div class="activity-meta">
+
+            <span
+              *ngIf="
+                activity.estimatedDurationMinutes
+              "
+            >
+
+              ◷
+              {{
+                activity.estimatedDurationMinutes
+              }}
+              min
+
+            </span>
+
+          </div>
 
         </div>
 
-      </div>
 
+        <div class="activity-action">
 
-      <div class="thinking-grid">
-
-        <article class="thinking-item">
-
-          <span class="thinking-number">
-            01
+          <span>
+            Abrir
           </span>
 
           <strong>
-            ¿Qué observas?
+            →
           </strong>
 
-          <p>
-            Describe con tus propias palabras la trayectoria.
-          </p>
+        </div>
 
-        </article>
+      </article>
 
 
-        <article class="thinking-item">
+      <div
+        class="empty-activities"
 
-          <span class="thinking-number">
-            02
-          </span>
+        *ngIf="
+          currentActivities().length === 0
+        "
+      >
 
-          <strong>
-            ¿Qué podría cambiarla?
-          </strong>
+        <span>
+          🌱
+        </span>
 
-          <p>
-            Piensa en la velocidad, el ángulo y la altura.
-          </p>
+        <h3>
+          Este momento está preparando nuevas actividades.
+        </h3>
 
-        </article>
-
-
-        <article class="thinking-item">
-
-          <span class="thinking-number">
-            03
-          </span>
-
-          <strong>
-            ¿Dónde terminará?
-          </strong>
-
-          <p>
-            Antes de calcular, atrévete a predecir.
-          </p>
-
-        </article>
+        <p>
+          Pronto encontrarás aquí recursos,
+          experimentos y desafíos.
+        </p>
 
       </div>
 
@@ -346,18 +498,16 @@
   </section>
 
 
-  <!-- ==========================================================
+  <!-- ========================================================
        REFLEXIÓN
-  ========================================================== -->
+  ========================================================= -->
 
   <section class="reflection-card">
 
-    <div
-      class="reflection-icon"
-      aria-hidden="true"
-    >
-      🌱
+    <div class="reflection-symbol">
+      {{ experienceIcon() }}
     </div>
+
 
     <div class="reflection-content">
 
@@ -365,88 +515,187 @@
         PIENSA
       </span>
 
+
       <h2>
-        La curiosidad es el comienzo
+
+        {{
+          experienceTheme() === 'water'
+
+            ? 'Cada gota cuenta'
+
+            : experienceTheme() === 'parabolic'
+
+              ? 'La curiosidad cambia la trayectoria'
+
+              : experienceTheme() === 'circuits'
+
+                ? 'La energía necesita un camino'
+
+                : 'La curiosidad es el comienzo'
+        }}
+
       </h2>
 
+
       <p>
-        Todavía no necesitas conocer la fórmula.
-        Primero queremos conocer tus ideas.
+
+        {{
+          experienceTheme() === 'water'
+
+            ? 'Relaciona lo que has observado con el agua de tu comunidad y piensa en qué evidencias necesitarías para comprender mejor la situación.'
+
+            : experienceTheme() === 'parabolic'
+
+              ? 'Todavía no necesitas conocer todas las ecuaciones. Primero observa, compara y formula tus propias ideas.'
+
+              : experienceTheme() === 'circuits'
+
+                ? 'Antes de memorizar símbolos y fórmulas, observa qué ocurre cuando los elementos de un circuito se conectan de diferentes maneras.'
+
+                : 'Todavía no necesitas conocer la respuesta. Primero queremos conocer tus ideas.'
+        }}
+
       </p>
 
     </div>
+
 
     <button
       type="button"
       class="acknowledge-button"
       [class.done]="acknowledged()"
-      (click)="acknowledgeChallenge()"
+      (click)="
+        acknowledgeChallenge()
+      "
     >
 
       <span>
+
         {{
           acknowledged()
-            ? '¡Listo!'
+
+            ? '¡Observación registrada!'
+
             : 'He observado el fenómeno'
         }}
+
       </span>
 
-      <span aria-hidden="true">
+
+      <strong>
+
         {{
           acknowledged()
             ? '✓'
             : '→'
         }}
-      </span>
+
+      </strong>
 
     </button>
 
   </section>
 
 
-  <!-- ==========================================================
-       NAVEGACIÓN
-  ========================================================== -->
+  <!-- ========================================================
+       NAVEGACIÓN INFERIOR
+  ========================================================= -->
 
-  <section class="moment-navigation">
+  <section class="bottom-navigation">
 
     <button
       type="button"
-      class="secondary-button"
-      (click)="backToClassroom()"
+      class="nav-moment-button"
+
+      [disabled]="
+        !previousMoment()
+      "
+
+      (click)="
+        previousMoment()
+        && goToMoment(
+          previousMoment()!.id
+        )
+      "
     >
-      ← Volver a Mi Aula
+
+      <span>
+        ←
+      </span>
+
+
+      <div>
+
+        <small>
+          ANTERIOR
+        </small>
+
+        <strong>
+
+          {{
+            previousMoment()?.title
+            ?? 'Inicio'
+          }}
+
+        </strong>
+
+      </div>
+
     </button>
 
 
-    <div class="navigation-info">
+    <div class="bottom-progress">
 
       <span>
-        SIGUIENTE
+        {{ progressLabel() }}
       </span>
 
-      <strong>
-        {{
-          nextMoment()?.title
-          || 'Fin de la experiencia'
-        }}
-      </strong>
+
+      <div class="progress-line">
+
+        <span
+          [style.width.%]="
+            progressPercentage()
+          "
+        ></span>
+
+      </div>
 
     </div>
 
 
     <button
       type="button"
-      class="primary-button"
-      [disabled]="!acknowledged()"
+      class="nav-moment-button next"
       (click)="continue()"
     >
 
-      <span>
-        Continuar
-      </span>
+      <div>
 
-      <span aria-hidden="true">
+        <small>
+
+          {{
+            nextMoment()
+              ? 'SIGUIENTE'
+              : 'FINALIZAR'
+          }}
+
+        </small>
+
+
+        <strong>
+
+          {{
+            nextMoment()?.title
+            ?? 'Volver a Mi Aula'
+          }}
+
+        </strong>
+
+      </div>
+
+
+      <span>
         →
       </span>
 
@@ -455,5 +704,6 @@
   </section>
 
 </main>
+
 
 <app-footer></app-footer>

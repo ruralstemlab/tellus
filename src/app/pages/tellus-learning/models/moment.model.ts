@@ -8,10 +8,20 @@ export interface Moment {
   order: number;
 
   title: string;
+
   subtitle?: string;
+
   description?: string;
 
   type: MomentType;
+
+  /**
+   * Imagen principal del momento.
+   *
+   * Ejemplo:
+   * /assets/tellus-learning/agua/momento-01-territorio.png
+   */
+  image?: string;
 
   objectiveIds?: string[];
 
@@ -26,5 +36,6 @@ export interface Moment {
   published?: boolean;
 
   createdAt: unknown;
+
   updatedAt: unknown;
 }
