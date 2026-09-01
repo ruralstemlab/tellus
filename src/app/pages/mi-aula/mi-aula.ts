@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 
@@ -11,6 +12,9 @@ import { Router } from '@angular/router';
 
 import { Navbar } from '../../components/navbar/navbar';
 import { Footer } from '../../components/footer/footer';
+
+import { ProfileService } from '../../core/services/profile.service';
+import { UserProfile } from '../../core/models/user-profile.model';
 
 import {
   getAllExperiences,
@@ -42,7 +46,8 @@ import {
   changeDetection:
     ChangeDetectionStrategy.OnPush,
 })
-export class MiAula {
+export class MiAula implements OnInit {
+
 
   // ============================================================
   // INYECCIONES
@@ -51,13 +56,57 @@ export class MiAula {
   private readonly router =
     inject(Router);
 
+  private readonly profileService =
+    inject(ProfileService);
+
 
   // ============================================================
   // USUARIO
   // ============================================================
 
+  /**
+   * Perfil del usuario autenticado.
+   *
+   * Se alimenta desde:
+   *
+   * Firebase Authentication
+   *        ↓
+   * ProfileService
+   *        ↓
+   * Firestore
+   *        ↓
+   * Mi Aula
+   */
+  readonly profile =
+    signal<UserProfile | null>(null);
+
+
+  /**
+   * Nombre que aparece en el saludo.
+   *
+   * El HTML utiliza:
+   *
+   * {{ userName() }}
+   *
+   * Por lo tanto el nombre cambia
+   * automáticamente cuando ProfileService
+   * carga el perfil.
+   */
   readonly userName =
-    signal('Estudiante');
+    computed(() => {
+
+      const profile =
+        this.profile();
+
+      const name =
+        profile?.name?.trim();
+
+      return (
+        name ||
+        'Estudiante'
+      );
+
+    });
 
 
   // ============================================================
@@ -74,7 +123,8 @@ export class MiAula {
 
   readonly selectedExperienceId =
     signal<string>(
-      this.experiences[0]?.experience.id
+      this.experiences[0]
+        ?.experience.id
       ?? ''
     );
 
@@ -146,11 +196,32 @@ export class MiAula {
           moment =>
             moment.order === 1
         )
-        ?? moments[0]
-        ?? null
+        ??
+        moments[0]
+        ??
+        null
       );
 
     });
+
+
+  // ============================================================
+  // CARGA DEL PERFIL
+  // ============================================================
+
+  ngOnInit(): void {
+
+    this.profileService
+      .profile$
+      .subscribe(profile => {
+
+        this.profile.set(
+          profile
+        );
+
+      });
+
+  }
 
 
   // ============================================================
@@ -255,7 +326,7 @@ export class MiAula {
   orderedMoments(): Moment[] {
 
     return [
-      ...this.moments()
+      ...this.moments(),
     ].sort(
       (a, b) =>
         a.order - b.order
@@ -272,27 +343,36 @@ export class MiAula {
     moment: Moment,
   ): string {
 
-    const icons: Record<string, string> = {
+    const icons:
+      Record<string, string> = {
 
-      motivacion: '💡',
+      motivacion:
+        '💡',
 
-      exploracion: '🔎',
+      exploracion:
+        '🔎',
 
-      prediccion: '🎯',
+      prediccion:
+        '🎯',
 
-      experimentacion: '🧪',
+      experimentacion:
+        '🧪',
 
-      construccion: '🧠',
+      construccion:
+        '🧠',
 
-      analisis_evaluacion: '📊',
+      analisis_evaluacion:
+        '📊',
 
-      reflexion: '🌎',
+      reflexion:
+        '🌎',
 
     };
 
     return (
       icons[moment.type]
-      ?? '🌱'
+      ??
+      '🌱'
     );
 
   }
@@ -310,14 +390,18 @@ export class MiAula {
       experience.id ===
       'agua-territorio'
     ) {
+
       return '💧';
+
     }
 
     if (
       experience.id ===
       'exp-movimiento-parabolico'
     ) {
+
       return '🏹';
+
     }
 
     return '🌱';
@@ -337,14 +421,18 @@ export class MiAula {
       experience.id ===
       'agua-territorio'
     ) {
+
       return 'water';
+
     }
 
     if (
       experience.id ===
       'exp-movimiento-parabolico'
     ) {
+
       return 'parabolic';
+
     }
 
     return 'default';
@@ -416,7 +504,8 @@ export class MiAula {
 
     return (
       this.currentMoment()?.title
-      ?? 'Comienza tu experiencia'
+      ??
+      'Comienza tu experiencia'
     );
 
   }
@@ -430,7 +519,8 @@ export class MiAula {
 
     return (
       this.currentMoment()?.description
-      ?? 'Selecciona una experiencia para comenzar.'
+      ??
+      'Selecciona una experiencia para comenzar.'
     );
 
   }
@@ -454,7 +544,11 @@ export class MiAula {
       ?? 1;
 
     return Math.round(
-      ((current - 1) / total) * 100
+      (
+        (current - 1)
+        /
+        total
+      ) * 100
     );
 
   }
@@ -481,7 +575,9 @@ export class MiAula {
       return 'Primer momento';
     }
 
-    return `Momento ${current} de ${total}`;
+    return (
+      `Momento ${current} de ${total}`
+    );
 
   }
 
