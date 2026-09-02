@@ -26,6 +26,14 @@ import {
 } from '../tellus-learning/models';
 
 
+// ============================================================
+// TIPO DE UNA ENTRADA DEL REGISTRO DE EXPERIENCIAS
+// ============================================================
+
+type ExperienceEntry =
+  ReturnType<typeof getAllExperiences>[number];
+
+
 @Component({
   selector: 'app-mi-aula',
 
@@ -64,34 +72,10 @@ export class MiAula implements OnInit {
   // USUARIO
   // ============================================================
 
-  /**
-   * Perfil del usuario autenticado.
-   *
-   * Se alimenta desde:
-   *
-   * Firebase Authentication
-   *        ↓
-   * ProfileService
-   *        ↓
-   * Firestore
-   *        ↓
-   * Mi Aula
-   */
   readonly profile =
     signal<UserProfile | null>(null);
 
 
-  /**
-   * Nombre que aparece en el saludo.
-   *
-   * El HTML utiliza:
-   *
-   * {{ userName() }}
-   *
-   * Por lo tanto el nombre cambia
-   * automáticamente cuando ProfileService
-   * carga el perfil.
-   */
   readonly userName =
     computed(() => {
 
@@ -141,7 +125,7 @@ export class MiAula implements OnInit {
 
       return (
         this.experiences.find(
-          item =>
+          (item: ExperienceEntry) =>
             item.experience.id ===
             selectedId
         )
@@ -193,7 +177,7 @@ export class MiAula implements OnInit {
 
       return (
         moments.find(
-          moment =>
+          (moment: Moment) =>
             moment.order === 1
         )
         ??
@@ -234,7 +218,7 @@ export class MiAula implements OnInit {
 
     const exists =
       this.experiences.some(
-        item =>
+        (item: ExperienceEntry) =>
           item.experience.id ===
           experienceId
       );
@@ -251,24 +235,42 @@ export class MiAula implements OnInit {
 
 
   // ============================================================
-  // COMENZAR EXPERIENCIA
+  // ENTRAR A UNA EXPERIENCIA
   // ============================================================
 
-  onContinue(): void {
+  enterExperience(
+    experienceId: string,
+  ): void {
 
-    const experience =
-      this.experience();
+    const selected =
+      this.experiences.find(
+        (item: ExperienceEntry) =>
+          item.experience.id ===
+          experienceId
+      );
 
-    const firstMoment =
-      this.moments()[0];
-
-    if (
-      !experience ||
-      !firstMoment
-    ) {
+    if (!selected) {
 
       console.warn(
-        'No se puede iniciar la experiencia.'
+        'No se encontró la experiencia:',
+        experienceId
+      );
+
+      return;
+    }
+
+    const firstMoment =
+      [...selected.moments]
+        .sort(
+          (a: Moment, b: Moment) =>
+            a.order - b.order
+        )[0];
+
+    if (!firstMoment) {
+
+      console.warn(
+        'La experiencia no tiene momentos:',
+        experienceId
       );
 
       return;
@@ -276,7 +278,7 @@ export class MiAula implements OnInit {
 
     this.router.navigate([
       '/experiencia',
-      experience.experience.id,
+      experienceId,
       'momento',
       firstMoment.id,
     ]);
@@ -301,7 +303,7 @@ export class MiAula implements OnInit {
 
     const moment =
       experience.moments.find(
-        item =>
+        (item: Moment) =>
           item.id === momentId
       );
 
@@ -328,7 +330,7 @@ export class MiAula implements OnInit {
     return [
       ...this.moments(),
     ].sort(
-      (a, b) =>
+      (a: Moment, b: Moment) =>
         a.order - b.order
     );
 
@@ -386,56 +388,68 @@ export class MiAula implements OnInit {
     experience: Experience,
   ): string {
 
-    if (
-      experience.id ===
-      'agua-territorio'
-    ) {
+    const icons:
+      Record<string, string> = {
 
-      return '💧';
+      'agua-territorio':
+        '💧',
 
-    }
+      'exp-movimiento-parabolico':
+        '🚀',
 
-    if (
-      experience.id ===
-      'exp-movimiento-parabolico'
-    ) {
+      'creadores-steam-ia':
+        '🤖',
 
-      return '🏹';
+      'circuitos-electricos':
+        '⚡',
 
-    }
+      'quimica-entorno':
+        '🧪',
 
-    return '🌱';
+    };
+
+    return (
+      icons[experience.id]
+      ??
+      '🌱'
+    );
 
   }
 
 
   // ============================================================
-  // EXPERIENCIA — TEMA
+  // EXPERIENCIA — TEMA VISUAL
   // ============================================================
 
   getExperienceTheme(
     experience: Experience,
   ): string {
 
-    if (
-      experience.id ===
-      'agua-territorio'
-    ) {
+    const themes:
+      Record<string, string> = {
 
-      return 'water';
+      'agua-territorio':
+        'water',
 
-    }
+      'exp-movimiento-parabolico':
+        'parabolic',
 
-    if (
-      experience.id ===
-      'exp-movimiento-parabolico'
-    ) {
+      'creadores-steam-ia':
+        'programming',
 
-      return 'parabolic';
+      'circuitos-electricos':
+        'circuits',
 
-    }
+      'quimica-entorno':
+        'chemistry',
 
-    return 'default';
+    };
+
+    return (
+      themes[experience.id]
+      ??
+      'default'
+    );
 
   }
 
@@ -497,36 +511,6 @@ export class MiAula implements OnInit {
 
 
   // ============================================================
-  // TÍTULO DEL MOMENTO
-  // ============================================================
-
-  currentMomentTitle(): string {
-
-    return (
-      this.currentMoment()?.title
-      ??
-      'Comienza tu experiencia'
-    );
-
-  }
-
-
-  // ============================================================
-  // DESCRIPCIÓN
-  // ============================================================
-
-  currentMomentDescription(): string {
-
-    return (
-      this.currentMoment()?.description
-      ??
-      'Selecciona una experiencia para comenzar.'
-    );
-
-  }
-
-
-  // ============================================================
   // PROGRESO
   // ============================================================
 
@@ -555,7 +539,7 @@ export class MiAula implements OnInit {
 
 
   // ============================================================
-  // ETIQUETA PROGRESO
+  // ETIQUETA DE PROGRESO
   // ============================================================
 
   progressLabel(): string {
@@ -588,9 +572,7 @@ export class MiAula implements OnInit {
 
   trackByExperienceId(
     _index: number,
-    item: {
-      experience: Experience;
-    },
+    item: ExperienceEntry,
   ): string {
 
     return item.experience.id;

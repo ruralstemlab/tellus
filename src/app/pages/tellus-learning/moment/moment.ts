@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
@@ -26,8 +26,21 @@ import {
 } from '../data/experience-registry';
 
 import {
+  Experience,
+} from '../models/experience.model';
+
+import {
   Moment,
 } from '../models/moment.model';
+
+import {
+  Activity,
+} from '../models/activity.model';
+
+import {
+  AguaResource,
+  getAguaResourceById,
+} from '../data/resources/agua-territorio.resources';
 
 
 @Component({
@@ -98,7 +111,7 @@ export class MomentComponent
         this.experienceId();
 
       if (!id) {
-        return undefined;
+        return null;
       }
 
       return getExperienceById(id);
@@ -107,13 +120,16 @@ export class MomentComponent
 
 
   readonly experience =
-    computed(() => {
+    computed<Experience | null>(() => {
 
-      return (
-        this.experienceData()
-          ?.experience
-        ?? null
-      );
+      const data =
+        this.experienceData();
+
+      if (!data) {
+        return null;
+      }
+
+      return data.experience as Experience;
 
     });
 
@@ -123,13 +139,16 @@ export class MomentComponent
   // ============================================================
 
   readonly moments =
-    computed(() => {
+    computed<Moment[]>(() => {
 
-      return (
-        this.experienceData()
-          ?.moments
-        ?? []
-      );
+      const data =
+        this.experienceData();
+
+      if (!data) {
+        return [];
+      }
+
+      return data.moments as Moment[];
 
     });
 
@@ -139,19 +158,64 @@ export class MomentComponent
   // ============================================================
 
   readonly activities =
-    computed(() => {
+    computed<Activity[]>(() => {
+
+      const data =
+        this.experienceData();
+
+      if (!data) {
+        return [];
+      }
+
+      return data.activities as Activity[];
+
+    });
+
+
+  // ============================================================
+  // MOMENTO ACTUAL
+  // ============================================================
+
+  readonly currentMoment =
+    computed<Moment | null>(() => {
+
+      const allMoments =
+        this.moments();
+
+      const id =
+        this.momentId();
 
       return (
-        this.experienceData()
-          ?.activities
-        ?? []
+        allMoments.find(
+          (moment: Moment) =>
+            moment.id === id
+        )
+
+        ??
+
+        allMoments.find(
+          (moment: Moment) =>
+            moment.order === 1
+        )
+
+        ??
+
+        allMoments[0]
+
+        ??
+
+        null
       );
 
     });
 
 
+  // ============================================================
+  // ACTIVIDADES DEL MOMENTO
+  // ============================================================
+
   readonly currentActivities =
-    computed(() => {
+    computed<Activity[]>(() => {
 
       const moment =
         this.currentMoment();
@@ -165,49 +229,70 @@ export class MomentComponent
         ?? [];
 
       return this.activities()
-        .filter(activity =>
-          ids.includes(activity.id)
+        .filter(
+          (activity: Activity) =>
+            ids.includes(activity.id)
         );
 
     });
 
 
   // ============================================================
-  // MOMENTO ACTUAL
+  // RECURSOS DIRECTOS DEL MOMENTO
   // ============================================================
 
-  readonly currentMoment =
-    computed(() => {
+  readonly currentResources =
+    computed<AguaResource[]>(() => {
 
-      const allMoments =
-        this.moments();
+      const moment =
+        this.currentMoment();
 
-      const id =
-        this.momentId();
+      if (!moment) {
+        return [];
+      }
 
-      return (
+      const resourceIds:
+        string[] =
+        moment.resourceIds
+        ?? [];
 
-        allMoments.find(
-          moment =>
-            moment.id === id
-        )
+      const resources:
+        AguaResource[] = [];
 
-        ??
+      for (
+        const resourceId
+        of resourceIds
+      ) {
 
-        allMoments.find(
-          moment =>
-            moment.order === 1
-        )
+        const resource =
+          getAguaResourceById(
+            resourceId
+          );
 
-        ??
+        if (
+          resource &&
+          resource.published !== false
+        ) {
 
-        allMoments[0]
+          resources.push(
+            resource
+          );
 
-        ??
+        }
 
-        null
+      }
 
+      resources.sort(
+        (
+          a: AguaResource,
+          b: AguaResource,
+        ) =>
+          (a.order ?? 999)
+          -
+          (b.order ?? 999)
       );
+
+      return resources;
 
     });
 
@@ -217,7 +302,7 @@ export class MomentComponent
   // ============================================================
 
   readonly previousMoment =
-    computed(() => {
+    computed<Moment | null>(() => {
 
       const current =
         this.currentMoment();
@@ -228,11 +313,14 @@ export class MomentComponent
 
       return (
         this.moments().find(
-          moment =>
+          (moment: Moment) =>
             moment.order ===
             current.order - 1
         )
-        ?? null
+
+        ??
+
+        null
       );
 
     });
@@ -243,7 +331,7 @@ export class MomentComponent
   // ============================================================
 
   readonly nextMoment =
-    computed(() => {
+    computed<Moment | null>(() => {
 
       const current =
         this.currentMoment();
@@ -254,11 +342,14 @@ export class MomentComponent
 
       return (
         this.moments().find(
-          moment =>
+          (moment: Moment) =>
             moment.order ===
             current.order + 1
         )
-        ?? null
+
+        ??
+
+        null
       );
 
     });
@@ -269,18 +360,19 @@ export class MomentComponent
   // ============================================================
 
   readonly currentOrder =
-    computed(() => {
+    computed<number>(() => {
 
       return (
         this.currentMoment()?.order
-        ?? 1
+        ??
+        1
       );
 
     });
 
 
   readonly totalMoments =
-    computed(() => {
+    computed<number>(() => {
 
       return this.moments().length;
 
@@ -288,30 +380,29 @@ export class MomentComponent
 
 
   readonly progressPercentage =
-    computed(() => {
+    computed<number>(() => {
 
       const total =
         this.totalMoments();
 
-      if (!total) {
+      if (total <= 1) {
         return 0;
       }
 
       return Math.round(
         (
-          (
-            this.currentOrder() - 1
-          )
+          (this.currentOrder() - 1)
           /
-          total
-        ) * 100
+          (total - 1)
+        )
+        * 100
       );
 
     });
 
 
   readonly progressLabel =
-    computed(() => {
+    computed<string>(() => {
 
       const total =
         this.totalMoments();
@@ -328,22 +419,23 @@ export class MomentComponent
 
 
   // ============================================================
-  // INFORMACIÓN PRINCIPAL
+  // TEXTO PRINCIPAL
   // ============================================================
 
   readonly currentMomentTitle =
-    computed(() => {
+    computed<string>(() => {
 
       return (
         this.currentMoment()?.title
-        ?? 'Comienza tu experiencia'
+        ??
+        'Comienza tu experiencia'
       );
 
     });
 
 
   readonly currentMomentDescription =
-    computed(() => {
+    computed<string>(() => {
 
       return (
         this.currentMoment()?.description
@@ -355,11 +447,11 @@ export class MomentComponent
 
 
   // ============================================================
-  // IMAGEN
+  // IMAGEN PRINCIPAL
   // ============================================================
 
   readonly currentMomentImage =
-    computed(() => {
+    computed<string>(() => {
 
       const moment =
         this.currentMoment();
@@ -381,79 +473,69 @@ export class MomentComponent
 
 
   // ============================================================
-  // DATOS PARA EL HTML ACTUAL
+  // DURACIÃ“N
   // ============================================================
 
   getDuration(): number {
 
-    return (
-      this.currentMoment()
-        ?.estimatedDurationMinutes
+    const moment =
+      this.currentMoment();
 
-      ??
+    if (
+      moment?.estimatedDurationMinutes
+      != null
+    ) {
 
-      (this.experience() as any)
-        ?.estimatedDurationMinutes
+      return (
+        moment.estimatedDurationMinutes
+      );
 
-      ??
+    }
 
-      15
-    );
+    const experience =
+      this.experience();
+
+    if (
+      experience?.estimatedDurationMinutes
+      != null
+    ) {
+
+      return (
+        experience.estimatedDurationMinutes
+      );
+
+    }
+
+    return 15;
 
   }
 
+
+  // ============================================================
+  // ASIGNATURA
+  // ============================================================
 
   getSubject(): string {
 
-    const experience =
-      this.experience();
-
-    if (!experience) {
-      return 'Ciencias Naturales';
-    }
-
     return (
-
-      (experience as any)
-        ?.subject
-
+      this.experience()?.subject
       ??
-
-      (experience as any)
-        ?.area
-
-      ??
-
-      'Ciencias Naturales'
-
+      'STEAM'
     );
 
   }
 
 
+  // ============================================================
+  // GRADO
+  // ============================================================
+
   getGradeLevel(): string {
 
-    const experience =
-      this.experience();
-
-    if (!experience) {
-      return '8.º a 11.º';
-    }
-
     return (
-
-      (experience as any)
-        ?.gradeLevel
-
+      this.experience()?.gradeLevel
       ??
-
-      (experience as any)
-        ?.grades
-
-      ??
-
-      '8.º a 11.º'
-
+      ''
     );
 
   }
@@ -464,25 +546,21 @@ export class MomentComponent
   // ============================================================
 
   readonly experienceTheme =
-    computed(() => {
+    computed<string>(() => {
 
       const experience =
         this.experience();
 
+      if (!experience) {
+        return 'default';
+      }
+
       const id =
-        String(
-          (experience as any)?.id
-          ?? ''
-        ).toLowerCase();
+        experience.id.toLowerCase();
 
       const title =
-        String(
-          (experience as any)?.title
-          ?? ''
-        ).toLowerCase();
+        experience.title.toLowerCase();
 
-
-      // AGUA
 
       if (
         id.includes('agua') ||
@@ -496,8 +574,6 @@ export class MomentComponent
       }
 
 
-      // MOVIMIENTO PARABÓLICO
-
       if (
         id.includes('parabol') ||
         id.includes('proyectil') ||
@@ -509,7 +585,19 @@ export class MomentComponent
       }
 
 
-      // CIRCUITOS
+      if (
+        id.includes('creadores') ||
+        id.includes('steam') ||
+        id.includes('ia') ||
+        id.includes('program') ||
+        title.includes('creadores') ||
+        title.includes('ia')
+      ) {
+
+        return 'programming';
+
+      }
+
 
       if (
         id.includes('circuit') ||
@@ -522,7 +610,17 @@ export class MomentComponent
       }
 
 
-      // FLUIDOS
+      if (
+        id.includes('quimica') ||
+        id.includes('quÃ­mica') ||
+        title.includes('quimica') ||
+        title.includes('quÃ­mica')
+      ) {
+
+        return 'chemistry';
+
+      }
+
 
       if (
         id.includes('fluido') ||
@@ -535,10 +633,9 @@ export class MomentComponent
       }
 
 
-      // ENERGÍA
-
       if (
         id.includes('energia') ||
+        id.includes('energÃ­a') ||
         id.includes('energy') ||
         title.includes('energ')
       ) {
@@ -558,7 +655,7 @@ export class MomentComponent
   // ============================================================
 
   readonly experienceThemeLabel =
-    computed(() => {
+    computed<string>(() => {
 
       const labels:
         Record<string, string> = {
@@ -567,27 +664,32 @@ export class MomentComponent
           'AGUA Y TERRITORIO',
 
         parabolic:
-          'MOVIMIENTO PARABÓLICO',
+          'MOVIMIENTO PARABÃ“LICO',
+
+        programming:
+          'CREADORES STEAM CON IA',
 
         circuits:
-          'CIRCUITOS ELÉCTRICOS',
+          'CIRCUITOS ELÃ‰CTRICOS',
+
+        chemistry:
+          'QUÃMICA EN NUESTRO ENTORNO',
 
         fluids:
-          'MECÁNICA DE FLUIDOS',
+          'MECÃNICA DE FLUIDOS',
 
         energy:
-          'ENERGÍA',
+          'ENERGÃA',
 
         default:
           'TELLUS LEARNING',
 
       };
 
-      const theme =
-        this.experienceTheme();
-
       return (
-        labels[theme]
+        labels[
+          this.experienceTheme()
+        ]
         ??
         labels['default']
       );
@@ -600,36 +702,41 @@ export class MomentComponent
   // ============================================================
 
   readonly experienceIcon =
-    computed(() => {
+    computed<string>(() => {
 
       const icons:
         Record<string, string> = {
 
         water:
-          '💧',
+          'ðŸ’§',
 
         parabolic:
-          '🏹',
+          'ðŸ¹',
+
+        programming:
+          'ðŸ¤–',
 
         circuits:
-          '⚡',
+          'âš¡',
+
+        chemistry:
+          'ðŸ§ª',
 
         fluids:
-          '🌊',
+          'ðŸŒŠ',
 
         energy:
-          '🔋',
+          'ðŸ”‹',
 
         default:
-          '🌱',
+          'ðŸŒ±',
 
       };
 
-      const theme =
-        this.experienceTheme();
-
       return (
-        icons[theme]
+        icons[
+          this.experienceTheme()
+        ]
         ??
         icons['default']
       );
@@ -644,28 +751,28 @@ export class MomentComponent
   readonly momentIcons:
     Record<string, string> = {
 
-      motivacion:
-        '💡',
+    motivacion:
+      'ðŸ’¡',
 
-      exploracion:
-        '🔎',
+    exploracion:
+      'ðŸ”Ž',
 
-      prediccion:
-        '🎯',
+    prediccion:
+      'ðŸŽ¯',
 
-      experimentacion:
-        '🧪',
+    experimentacion:
+      'ðŸ§ª',
 
-      construccion:
-        '🧠',
+    construccion:
+      'ðŸ§ ',
 
-      analisis_evaluacion:
-        '📊',
+    analisis_evaluacion:
+      'ðŸ“Š',
 
-      reflexion:
-        '🌎',
+    reflexion:
+      'ðŸŒŽ',
 
-    };
+  };
 
 
   // ============================================================
@@ -686,14 +793,16 @@ export class MomentComponent
           params.get(
             'experienceId'
           )
-          ?? ''
+          ??
+          ''
         );
 
         this.momentId.set(
           params.get(
             'momentId'
           )
-          ?? ''
+          ??
+          ''
         );
 
         this.acknowledged.set(
@@ -719,7 +828,7 @@ export class MomentComponent
   // ============================================================
 
   private getExperienceImage(
-    experience: any
+    experience: Experience | null
   ): string {
 
     if (!experience) {
@@ -729,11 +838,7 @@ export class MomentComponent
     return (
       experience.coverUrl
       ??
-      experience.coverImage
-      ??
       experience.thumbnailUrl
-      ??
-      experience.thumbnail
       ??
       ''
     );
@@ -766,22 +871,22 @@ export class MomentComponent
     order: number
   ): string {
 
-    const icons = [
+    const icons: string[] = [
 
-      '💡',
-      '🔎',
-      '🎯',
-      '🧪',
-      '🧠',
-      '📊',
-      '🌎',
+      'ðŸ’¡',
+      'ðŸ”Ž',
+      'ðŸŽ¯',
+      'ðŸ§ª',
+      'ðŸ§ ',
+      'ðŸ“Š',
+      'ðŸŒŽ',
 
     ];
 
     return (
       icons[order - 1]
       ??
-      '🌱'
+      'ðŸŒ±'
     );
 
   }
@@ -797,14 +902,16 @@ export class MomentComponent
 
     const value =
       String(
-        type ?? ''
+        type
+        ??
+        ''
       ).toLowerCase();
 
 
     if (
       value.includes('video')
     ) {
-      return '▶️';
+      return 'â–¶ï¸';
     }
 
 
@@ -812,7 +919,7 @@ export class MomentComponent
       value.includes('simulation') ||
       value.includes('simul')
     ) {
-      return '🎮';
+      return 'ðŸŽ®';
     }
 
 
@@ -820,14 +927,15 @@ export class MomentComponent
       value.includes('question') ||
       value.includes('quiz')
     ) {
-      return '❓';
+      return 'â“';
     }
 
 
     if (
-      value.includes('reflection')
+      value.includes('reflection') ||
+      value.includes('reflex')
     ) {
-      return '🌱';
+      return 'ðŸŒ±';
     }
 
 
@@ -835,7 +943,7 @@ export class MomentComponent
       value.includes('analysis') ||
       value.includes('data')
     ) {
-      return '📊';
+      return 'ðŸ“Š';
     }
 
 
@@ -843,18 +951,26 @@ export class MomentComponent
       value.includes('experiment') ||
       value.includes('lab')
     ) {
-      return '🧪';
+      return 'ðŸ§ª';
     }
 
 
     if (
-      value.includes('preinforme')
+      value.includes('preinforme') ||
+      value.includes('predict')
     ) {
-      return '🎯';
+      return 'ðŸŽ¯';
     }
 
 
-    return '✦';
+    if (
+      value.includes('explor')
+    ) {
+      return 'ðŸ”Ž';
+    }
+
+
+    return 'âœ¦';
 
   }
 
@@ -864,13 +980,14 @@ export class MomentComponent
   // ============================================================
 
   getActivityTypeLabel(
-    activity: any
+    activity: Activity
   ): string {
 
     const type =
       String(
-        activity?.type
-        ?? ''
+        activity.type
+        ??
+        ''
       ).toLowerCase();
 
 
@@ -923,6 +1040,124 @@ export class MomentComponent
 
 
   // ============================================================
+  // TIPO DE RECURSO
+  // ============================================================
+
+  isImage(
+    resource: AguaResource
+  ): boolean {
+
+    return (
+      resource.type === 'image' ||
+      resource.type === 'infographic'
+    );
+
+  }
+
+
+  isVideo(
+    resource: AguaResource
+  ): boolean {
+
+    return (
+      resource.type === 'video'
+    );
+
+  }
+
+
+  isSimulation(
+    resource: AguaResource
+  ): boolean {
+
+    return (
+      resource.type === 'simulation'
+    );
+
+  }
+
+
+  isInformationResource(
+    resource: AguaResource
+  ): boolean {
+
+    return (
+      resource.type === 'data' ||
+      resource.type === 'map' ||
+      resource.type === 'document' ||
+      resource.type === 'worked-example' ||
+      resource.type === 'link'
+    );
+
+  }
+
+
+  getResourceIcon(
+    resource: AguaResource
+  ): string {
+
+    const icons:
+      Record<string, string> = {
+
+      image:
+        'ðŸ–¼ï¸',
+
+      infographic:
+        'ðŸ“Š',
+
+      video:
+        'â–¶ï¸',
+
+      map:
+        'ðŸ—ºï¸',
+
+      data:
+        'ðŸ“ˆ',
+
+      document:
+        'ðŸ“„',
+
+      'worked-example':
+        'ðŸ§ ',
+
+      link:
+        'ðŸ”—',
+
+      simulation:
+        'ðŸ”¬',
+
+    };
+
+    return (
+      icons[
+        resource.type
+      ]
+      ??
+      'ðŸŒ±'
+    );
+
+  }
+
+
+  hasResourceUrl(
+    resource: AguaResource
+  ): boolean {
+
+    return !!resource.url;
+
+  }
+
+
+  hasSourceUrl(
+    resource: AguaResource
+  ): boolean {
+
+    return !!resource.sourceUrl;
+
+  }
+
+
+  // ============================================================
   // ESTADOS
   // ============================================================
 
@@ -962,10 +1197,6 @@ export class MomentComponent
   }
 
 
-  // ============================================================
-  // PRIMER / ÚLTIMO
-  // ============================================================
-
   isFirstMoment(): boolean {
 
     return (
@@ -987,7 +1218,7 @@ export class MomentComponent
 
 
   // ============================================================
-  // REGISTRAR OBSERVACIÓN
+  // REGISTRAR OBSERVACIÃ“N
   // ============================================================
 
   acknowledgeChallenge(): void {
@@ -1004,7 +1235,7 @@ export class MomentComponent
   // ============================================================
 
   openActivity(
-    activity: any
+    activity: Activity
   ): void {
 
     if (!activity?.id) {
@@ -1060,9 +1291,16 @@ export class MomentComponent
 
     }
 
+    const experienceId =
+      this.experienceId();
+
+    if (!experienceId) {
+      return;
+    }
+
     this.router.navigate([
       '/experiencia',
-      this.experienceId(),
+      experienceId,
       'momento',
       next.id,
     ]);
@@ -1080,7 +1318,7 @@ export class MomentComponent
 
     const target =
       this.moments().find(
-        moment =>
+        (moment: Moment) =>
           moment.id === momentId
       );
 
@@ -1094,9 +1332,16 @@ export class MomentComponent
       return;
     }
 
+    const experienceId =
+      this.experienceId();
+
+    if (!experienceId) {
+      return;
+    }
+
     this.router.navigate([
       '/experiencia',
-      this.experienceId(),
+      experienceId,
       'momento',
       target.id,
     ]);
@@ -1105,7 +1350,7 @@ export class MomentComponent
 
 
   // ============================================================
-  // TRACK
+  // TRACK MOMENTOS
   // ============================================================
 
   trackByMomentId(
@@ -1118,12 +1363,30 @@ export class MomentComponent
   }
 
 
+  // ============================================================
+  // TRACK ACTIVIDADES
+  // ============================================================
+
   trackByActivityId(
     _index: number,
-    activity: any
+    activity: Activity
   ): string {
 
     return activity.id;
+
+  }
+
+
+  // ============================================================
+  // TRACK RECURSOS
+  // ============================================================
+
+  trackByResourceId(
+    _index: number,
+    resource: AguaResource
+  ): string {
+
+    return resource.id;
 
   }
 

@@ -1,20 +1,20 @@
-// ============================================================
+﻿// ============================================================
 // TELLUS LEARNING
-// RECURSOS — AGUA EN NUESTRO TERRITORIO
+// RECURSOS â€” AGUA EN NUESTRO TERRITORIO
 // ============================================================
 //
-// Catálogo central de recursos utilizados por la experiencia
+// CatÃ¡logo central de recursos utilizados por la experiencia
 // "Agua en nuestro territorio".
 //
 // IMPORTANTE:
 // Este archivo NO contiene actividades.
 // Los recursos son reutilizables por diferentes actividades.
 //
-// Esto permitirá posteriormente:
+// Esto permitirÃ¡ posteriormente:
 // - cambiar una imagen sin modificar la actividad
 // - reemplazar un video
 // - incorporar recursos del IDEAM
-// - agregar infografías
+// - agregar infografÃ­as
 // - incorporar mapas
 // - trabajar offline
 // - migrar posteriormente a Firestore
@@ -44,7 +44,7 @@ export type AguaResourceType =
 export interface AguaResource {
 
   /**
-   * Identificador único del recurso.
+   * Identificador Ãºnico del recurso.
    */
   id: string;
 
@@ -59,12 +59,12 @@ export interface AguaResource {
   type: AguaResourceType;
 
   /**
-   * Título visible para el estudiante.
+   * TÃ­tulo visible para el estudiante.
    */
   title: string;
 
   /**
-   * Descripción breve.
+   * DescripciÃ³n breve.
    */
   description?: string;
 
@@ -84,7 +84,7 @@ export interface AguaResource {
    * Ejemplo:
    * IDEAM
    * UNGRD
-   * Alcaldía de Vélez
+   * AlcaldÃ­a de VÃ©lez
    */
   source?: string;
 
@@ -94,12 +94,12 @@ export interface AguaResource {
   sourceUrl?: string;
 
   /**
-   * Crédito de imagen o material.
+   * CrÃ©dito de imagen o material.
    */
   credit?: string;
 
   /**
-   * Disponible sin conexión.
+   * Disponible sin conexiÃ³n.
    */
   offlineAvailable?: boolean;
 
@@ -129,14 +129,14 @@ export const AGUA_TERRITORIO_RESOURCE_EXPERIENCE_ID =
 
 
 // ============================================================
-// RECURSOS — MOMENTO 1
-// MOTIVACIÓN
+// RECURSOS â€” MOMENTO 1
+// MOTIVACIÃ“N
 // ============================================================
 
 export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
   // ----------------------------------------------------------
-  // 01 — FOTOGRAFÍA DEL PROBLEMA
+  // 01 â€” FOTOGRAFÃA DEL PROBLEMA
   // ----------------------------------------------------------
 
   {
@@ -151,14 +151,14 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
       'Cuando el agua comienza a faltar',
 
     description:
-      'Observa una situación real relacionada con el abastecimiento de agua en Vélez, Santander.',
+      'Observa una situaciÃ³n real relacionada con el abastecimiento de agua en VÃ©lez, Santander.',
 
-    // TODAVÍA NO PONEMOS LA FOTO REAL.
+    // TODAVÃA NO PONEMOS LA FOTO REAL.
     url:
       '/assets/tellus/experiences/agua-territorio/motivacion/foto-velez.webp',
 
     source:
-      'Pendiente de selección',
+      'Pendiente de selecciÃ³n',
 
     offlineAvailable: true,
 
@@ -169,7 +169,7 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
 
   // ----------------------------------------------------------
-  // 02 — VIDEO EL NIÑO
+  // 02 â€” VIDEO EL NIÃ‘O
   // ----------------------------------------------------------
 
   {
@@ -181,16 +181,16 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
     type: 'video',
 
     title:
-      '¿Qué es el fenómeno de El Niño?',
+      'Â¿QuÃ© es el fenÃ³meno de El NiÃ±o?',
 
     description:
-      'Conoce cómo las condiciones del océano Pacífico pueden relacionarse con cambios en el comportamiento climático de Colombia.',
+      'Conoce cÃ³mo las condiciones del ocÃ©ano PacÃ­fico pueden relacionarse con cambios en el comportamiento climÃ¡tico de Colombia.',
 
     url:
       '/assets/tellus/experiences/agua-territorio/motivacion/video-el-nino.mp4',
 
     source:
-      'Pendiente de selección',
+      'Pendiente de selecciÃ³n',
 
     offlineAvailable: true,
 
@@ -200,13 +200,13 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
     metadata: {
       durationSeconds: 180,
-      topic: 'Fenómeno de El Niño',
+      topic: 'FenÃ³meno de El NiÃ±o',
     },
   },
 
 
   // ----------------------------------------------------------
-  // 03 — DATOS IDEAM
+  // 03 â€” DATOS IDEAM
   // ----------------------------------------------------------
 
   {
@@ -218,10 +218,10 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
     type: 'data',
 
     title:
-      '¿Qué nos dicen los datos del clima?',
+      'Â¿QuÃ© nos dicen los datos del clima?',
 
     description:
-      'Datos climáticos utilizados para analizar el comportamiento de la precipitación y las condiciones relacionadas con la disponibilidad de agua.',
+      'Datos climÃ¡ticos utilizados para analizar el comportamiento de la precipitaciÃ³n y las condiciones relacionadas con la disponibilidad de agua.',
 
     source:
       'IDEAM',
@@ -237,22 +237,22 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
     metadata: {
       institution:
-        'Instituto de Hidrología, Meteorología y Estudios Ambientales',
+        'Instituto de HidrologÃ­a, MeteorologÃ­a y Estudios Ambientales',
 
       dataType:
         'precipitacion',
 
       geographicContext:
-        'Santander / Vélez',
+        'Santander / VÃ©lez',
 
       status:
-        'pendiente de selección de datos oficiales',
+        'pendiente de selecciÃ³n de datos oficiales',
     },
   },
 
 
   // ----------------------------------------------------------
-  // 04 — MAPA
+  // 04 â€” MAPA
   // ----------------------------------------------------------
 
   {
@@ -267,10 +267,10 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
       'Nuestro territorio',
 
     description:
-      'Ubica Vélez dentro del contexto geográfico de Santander y relaciona el territorio con las condiciones del agua.',
+      'Ubica VÃ©lez dentro del contexto geogrÃ¡fico de Santander y relaciona el territorio con las condiciones del agua.',
 
     source:
-      'IDEAM / fuentes cartográficas oficiales',
+      'IDEAM / fuentes cartogrÃ¡ficas oficiales',
 
     offlineAvailable: true,
 
@@ -283,13 +283,13 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
         'municipio / departamento',
 
       location:
-        'Vélez, Santander, Colombia',
+        'VÃ©lez, Santander, Colombia',
     },
   },
 
 
   // ----------------------------------------------------------
-  // 05 — CONTEXTO LOCAL
+  // 05 â€” CONTEXTO LOCAL
   // ----------------------------------------------------------
 
   {
@@ -301,13 +301,13 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
     type: 'document',
 
     title:
-      'El problema del agua en Vélez',
+      'El problema del agua en VÃ©lez',
 
     description:
-      'Contexto sobre situaciones de abastecimiento, disponibilidad y gestión del agua en el territorio.',
+      'Contexto sobre situaciones de abastecimiento, disponibilidad y gestiÃ³n del agua en el territorio.',
 
     source:
-      'Fuentes oficiales y documentación territorial',
+      'Fuentes oficiales y documentaciÃ³n territorial',
 
     offlineAvailable: true,
 
@@ -317,7 +317,7 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
     metadata: {
       geographicContext:
-        'Vélez, Santander',
+        'VÃ©lez, Santander',
 
       requiresCitation:
         true,
@@ -326,7 +326,7 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
 
 
   // ----------------------------------------------------------
-  // 06 — INFOGRAFÍA SISTÉMICA
+  // 06 â€” INFOGRAFÃA SISTÃ‰MICA
   // ----------------------------------------------------------
 
   {
@@ -341,16 +341,16 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
       'El agua es un sistema',
 
     description:
-      'Visualiza las relaciones entre clima, fuentes hídricas, almacenamiento, infraestructura, distribución, consumo y comunidad.',
+      'Visualiza las relaciones entre clima, fuentes hÃ­dricas, almacenamiento, infraestructura, distribuciÃ³n, consumo y comunidad.',
 
     url:
-      '/assets/tellus/experiences/agua-territorio/motivacion/infografia-sistema.webp',
+      '/assets/tellus-learning/agua/infografia-sistema-agua.png',
 
     source:
       'Rural STEAM Lab',
 
     credit:
-      'Diseño educativo Rural STEAM Lab',
+      'DiseÃ±o educativo Rural STEAM Lab',
 
     offlineAvailable: true,
 
@@ -363,13 +363,13 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
         'pensamiento sistemico',
 
       target:
-        '8.º a 11.º',
+        '8.Âº a 11.Âº',
     },
   },
 
 
   // ----------------------------------------------------------
-  // 07 — RETO INICIAL
+  // 07 â€” RETO INICIAL
   // ----------------------------------------------------------
 
   {
@@ -381,10 +381,10 @@ export const AGUA_MOTIVACION_RESOURCES: AguaResource[] = [
     type: 'worked-example',
 
     title:
-      '¿Por qué puede faltar el agua?',
+      'Â¿Por quÃ© puede faltar el agua?',
 
     description:
-      'Una situación inicial para formular hipótesis antes de estudiar las variables científicas del sistema.',
+      'Una situaciÃ³n inicial para formular hipÃ³tesis antes de estudiar las variables cientÃ­ficas del sistema.',
 
     source:
       'Rural STEAM Lab',

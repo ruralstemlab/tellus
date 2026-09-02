@@ -1,0 +1,916 @@
+<section
+  class="activity-page"
+  *ngIf="!loading(); else loadingTemplate"
+>
+
+  <!-- ==========================================================
+       ERROR
+       ========================================================== -->
+
+  <section
+    class="state-card error-state"
+    *ngIf="error()"
+  >
+
+    <div class="state-icon">
+      ⚠️
+    </div>
+
+    <h1>
+      No pudimos cargar esta actividad
+    </h1>
+
+    <p>
+      {{ error() }}
+    </p>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="back()"
+    >
+      ← Volver al momento
+    </button>
+
+  </section>
+
+
+  <!-- ==========================================================
+       ACTIVIDAD
+       ========================================================== -->
+
+  <ng-container *ngIf="activity() as currentActivity">
+
+    <!-- ========================================================
+         HEADER
+         ======================================================== -->
+
+    <header class="activity-header">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="back()"
+      >
+        <span>←</span>
+        Volver al momento
+      </button>
+
+
+      <div class="activity-kicker">
+
+        <span class="live-dot"></span>
+
+        TELLUS LEARNING
+
+        <span class="separator">
+          /
+        </span>
+
+        {{ currentActivity.type }}
+
+      </div>
+
+
+      <h1>
+        {{ currentActivity.title }}
+      </h1>
+
+
+      <p
+        class="activity-description"
+        *ngIf="currentActivity.description"
+      >
+        {{ currentActivity.description }}
+      </p>
+
+
+      <div class="activity-meta">
+
+        <span
+          *ngIf="
+            currentActivity.estimatedDurationMinutes
+          "
+        >
+          ⏱️
+          {{ currentActivity.estimatedDurationMinutes }}
+          min
+        </span>
+
+
+        <span
+          *ngIf="currentActivity.isOptional"
+        >
+          ○ Actividad opcional
+        </span>
+
+
+        <span
+          *ngIf="currentActivity.config.graded"
+        >
+          ✦ Evaluable
+        </span>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================================================
+         CONTENIDO PEDAGÓGICO
+         ======================================================== -->
+
+    <main class="activity-content">
+
+
+      <!-- ======================================================
+           INSTRUCCIONES
+           ====================================================== -->
+
+      <section
+        class="instructions glass"
+        *ngIf="
+          currentActivity.content.type === 'simulation'
+          ||
+          currentActivity.content.type === 'video'
+          ||
+          currentActivity.content.type === 'reflection'
+          ||
+          currentActivity.content.type === 'data_analysis'
+          ||
+          currentActivity.content.type === 'preinforme'
+          ||
+          currentActivity.content.type === 'lab_physical'
+        "
+      >
+
+        <div class="instruction-icon">
+          🧭
+        </div>
+
+
+        <div>
+
+          <span class="section-label">
+            TU MISIÓN
+          </span>
+
+
+          <!-- SIMULACIÓN -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'simulation'
+            "
+          >
+            {{
+              currentActivity.content.data.instructions
+            }}
+          </p>
+
+
+          <!-- VIDEO -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'video'
+            "
+          >
+            Observa el recurso con atención y utiliza
+            las preguntas guía para construir tus primeras ideas.
+          </p>
+
+
+          <!-- REFLEXIÓN -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'reflection'
+            "
+          >
+            {{
+              currentActivity.content.data.instructions
+            }}
+          </p>
+
+
+          <!-- ANÁLISIS DE DATOS -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'data_analysis'
+            "
+          >
+            {{
+              currentActivity.content.data.instructions
+            }}
+          </p>
+
+
+          <!-- PREINFORME -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'preinforme'
+            "
+          >
+            {{
+              currentActivity.content.data.instructions
+            }}
+          </p>
+
+
+          <!-- LABORATORIO -->
+
+          <p
+            *ngIf="
+              currentActivity.content.type ===
+              'lab_physical'
+            "
+          >
+            {{
+              currentActivity.content.data.instructions
+            }}
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           RECURSOS
+           ====================================================== -->
+
+      <section
+        class="resources-section"
+        *ngIf="resources().length"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-label">
+              RECURSOS
+            </span>
+
+            <h2>
+              Explora antes de responder
+            </h2>
+
+          </div>
+
+
+          <span class="resource-count">
+
+            {{ resources().length }}
+
+            recurso{{
+              resources().length === 1
+                ? ''
+                : 's'
+            }}
+
+          </span>
+
+        </div>
+
+
+        <!-- ====================================================
+             LISTA DE RECURSOS
+             ==================================================== -->
+
+        <div class="resource-list">
+
+          <ng-container
+            *ngFor="
+              let resource of resources()
+            "
+          >
+
+
+            <!-- ==================================================
+                 IMAGEN / INFOGRAFÍA
+                 ================================================== -->
+
+            <article
+              class="resource-card image-resource"
+              *ngIf="isImage(resource)"
+            >
+
+              <div class="resource-card-header">
+
+                <div class="resource-type">
+
+                  🖼️
+
+                  {{
+                    resource.type === 'infographic'
+                      ? 'INFOGRAFÍA'
+                      : 'IMAGEN'
+                  }}
+
+                </div>
+
+
+                <span
+                  *ngIf="
+                    resource.offlineAvailable
+                  "
+                  class="offline-badge"
+                >
+                  OFFLINE
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ resource.title }}
+              </h3>
+
+
+              <p
+                *ngIf="
+                  resource.description
+                "
+              >
+                {{ resource.description }}
+              </p>
+
+
+              <div
+                class="resource-image"
+                *ngIf="resource.url"
+              >
+
+                <img
+                  [src]="resource.url"
+                  [alt]="resource.title"
+                  loading="lazy"
+                >
+
+              </div>
+
+
+              <div
+                class="resource-credit"
+                *ngIf="
+                  resource.credit ||
+                  resource.source
+                "
+              >
+
+                {{
+                  resource.credit ||
+                  resource.source
+                }}
+
+              </div>
+
+            </article>
+
+
+            <!-- ==================================================
+                 VIDEO
+                 ================================================== -->
+
+            <article
+              class="resource-card video-resource"
+              *ngIf="isVideo(resource)"
+            >
+
+              <div class="resource-card-header">
+
+                <div class="resource-type">
+                  ▶️ VIDEO
+                </div>
+
+
+                <span
+                  *ngIf="resource.source"
+                  class="source-badge"
+                >
+                  {{ resource.source }}
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ resource.title }}
+              </h3>
+
+
+              <p
+                *ngIf="
+                  resource.description
+                "
+              >
+                {{ resource.description }}
+              </p>
+
+
+              <!-- VIDEO LOCAL -->
+
+              <div
+                class="video-container"
+                *ngIf="resource.url"
+              >
+
+                <video
+                  controls
+                  preload="metadata"
+                  [poster]="
+                    resource.thumbnailUrl || ''
+                  "
+                >
+
+                  <source
+                    [src]="resource.url"
+                    type="video/mp4"
+                  >
+
+                  Tu navegador no puede reproducir
+                  este video.
+
+                </video>
+
+              </div>
+
+
+              <!-- FUENTE ORIGINAL -->
+
+              <a
+                *ngIf="resource.sourceUrl"
+                class="external-link"
+                [href]="resource.sourceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver fuente original →
+              </a>
+
+            </article>
+
+
+            <!-- ==================================================
+                 SIMULACIÓN
+                 ================================================== -->
+
+            <article
+              class="resource-card simulation-resource"
+              *ngIf="isSimulation(resource)"
+            >
+
+              <div class="resource-card-header">
+
+                <div class="resource-type">
+                  🧪 SIMULADOR TELLUS
+                </div>
+
+
+                <span
+                  class="interactive-badge"
+                >
+                  INTERACTIVO
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ resource.title }}
+              </h3>
+
+
+              <p
+                *ngIf="
+                  resource.description
+                "
+              >
+                {{ resource.description }}
+              </p>
+
+
+              <!-- =================================================
+                   EXPLORADOR
+                   
+                   Todavía no se importa ningún componente aquí.
+                   Cuando construyamos el explorador real,
+                   este bloque será reemplazado por el componente.
+                   ================================================= -->
+
+              <div
+                class="resource-placeholder"
+              >
+
+                <span>
+                  🧪
+                </span>
+
+
+                <strong>
+                  {{ resource.title }}
+                </strong>
+
+
+                <small>
+                  Recurso interactivo de Tellus.
+                  El simulador se incorporará al motor
+                  de experiencias en esta sección.
+                </small>
+
+              </div>
+
+            </article>
+
+
+            <!-- ==================================================
+                 RECURSO EXTERNO
+                 ================================================== -->
+
+            <article
+              class="resource-card external-resource"
+              *ngIf="isExternal(resource)"
+            >
+
+              <div class="resource-card-header">
+
+                <div class="resource-type">
+                  🔗 RECURSO EXTERNO
+                </div>
+
+              </div>
+
+
+              <h3>
+                {{ resource.title }}
+              </h3>
+
+
+              <p
+                *ngIf="
+                  resource.description
+                "
+              >
+                {{ resource.description }}
+              </p>
+
+
+              <!-- URL DEL RECURSO -->
+
+              <a
+                *ngIf="resource.sourceUrl"
+                class="external-resource-button"
+                [href]="resource.sourceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+
+                Explorar recurso
+
+                <span>
+                  ↗
+                </span>
+
+              </a>
+
+
+              <!-- URL DIRECTA -->
+
+              <a
+                *ngIf="
+                  !resource.sourceUrl &&
+                  resource.url
+                "
+                class="external-resource-button"
+                [href]="resource.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+
+                Abrir recurso
+
+                <span>
+                  ↗
+                </span>
+
+              </a>
+
+            </article>
+
+          </ng-container>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           SIN RECURSOS
+           ====================================================== -->
+
+      <section
+        class="empty-resources glass"
+        *ngIf="!resources().length"
+      >
+
+        <span>
+          🌱
+        </span>
+
+
+        <div>
+
+          <strong>
+            Esta actividad todavía no tiene recursos asociados.
+          </strong>
+
+
+          <p>
+            La actividad está creada, pero aún no se han
+            publicado recursos para ella.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           PREGUNTAS / CONTENIDO
+           ====================================================== -->
+
+      <section
+        class="questions glass"
+        *ngIf="
+          currentActivity.content.type ===
+            'questionnaire'
+          ||
+          currentActivity.content.type ===
+            'data_analysis'
+          ||
+          currentActivity.content.type ===
+            'evaluation'
+          ||
+          currentActivity.content.type ===
+            'reflection'
+        "
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-label">
+              AHORA PIENSA
+            </span>
+
+
+            <h2>
+              Construye tu respuesta
+            </h2>
+
+          </div>
+
+
+          <span class="question-mark">
+            ?
+          </span>
+
+        </div>
+
+
+        <!-- ====================================================
+             CUESTIONARIO
+             ==================================================== -->
+
+        <ng-container
+          *ngIf="
+            currentActivity.content.type ===
+            'questionnaire'
+          "
+        >
+
+          <article
+            class="question"
+            *ngFor="
+              let question of
+                currentActivity.content.data.questions;
+              let i = index
+            "
+          >
+
+            <span
+              class="question-number"
+            >
+              {{
+                i + 1
+                | number:'2.0-0'
+              }}
+            </span>
+
+
+            <div>
+
+              <p>
+                {{ question.text }}
+              </p>
+
+            </div>
+
+          </article>
+
+        </ng-container>
+
+
+        <!-- ====================================================
+             ANÁLISIS DE DATOS
+             ==================================================== -->
+
+        <ng-container
+          *ngIf="
+            currentActivity.content.type ===
+            'data_analysis'
+          "
+        >
+
+          <article
+            class="question"
+            *ngFor="
+              let question of
+                currentActivity.content.data.questions;
+              let i = index
+            "
+          >
+
+            <span
+              class="question-number"
+            >
+              {{
+                i + 1
+                | number:'2.0-0'
+              }}
+            </span>
+
+
+            <div>
+
+              <p>
+                {{ question.text }}
+              </p>
+
+            </div>
+
+          </article>
+
+        </ng-container>
+
+
+        <!-- ====================================================
+             EVALUACIÓN
+             ==================================================== -->
+
+        <ng-container
+          *ngIf="
+            currentActivity.content.type ===
+            'evaluation'
+          "
+        >
+
+          <article
+            class="question"
+            *ngFor="
+              let question of
+                currentActivity.content.data.questions;
+              let i = index
+            "
+          >
+
+            <span
+              class="question-number"
+            >
+              {{
+                i + 1
+                | number:'2.0-0'
+              }}
+            </span>
+
+
+            <div>
+
+              <p>
+                {{ question.text }}
+              </p>
+
+            </div>
+
+          </article>
+
+        </ng-container>
+
+
+        <!-- ====================================================
+             REFLEXIÓN
+             ==================================================== -->
+
+        <ng-container
+          *ngIf="
+            currentActivity.content.type ===
+            'reflection'
+          "
+        >
+
+          <article
+            class="question"
+            *ngFor="
+              let question of
+                currentActivity.content.data.questions;
+              let i = index
+            "
+          >
+
+            <span
+              class="question-number"
+            >
+              {{
+                i + 1
+                | number:'2.0-0'
+              }}
+            </span>
+
+
+            <div>
+
+              <p>
+                {{ question.text }}
+              </p>
+
+            </div>
+
+          </article>
+
+        </ng-container>
+
+      </section>
+
+    </main>
+
+
+    <!-- ========================================================
+         FOOTER
+         ======================================================== -->
+
+    <footer class="activity-footer">
+
+      <button
+        type="button"
+        class="back-button footer-back"
+        (click)="back()"
+      >
+        ← Volver al momento
+      </button>
+
+
+      <div class="footer-status">
+
+        <span class="status-dot"></span>
+
+        EXPERIENCIA TELLUS ACTIVA
+
+      </div>
+
+    </footer>
+
+  </ng-container>
+
+</section>
+
+
+<!-- ============================================================
+     LOADING
+     ============================================================ -->
+
+<ng-template #loadingTemplate>
+
+  <section class="loading-state">
+
+    <div class="loading-orbit">
+      💧
+    </div>
+
+
+    <span>
+      Cargando experiencia...
+    </span>
+
+  </section>
+
+</ng-template>

@@ -3,24 +3,35 @@ import { Routes } from '@angular/router';
 import { Landing } from './pages/landing/landing';
 
 import { Login } from './pages/authentication/login/login';
+
 import { Register } from './pages/authentication/register/register';
+
 import { ForgotPassword } from './pages/authentication/forgot-password/forgot-password';
+
 import { ResetPassword } from './pages/authentication/reset-password/reset-password';
 
 import { Home } from './pages/home/home';
+
 import { MiAula } from './pages/mi-aula/mi-aula';
 
 import { MomentComponent } from './pages/tellus-learning/moment/moment';
 
+import { ActivityComponent } from './pages/tellus-learning/activity/activity';
+
 import { Laboratorios } from './pages/laboratorios/laboratorios';
 
 import { Matematicas } from './pages/laboratorios/matematicas/matematicas';
+
 import { Ciencias } from './pages/laboratorios/ciencias/ciencias';
+
 import { Ingenieria } from './pages/laboratorios/ingenieria/ingenieria';
+
 import { Arte } from './pages/laboratorios/arte/arte';
+
 import { Tecnologia } from './pages/laboratorios/tecnologia/tecnologia';
 
 import { PublicVerificationComponent } from './pages/public-verification/public-verification.component';
+
 
 export const routes: Routes = [
 
@@ -31,7 +42,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
 
 
@@ -41,27 +52,27 @@ export const routes: Routes = [
 
   {
     path: 'landing',
-    component: Landing
+    component: Landing,
   },
 
   {
     path: 'login',
-    component: Login
+    component: Login,
   },
 
   {
     path: 'register',
-    component: Register
+    component: Register,
   },
 
   {
     path: 'forgot-password',
-    component: ForgotPassword
+    component: ForgotPassword,
   },
 
   {
     path: 'reset-password',
-    component: ResetPassword
+    component: ResetPassword,
   },
 
 
@@ -71,7 +82,7 @@ export const routes: Routes = [
 
   {
     path: 'home',
-    component: Home
+    component: Home,
   },
 
 
@@ -81,12 +92,21 @@ export const routes: Routes = [
 
   {
     path: 'mi-aula',
-    component: MiAula
+    component: MiAula,
   },
 
   {
     path: 'experiencia/:experienceId/momento/:momentId',
-    component: MomentComponent
+    component: MomentComponent,
+  },
+
+  // ----------------------------------------------------------
+  // ACTIVIDADES TELLUS
+  // ----------------------------------------------------------
+
+  {
+    path: 'experiencia/:experienceId/actividad/:activityId',
+    component: ActivityComponent,
   },
 
 
@@ -96,9 +116,14 @@ export const routes: Routes = [
 
   {
     path: 'biblioteca-viva',
+
     loadChildren: () =>
-      import('./pages/biblioteca-viva/biblioteca-viva.routes')
-        .then(m => m.routes)
+      import(
+        './pages/biblioteca-viva/biblioteca-viva.routes'
+      )
+        .then(
+          m => m.routes
+        ),
   },
 
 
@@ -108,32 +133,32 @@ export const routes: Routes = [
 
   {
     path: 'laboratorios',
-    component: Laboratorios
+    component: Laboratorios,
   },
 
   {
     path: 'matematicas',
-    component: Matematicas
+    component: Matematicas,
   },
 
   {
     path: 'ciencias',
-    component: Ciencias
+    component: Ciencias,
   },
 
   {
     path: 'ingenieria',
-    component: Ingenieria
+    component: Ingenieria,
   },
 
   {
     path: 'arte',
-    component: Arte
+    component: Arte,
   },
 
   {
     path: 'tecnologia',
-    component: Tecnologia
+    component: Tecnologia,
   },
 
 
@@ -143,7 +168,7 @@ export const routes: Routes = [
 
   {
     path: 'verificar/:uuid',
-    component: PublicVerificationComponent
+    component: PublicVerificationComponent,
   },
 
 
@@ -153,7 +178,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'home'
-  }
+    redirectTo: 'home',
+  },
 
 ];

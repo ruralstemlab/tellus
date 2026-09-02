@@ -1,6 +1,5 @@
 <app-navbar></app-navbar>
 
-
 <main
   class="mi-aula-page"
 
@@ -11,612 +10,645 @@
   [class.theme-parabolic]="
     experience()?.experience?.id === 'exp-movimiento-parabolico'
   "
+
+  [class.theme-programming]="
+    experience()?.experience?.id === 'creadores-steam-ia'
+  "
+
+  [class.theme-circuits]="
+    experience()?.experience?.id === 'circuitos-electricos'
+  "
+
+  [class.theme-chemistry]="
+    experience()?.experience?.id === 'quimica-entorno'
+  "
 >
 
-
   <!-- ==========================================================
-       HERO
-  ========================================================== -->
+       ATMÓSFERA PREMIUM
+       Fondo ambiental y partículas
+  =========================================================== -->
 
-  <section class="hero">
+  <div
+    class="ambient-background"
+    aria-hidden="true"
+  >
 
-    <div class="hero-content">
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-glow ambient-glow-3"></div>
 
-      <span class="hero-eyebrow">
-        MI AULA · TELLUS
-      </span>
+    <div class="particles">
 
-      <h1>
-        ¡Hola, {{ userName() }}!
-        <span
-          class="wave"
-          aria-hidden="true"
-        >
-          👋
-        </span>
-      </h1>
-
-      <p class="hero-subtitle">
-        Elige una ruta de aprendizaje y comienza a explorar.
-      </p>
+      <span class="particle particle-01"></span>
+      <span class="particle particle-02"></span>
+      <span class="particle particle-03"></span>
+      <span class="particle particle-04"></span>
+      <span class="particle particle-05"></span>
+      <span class="particle particle-06"></span>
+      <span class="particle particle-07"></span>
+      <span class="particle particle-08"></span>
+      <span class="particle particle-09"></span>
+      <span class="particle particle-10"></span>
+      <span class="particle particle-11"></span>
+      <span class="particle particle-12"></span>
+      <span class="particle particle-13"></span>
+      <span class="particle particle-14"></span>
+      <span class="particle particle-15"></span>
+      <span class="particle particle-16"></span>
+      <span class="particle particle-17"></span>
+      <span class="particle particle-18"></span>
+      <span class="particle particle-19"></span>
+      <span class="particle particle-20"></span>
 
     </div>
 
-
-    <div
-      class="hero-orbit"
-      aria-hidden="true"
-    >
-
-      <div class="orbit orbit-outer"></div>
-
-      <div class="orbit orbit-middle"></div>
-
-      <div class="orbit orbit-inner"></div>
-
-      <div class="core">
-        🌱
-      </div>
-
-    </div>
-
-  </section>
-
+  </div>
 
 
   <!-- ==========================================================
-       EXPERIENCIAS
-  ========================================================== -->
+       CONTENIDO
+  =========================================================== -->
 
-  <section class="experience-section">
-
-
-    <!-- HEADER -->
-
-    <header class="experience-header">
-
-      <span class="experience-badge">
-        RUTAS DE APRENDIZAJE
-      </span>
-
-      <h2>
-        Explora una experiencia
-      </h2>
-
-      <p class="experience-desc">
-        Aprende mediante experiencias que conectan la ciencia,
-        las matemáticas, la tecnología y los problemas de tu entorno.
-      </p>
-
-    </header>
-
+  <div class="mi-aula-content">
 
 
     <!-- ========================================================
-         TARJETAS
-    ======================================================== -->
+         HERO
+    ========================================================= -->
 
-    <section
-      class="experiences-grid"
-      aria-label="Experiencias de aprendizaje"
-    >
+    <section class="hero">
 
-      <article
-        *ngFor="
-          let item of experiences;
-          trackBy: trackByExperienceId
-        "
+      <div class="hero-content">
 
-        class="experience-card"
-
-        [class.selected]="
-          selectedExperienceId() ===
-          item.experience.id
-        "
-
-        [class.experience-water]="
-          item.experience.id ===
-          'agua-territorio'
-        "
-
-        [class.experience-parabolic]="
-          item.experience.id ===
-          'exp-movimiento-parabolico'
-        "
-
-        (click)="
-          selectExperience(
-            item.experience.id
-          )
-        "
-      >
-
-
-        <!-- DECORACIÓN -->
-
-        <div class="card-glow"></div>
-
-        <div class="card-watermark">
-          {{
-            getExperienceIcon(
-              item.experience
-            )
-          }}
-        </div>
-
-
-        <!-- CABECERA -->
-
-        <div class="experience-card-top">
-
-          <div class="experience-card-icon">
-
-            {{
-              getExperienceIcon(
-                item.experience
-              )
-            }}
-
-          </div>
-
-
-          <span class="experience-card-status">
-
-            <span
-              class="status-dot"
-            ></span>
-
-            {{
-              selectedExperienceId() ===
-              item.experience.id
-                ? 'Seleccionada'
-                : 'Disponible'
-            }}
-
-          </span>
-
-        </div>
-
-
-        <!-- CONTENIDO -->
-
-        <div class="experience-card-content">
-
-          <span class="experience-card-label">
-
-            EXPERIENCIA DE APRENDIZAJE
-
-          </span>
-
-          <h3>
-            {{ item.experience.title }}
-          </h3>
-
-          <p>
-            {{ item.experience.description }}
-          </p>
-
-        </div>
-
-
-        <!-- INFORMACIÓN -->
-
-        <div class="experience-card-info">
-
-          <div class="experience-info-item">
-
-            <strong>
-              {{ item.moments.length }}
-            </strong>
-
-            <span>
-              Momentos
-            </span>
-
-          </div>
-
-
-          <div class="experience-info-divider"></div>
-
-
-          <div class="experience-info-item">
-
-            <strong>
-              {{ item.activities.length }}
-            </strong>
-
-            <span>
-              Actividades
-            </span>
-
-          </div>
-
-
-          <div class="experience-info-divider"></div>
-
-
-          <div class="experience-info-item">
-
-            <strong>
-              {{ item.experience.difficulty }}
-            </strong>
-
-            <span>
-              Nivel
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- PIE -->
-
-        <footer class="experience-card-footer">
-
-          <span>
-
-            {{
-              selectedExperienceId() ===
-              item.experience.id
-                ? 'Explorar experiencia'
-                : 'Seleccionar experiencia'
-            }}
-
-          </span>
-
-          <span
-            class="footer-arrow"
-            aria-hidden="true"
-          >
-            →
-          </span>
-
-        </footer>
-
-      </article>
-
-    </section>
-
-
-
-    <!-- ==========================================================
-         EXPERIENCIA SELECCIONADA
-    ========================================================== -->
-
-    <section class="current-stage">
-
-      <div class="stage-label">
-
-        <span class="label-dot"></span>
-
-        EXPERIENCIA SELECCIONADA
-
-      </div>
-
-
-      <div
-        class="stage-card"
-        *ngIf="experience()"
-      >
-
-        <div class="stage-number">
-          {{ currentMoment()?.order || 1 }}
-        </div>
-
-
-        <div class="stage-icon">
-
-          {{
-            currentMoment()
-              ? getMomentIcon(
-                  currentMoment()!
-                )
-              : '🌱'
-          }}
-
-        </div>
-
-
-        <div class="stage-info">
-
-          <span class="stage-kicker">
-            PRIMER MOMENTO
-          </span>
-
-          <h3>
-            {{ currentMomentTitle() }}
-          </h3>
-
-          <p>
-            {{ currentMomentDescription() }}
-          </p>
-
-        </div>
-
-
-        <button
-          class="btn-continue"
-          type="button"
-          (click)="onContinue()"
-        >
-
-          <span>
-            Comenzar
-          </span>
-
-          <span aria-hidden="true">
-            →
-          </span>
-
-        </button>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ==========================================================
-         CICLO DE APRENDIZAJE
-    ========================================================== -->
-
-    <section class="learning-cycle">
-
-      <header class="cycle-header">
-
-        <span class="cycle-eyebrow">
-          TELLUS LEARNING
+        <span class="hero-eyebrow">
+          MI AULA · TELLUS
         </span>
 
-        <h3>
-          Ciclo de aprendizaje
-        </h3>
+        <h1>
+          ¡Hola, {{ userName() }}!
 
-        <p>
-          Aprende, experimenta, comprende y vuelve a comenzar.
+          <span
+            class="wave"
+            aria-hidden="true"
+          >
+            👋
+          </span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Elige una ruta de aprendizaje y comienza a explorar.
+        </p>
+
+      </div>
+
+
+      <!-- ORBITA -->
+
+      <div
+        class="hero-orbit"
+        aria-hidden="true"
+      >
+
+        <div class="orbit orbit-outer"></div>
+
+        <div class="orbit orbit-middle"></div>
+
+        <div class="orbit orbit-inner"></div>
+
+        <div class="core">
+          🌱
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================================
+         RUTAS DE APRENDIZAJE
+    =========================================================== -->
+
+    <section class="experience-section">
+
+
+      <!-- HEADER -->
+
+      <header class="experience-header">
+
+        <span class="experience-badge">
+          RUTAS DE APRENDIZAJE
+        </span>
+
+        <h2>
+          Explora una experiencia
+        </h2>
+
+        <p class="experience-desc">
+          Aprende mediante experiencias que conectan la ciencia,
+          las matemáticas, la tecnología y los problemas de tu entorno.
         </p>
 
       </header>
 
 
-      <div class="cycle-container">
+      <!-- ========================================================
+           EXPERIENCIAS
+      ========================================================= -->
 
+      <section
+        class="experiences-grid"
+        aria-label="Experiencias de aprendizaje"
+      >
 
-        <div
-          class="cycle-ring cycle-ring-outer"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="cycle-ring cycle-ring-inner"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="cycle-track"
-          aria-hidden="true"
-        ></div>
-
-
-        <!-- MOMENTOS -->
-
-        <button
+        <article
           *ngFor="
-            let moment of orderedMoments();
-            trackBy: trackByMomentId
+            let item of experiences;
+            trackBy: trackByExperienceId
           "
 
-          type="button"
+          class="experience-card"
 
-          class="cycle-step"
-
-          [class.current]="
-            isCurrent(moment)
+          [class.selected]="
+            selectedExperienceId() === item.experience.id
           "
 
-          [class.completed]="
-            isCompleted(moment)
+          [class.experience-water]="
+            item.experience.id === 'agua-territorio'
           "
 
-          [class.locked]="
-            isLocked(moment)
+          [class.experience-parabolic]="
+            item.experience.id === 'exp-movimiento-parabolico'
           "
 
-          [attr.aria-label]="
-            moment.title
+          [class.experience-programming]="
+            item.experience.id === 'creadores-steam-ia'
+          "
+
+          [class.experience-circuits]="
+            item.experience.id === 'circuitos-electricos'
+          "
+
+          [class.experience-chemistry]="
+            item.experience.id === 'quimica-entorno'
           "
 
           (click)="
-            goToMoment(moment.id)
+            selectExperience(item.experience.id)
           "
         >
 
-          <span class="step-icon">
-            {{ getMomentIcon(moment) }}
-          </span>
+          <!-- BRILLO -->
+
+          <div class="card-glow"></div>
 
 
-          <span class="step-number">
-            {{ moment.order }}
-          </span>
+          <!-- ICONO DE FONDO -->
+
+          <div class="card-watermark">
+
+            {{
+              getExperienceIcon(item.experience)
+            }}
+
+          </div>
 
 
-          <span class="step-content">
+          <!-- ====================================================
+               CABECERA
+          ===================================================== -->
 
-            <strong>
-              {{ moment.title }}
-            </strong>
+          <div class="experience-card-top">
 
-            <small>
+            <div class="experience-card-icon">
+
               {{
-                moment.subtitle ||
-                moment.description
+                getExperienceIcon(item.experience)
               }}
-            </small>
 
-          </span>
-
-        </button>
+            </div>
 
 
-        <!-- CENTRO -->
+            <span class="experience-card-status">
 
-        <div class="cycle-center">
+              <span class="status-dot"></span>
 
-          <div class="cycle-center-ring">
+              Disponible
 
-            <span
-              class="cycle-center-icon"
-              aria-hidden="true"
-            >
-              🌱
             </span>
 
           </div>
 
-          <strong>
-            APRENDER
-          </strong>
 
-          <span>
-            volver a experimentar
-          </span>
+          <!-- ====================================================
+               CONTENIDO
+          ===================================================== -->
 
-        </div>
+          <div class="experience-card-content">
 
-      </div>
+            <span class="experience-card-label">
+              EXPERIENCIA DE APRENDIZAJE
+            </span>
 
-    </section>
+            <h3>
+              {{ item.experience.title }}
+            </h3>
 
-
-
-    <!-- ==========================================================
-         PROGRESO
-    ========================================================== -->
-
-    <section class="progress-section">
-
-      <div class="progress-header">
-
-        <div>
-
-          <span class="progress-label">
-            MI PROGRESO
-          </span>
-
-          <h3>
-            {{ progressLabel() }}
-          </h3>
-
-        </div>
-
-
-        <strong class="progress-percent">
-          {{ progressPercentage() }}%
-        </strong>
-
-      </div>
-
-
-      <div
-        class="progress-segments"
-        aria-label="Progreso de la experiencia"
-      >
-
-        <span
-          *ngFor="
-            let moment of orderedMoments();
-            trackBy: trackByMomentId
-          "
-
-          class="progress-segment"
-
-          [class.completed]="
-            isCompleted(moment)
-          "
-
-          [class.current]="
-            isCurrent(moment)
-          "
-        ></span>
-
-      </div>
-
-
-      <div class="progress-legend">
-
-        <span>
-          <i class="legend-dot completed"></i>
-          Completado
-        </span>
-
-        <span>
-          <i class="legend-dot current"></i>
-          Actual
-        </span>
-
-        <span>
-          <i class="legend-dot locked"></i>
-          Por descubrir
-        </span>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ==========================================================
-         LOGRO
-    ========================================================== -->
-
-    <section class="cycle-status">
-
-      <div class="status-icon">
-        🏆
-      </div>
-
-
-      <div class="status-content">
-
-        <span class="status-eyebrow">
-          LOGRO PRÓXIMO
-        </span>
-
-        <h3>
-          ¡Científico en acción!
-        </h3>
-
-        <p>
-          Completa las actividades de tu experiencia
-          y registra tus descubrimientos.
-        </p>
-
-
-        <div class="achievement-progress">
-
-          <div class="achievement-bar">
-
-            <span
-              [style.width.%]="
-                progressPercentage()
-              "
-            ></span>
+            <p>
+              {{ item.experience.description }}
+            </p>
 
           </div>
 
-          <strong>
+
+          <!-- ====================================================
+               INFORMACIÓN
+          ===================================================== -->
+
+          <div class="experience-card-info">
+
+            <div class="experience-info-item">
+
+              <strong>
+                {{ item.moments.length }}
+              </strong>
+
+              <span>
+                Momentos
+              </span>
+
+            </div>
+
+
+            <div
+              class="experience-info-divider"
+              aria-hidden="true"
+            ></div>
+
+
+            <div class="experience-info-item">
+
+              <strong>
+                {{ item.activities.length }}
+              </strong>
+
+              <span>
+                Actividades
+              </span>
+
+            </div>
+
+
+            <div
+              class="experience-info-divider"
+              aria-hidden="true"
+            ></div>
+
+
+            <div class="experience-info-item">
+
+              <strong>
+                {{ item.experience.difficulty }}
+              </strong>
+
+              <span>
+                Nivel
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- ====================================================
+               ENTRAR DIRECTAMENTE
+          ===================================================== -->
+
+          <footer class="experience-card-footer">
+
+            <button
+              class="experience-enter-button"
+              type="button"
+
+              (click)="
+                enterExperience(item.experience.id);
+                $event.stopPropagation()
+              "
+            >
+
+              <span>
+                ENTRAR
+              </span>
+
+              <span
+                class="footer-arrow"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+          </footer>
+
+        </article>
+
+      </section>
+
+
+      <!-- ==========================================================
+           CICLO DE APRENDIZAJE
+           
+           ESTA SECCIÓN SE CONSERVA.
+           Es parte central de Mi Aula.
+      =========================================================== -->
+
+      <section class="learning-cycle">
+
+        <header class="cycle-header">
+
+          <span class="cycle-eyebrow">
+            TELLUS LEARNING
+          </span>
+
+          <h3>
+            Ciclo de aprendizaje
+          </h3>
+
+          <p>
+            Aprende, experimenta, comprende y vuelve a comenzar.
+          </p>
+
+        </header>
+
+
+        <div class="cycle-container">
+
+
+          <!-- ANILLO EXTERIOR -->
+
+          <div
+            class="cycle-ring cycle-ring-outer"
+            aria-hidden="true"
+          ></div>
+
+
+          <!-- ANILLO INTERIOR -->
+
+          <div
+            class="cycle-ring cycle-ring-inner"
+            aria-hidden="true"
+          ></div>
+
+
+          <!-- TRAYECTORIA -->
+
+          <div
+            class="cycle-track"
+            aria-hidden="true"
+          ></div>
+
+
+          <!-- ====================================================
+               SIETE MOMENTOS
+          ===================================================== -->
+
+          <button
+            *ngFor="
+              let moment of orderedMoments();
+              trackBy: trackByMomentId
+            "
+
+            type="button"
+
+            class="cycle-step"
+
+            [class.current]="
+              isCurrent(moment)
+            "
+
+            [class.completed]="
+              isCompleted(moment)
+            "
+
+            [class.locked]="
+              isLocked(moment)
+            "
+
+            [attr.aria-label]="
+              moment.title
+            "
+
+            (click)="
+              goToMoment(moment.id)
+            "
+          >
+
+            <span class="step-icon">
+              {{ getMomentIcon(moment) }}
+            </span>
+
+
+            <span class="step-number">
+              {{ moment.order }}
+            </span>
+
+
+            <span class="step-content">
+
+              <strong>
+                {{ moment.title }}
+              </strong>
+
+              <small>
+                {{
+                  moment.subtitle ||
+                  moment.description
+                }}
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <!-- ====================================================
+               CENTRO DEL CICLO
+          ===================================================== -->
+
+          <div class="cycle-center">
+
+            <div class="cycle-center-ring">
+
+              <span
+                class="cycle-center-icon"
+                aria-hidden="true"
+              >
+                🌱
+              </span>
+
+            </div>
+
+            <strong>
+              APRENDER
+            </strong>
+
+            <span>
+              volver a experimentar
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==========================================================
+           PROGRESO
+      =========================================================== -->
+
+      <section class="progress-section">
+
+        <div class="progress-header">
+
+          <div>
+
+            <span class="progress-label">
+              MI PROGRESO
+            </span>
+
+            <h3>
+              {{ progressLabel() }}
+            </h3>
+
+          </div>
+
+
+          <strong class="progress-percent">
             {{ progressPercentage() }}%
           </strong>
 
         </div>
 
-      </div>
+
+        <div
+          class="progress-segments"
+          aria-label="Progreso de la experiencia"
+        >
+
+          <span
+            *ngFor="
+              let moment of orderedMoments();
+              trackBy: trackByMomentId
+            "
+
+            class="progress-segment"
+
+            [class.completed]="
+              isCompleted(moment)
+            "
+
+            [class.current]="
+              isCurrent(moment)
+            "
+          ></span>
+
+        </div>
+
+
+        <div class="progress-legend">
+
+          <span>
+
+            <i
+              class="legend-dot completed"
+            ></i>
+
+            Completado
+
+          </span>
+
+
+          <span>
+
+            <i
+              class="legend-dot current"
+            ></i>
+
+            Actual
+
+          </span>
+
+
+          <span>
+
+            <i
+              class="legend-dot locked"
+            ></i>
+
+            Por descubrir
+
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==========================================================
+           LOGRO
+      =========================================================== -->
+
+      <section class="cycle-status">
+
+        <div class="status-icon">
+          🏆
+        </div>
+
+
+        <div class="status-content">
+
+          <span class="status-eyebrow">
+            LOGRO PRÓXIMO
+          </span>
+
+          <h3>
+            ¡Científico en acción!
+          </h3>
+
+          <p>
+            Completa las actividades de tu experiencia
+            y registra tus descubrimientos.
+          </p>
+
+
+          <div class="achievement-progress">
+
+            <div class="achievement-bar">
+
+              <span
+                [style.width.%]="
+                  progressPercentage()
+                "
+              ></span>
+
+            </div>
+
+
+            <strong>
+              {{ progressPercentage() }}%
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
 
     </section>
 
-  </section>
+  </div>
 
 </main>
 

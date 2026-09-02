@@ -1,7 +1,9 @@
 // ============================================================
 // TELLUS — MI AULA
 // DISEÑO PREMIUM · EDITORIAL · GLASSMORPHISM
+// ATMÓSFERA DINÁMICA · PARTICULAS · EXPERIENCIAS
 // ============================================================
+
 
 .mi-aula-page {
 
@@ -19,6 +21,8 @@
 
   --accent-glow: rgba(21, 154, 75, .16);
 
+  --particle-color: rgba(21, 154, 75, .45);
+
   --text: #14382b;
   --text-soft: #536961;
   --text-muted: #87958f;
@@ -27,6 +31,8 @@
   --surface-solid: #ffffff;
 
   --border: #dce9e1;
+
+  position: relative;
 
   min-height: calc(100vh - 80px);
 
@@ -37,12 +43,12 @@
   background:
     radial-gradient(
       circle at 15% 5%,
-      rgba(50, 190, 120, .08),
+      rgba(50, 190, 120, .09),
       transparent 28%
     ),
     radial-gradient(
       circle at 85% 20%,
-      rgba(70, 190, 150, .06),
+      rgba(70, 190, 150, .07),
       transparent 30%
     ),
     linear-gradient(
@@ -53,18 +59,461 @@
     );
 
   font-family:
-    Inter,
+    "Aptos",
+    "Segoe UI",
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
     sans-serif;
 
   overflow-x: hidden;
 
+  isolation: isolate;
+
   transition:
-    background .35s ease,
+    background .6s ease,
     color .35s ease;
+}
+
+
+// ============================================================
+// ATMÓSFERA PREMIUM
+// ============================================================
+
+.ambient-background {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: -2;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+
+// ============================================================
+// GLOW AMBIENTAL
+// ============================================================
+
+.ambient-glow {
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(2px);
+
+  pointer-events: none;
+
+  opacity: .55;
+}
+
+
+.ambient-glow-1 {
+
+  width: 360px;
+
+  height: 360px;
+
+  top: 8%;
+
+  left: -170px;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--accent-glow),
+      transparent 68%
+    );
+
+  animation:
+    ambientFloatOne 13s ease-in-out infinite;
+}
+
+
+.ambient-glow-2 {
+
+  width: 420px;
+
+  height: 420px;
+
+  top: 35%;
+
+  right: -220px;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--accent-glow),
+      transparent 70%
+    );
+
+  animation:
+    ambientFloatTwo 17s ease-in-out infinite;
+}
+
+
+.ambient-glow-3 {
+
+  width: 280px;
+
+  height: 280px;
+
+  bottom: 2%;
+
+  left: 35%;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--accent-glow),
+      transparent 72%
+    );
+
+  opacity: .32;
+
+  animation:
+    ambientFloatThree 19s ease-in-out infinite;
+}
+
+
+// ============================================================
+// PARTICULAS
+// ============================================================
+
+.particles {
+
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+}
+
+/* Red de partículas: conexiones sutiles entre nodos */
+.particles::before {
+  content: "";
+  position: absolute;
+  inset: 8% 5%;
+  opacity: .18;
+  background:
+    linear-gradient(24deg, transparent 0 18%, var(--particle-color) 18.1% 18.25%, transparent 18.35% 100%),
+    linear-gradient(151deg, transparent 0 34%, var(--particle-color) 34.1% 34.25%, transparent 34.35% 100%),
+    linear-gradient(72deg, transparent 0 52%, var(--particle-color) 52.1% 52.22%, transparent 52.32% 100%),
+    linear-gradient(202deg, transparent 0 68%, var(--particle-color) 68.1% 68.22%, transparent 68.32% 100%),
+    linear-gradient(330deg, transparent 0 79%, var(--particle-color) 79.1% 79.22%, transparent 79.32% 100%);
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+  animation: networkDrift 24s ease-in-out infinite alternate;
+}
+
+.particles::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 24%, var(--particle-color) 0 1px, transparent 2px),
+    radial-gradient(circle at 31% 64%, var(--particle-color) 0 1px, transparent 2px),
+    radial-gradient(circle at 52% 30%, var(--particle-color) 0 1px, transparent 2px),
+    radial-gradient(circle at 73% 56%, var(--particle-color) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 27%, var(--particle-color) 0 1px, transparent 2px);
+  opacity: .5;
+  animation: networkPulse 7s ease-in-out infinite;
+}
+
+.particle {
+
+  position: absolute;
+
+  display: block;
+
+  width: 4px;
+
+  height: 4px;
+
+  border-radius: 50%;
+
+  background:
+    var(--particle-color);
+
+  box-shadow:
+    0 0 9px var(--accent-glow),
+    0 0 18px var(--accent-glow);
+
+  opacity: .5;
+
+  animation:
+    particleFloat linear infinite;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+
+.particle::after {
+
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  width: 14px;
+
+  height: 14px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border:
+    1px solid var(--particle-color);
+
+  border-radius: 50%;
+
+  opacity: .12;
+}
+
+
+.particle-01 {
+  left: 5%;
+  top: 18%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 15s;
+  animation-delay: -4s;
+}
+
+
+.particle-02 {
+  left: 12%;
+  top: 72%;
+  width: 5px;
+  height: 5px;
+  animation-duration: 19s;
+  animation-delay: -11s;
+}
+
+
+.particle-03 {
+  left: 19%;
+  top: 35%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 13s;
+  animation-delay: -7s;
+}
+
+
+.particle-04 {
+  left: 27%;
+  top: 84%;
+  width: 4px;
+  height: 4px;
+  animation-duration: 21s;
+  animation-delay: -14s;
+}
+
+
+.particle-05 {
+  left: 34%;
+  top: 12%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 17s;
+  animation-delay: -5s;
+}
+
+
+.particle-06 {
+  left: 42%;
+  top: 48%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 14s;
+  animation-delay: -9s;
+}
+
+
+.particle-07 {
+  left: 51%;
+  top: 76%;
+  width: 5px;
+  height: 5px;
+  animation-duration: 23s;
+  animation-delay: -18s;
+}
+
+
+.particle-08 {
+  left: 58%;
+  top: 20%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 16s;
+  animation-delay: -3s;
+}
+
+
+.particle-09 {
+  left: 65%;
+  top: 61%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 12s;
+  animation-delay: -8s;
+}
+
+
+.particle-10 {
+  left: 72%;
+  top: 31%;
+  width: 4px;
+  height: 4px;
+  animation-duration: 20s;
+  animation-delay: -13s;
+}
+
+
+.particle-11 {
+  left: 79%;
+  top: 82%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 18s;
+  animation-delay: -6s;
+}
+
+
+.particle-12 {
+  left: 87%;
+  top: 14%;
+  width: 5px;
+  height: 5px;
+  animation-duration: 24s;
+  animation-delay: -17s;
+}
+
+
+.particle-13 {
+  left: 94%;
+  top: 52%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 15s;
+  animation-delay: -10s;
+}
+
+
+.particle-14 {
+  left: 9%;
+  top: 92%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 22s;
+  animation-delay: -15s;
+}
+
+
+.particle-15 {
+  left: 23%;
+  top: 57%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 17s;
+  animation-delay: -2s;
+}
+
+
+.particle-16 {
+  left: 47%;
+  top: 91%;
+  width: 4px;
+  height: 4px;
+  animation-duration: 25s;
+  animation-delay: -20s;
+}
+
+
+.particle-17 {
+  left: 62%;
+  top: 9%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 14s;
+  animation-delay: -6s;
+}
+
+
+.particle-18 {
+  left: 76%;
+  top: 69%;
+  width: 4px;
+  height: 4px;
+  animation-duration: 19s;
+  animation-delay: -12s;
+}
+
+
+.particle-19 {
+  left: 84%;
+  top: 42%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 16s;
+  animation-delay: -9s;
+}
+
+
+.particle-20 {
+  left: 97%;
+  top: 88%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 21s;
+  animation-delay: -16s;
+}
+
+
+// ============================================================
+// PARTICULAS 21 — 40
+// ============================================================
+
+.particle-21 { left: 3%; top: 44%; width: 3px; height: 3px; animation-duration: 18s; animation-delay: -9s; }
+.particle-22 { left: 8%; top: 61%; width: 2px; height: 2px; animation-duration: 22s; animation-delay: -3s; }
+.particle-23 { left: 15%; top: 8%; width: 4px; height: 4px; animation-duration: 20s; animation-delay: -15s; }
+.particle-24 { left: 22%; top: 20%; width: 3px; height: 3px; animation-duration: 16s; animation-delay: -6s; }
+.particle-25 { left: 29%; top: 48%; width: 2px; height: 2px; animation-duration: 19s; animation-delay: -12s; }
+.particle-26 { left: 37%; top: 68%; width: 4px; height: 4px; animation-duration: 24s; animation-delay: -18s; }
+.particle-27 { left: 44%; top: 25%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -5s; }
+.particle-28 { left: 49%; top: 57%; width: 2px; height: 2px; animation-duration: 21s; animation-delay: -10s; }
+.particle-29 { left: 55%; top: 88%; width: 3px; height: 3px; animation-duration: 18s; animation-delay: -14s; }
+.particle-30 { left: 63%; top: 39%; width: 4px; height: 4px; animation-duration: 23s; animation-delay: -7s; }
+.particle-31 { left: 69%; top: 12%; width: 2px; height: 2px; animation-duration: 17s; animation-delay: -11s; }
+.particle-32 { left: 75%; top: 47%; width: 3px; height: 3px; animation-duration: 20s; animation-delay: -16s; }
+.particle-33 { left: 81%; top: 63%; width: 2px; height: 2px; animation-duration: 14s; animation-delay: -4s; }
+.particle-34 { left: 89%; top: 35%; width: 4px; height: 4px; animation-duration: 22s; animation-delay: -13s; }
+.particle-35 { left: 96%; top: 22%; width: 3px; height: 3px; animation-duration: 19s; animation-delay: -8s; }
+.particle-36 { left: 17%; top: 80%; width: 2px; height: 2px; animation-duration: 25s; animation-delay: -20s; }
+.particle-37 { left: 33%; top: 33%; width: 3px; height: 3px; animation-duration: 16s; animation-delay: -2s; }
+.particle-38 { left: 58%; top: 73%; width: 2px; height: 2px; animation-duration: 21s; animation-delay: -17s; }
+.particle-39 { left: 72%; top: 87%; width: 3px; height: 3px; animation-duration: 24s; animation-delay: -19s; }
+.particle-40 { left: 93%; top: 70%; width: 2px; height: 2px; animation-duration: 15s; animation-delay: -6s; }
+
+
+// ============================================================
+// CONTENIDO
+// ============================================================
+
+.mi-aula-content {
+
+  position: relative;
+
+  z-index: 1;
 }
 
 
@@ -84,12 +533,14 @@
 
   --accent-glow: rgba(20, 154, 197, .17);
 
+  --particle-color: rgba(20, 154, 197, .52);
+
   --border: #d8eaf0;
 
   background:
     radial-gradient(
       circle at 12% 8%,
-      rgba(40, 174, 218, .10),
+      rgba(40, 174, 218, .11),
       transparent 28%
     ),
     radial-gradient(
@@ -121,6 +572,128 @@
   --accent-border: #b9dfc5;
 
   --accent-glow: rgba(21, 154, 75, .16);
+
+  --particle-color: rgba(21, 154, 75, .48);
+}
+
+
+// ============================================================
+// TEMA CREADORES STEAM + IA
+// ============================================================
+
+.mi-aula-page.theme-programming {
+
+  --accent: #7c4dff;
+  --accent-dark: #5930c8;
+  --accent-deep: #351b80;
+
+  --accent-soft: #f0ebff;
+  --accent-pale: #faf8ff;
+  --accent-border: #d6c9ff;
+
+  --accent-glow: rgba(124, 77, 255, .17);
+
+  --particle-color: rgba(124, 77, 255, .55);
+
+  --border: #e4ddf7;
+
+  background:
+    radial-gradient(
+      circle at 12% 8%,
+      rgba(124, 77, 255, .11),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(170, 105, 255, .09),
+      transparent 31%
+    ),
+    linear-gradient(
+      180deg,
+      #fefcff 0%,
+      #faf8ff 55%,
+      #f5f1ff 100%
+    );
+}
+
+
+// ============================================================
+// TEMA CIRCUITOS
+// ============================================================
+
+.mi-aula-page.theme-circuits {
+
+  --accent: #e39a18;
+  --accent-dark: #a96500;
+  --accent-deep: #704100;
+
+  --accent-soft: #fff4dc;
+  --accent-pale: #fffaf0;
+  --accent-border: #efd39a;
+
+  --accent-glow: rgba(227, 154, 24, .18);
+
+  --particle-color: rgba(227, 154, 24, .56);
+
+  --border: #eee2c9;
+
+  background:
+    radial-gradient(
+      circle at 13% 7%,
+      rgba(245, 180, 50, .12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 87% 19%,
+      rgba(230, 145, 20, .09),
+      transparent 31%
+    ),
+    linear-gradient(
+      180deg,
+      #fffefa 0%,
+      #fffbf4 55%,
+      #faf5e9 100%
+    );
+}
+
+
+// ============================================================
+// TEMA QUÍMICA
+// ============================================================
+
+.mi-aula-page.theme-chemistry {
+
+  --accent: #d64f9d;
+  --accent-dark: #9c2e70;
+  --accent-deep: #671c49;
+
+  --accent-soft: #fcebf5;
+  --accent-pale: #fff8fc;
+  --accent-border: #edc4dc;
+
+  --accent-glow: rgba(214, 79, 157, .17);
+
+  --particle-color: rgba(214, 79, 157, .53);
+
+  --border: #efdce7;
+
+  background:
+    radial-gradient(
+      circle at 12% 7%,
+      rgba(230, 80, 160, .11),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(200, 90, 210, .08),
+      transparent 31%
+    ),
+    linear-gradient(
+      180deg,
+      #fffdfd 0%,
+      #fff8fc 55%,
+      #faf1f7 100%
+    );
 }
 
 
@@ -257,9 +830,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size:
     clamp(2.6rem, 5vw, 4.25rem);
@@ -327,7 +901,8 @@
 
   border-radius: 50%;
 
-  transform: translate(-50%, -50%);
+  transform:
+    translate(-50%, -50%);
 }
 
 
@@ -338,6 +913,9 @@
   height: 128px;
 
   opacity: .65;
+
+  animation:
+    orbitRotate 18s linear infinite;
 }
 
 
@@ -348,6 +926,9 @@
   height: 92px;
 
   opacity: .8;
+
+  animation:
+    orbitRotateReverse 13s linear infinite;
 }
 
 
@@ -377,7 +958,8 @@
 
   place-items: center;
 
-  transform: translate(-50%, -50%);
+  transform:
+    translate(-50%, -50%);
 
   background:
     linear-gradient(
@@ -395,6 +977,9 @@
   box-shadow:
     0 10px 30px var(--accent-glow),
     inset 0 1px 0 #ffffff;
+
+  animation:
+    corePulse 4s ease-in-out infinite;
 }
 
 
@@ -464,9 +1049,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size:
     clamp(2.25rem, 4.5vw, 3.35rem);
@@ -554,7 +1140,7 @@
   cursor: pointer;
 
   transition:
-    transform .28s ease,
+    transform .28s cubic-bezier(.2,.8,.2,1),
     box-shadow .28s ease,
     border-color .28s ease;
 }
@@ -563,14 +1149,47 @@
 .experience-card:hover {
 
   transform:
-    translateY(-6px);
+    translateY(-7px);
 
   border-color:
     var(--accent-border);
 
   box-shadow:
-    0 25px 55px var(--accent-glow),
+    0 27px 65px var(--accent-glow),
     inset 0 1px 0 #ffffff;
+}
+
+
+.experience-card::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 35%,
+      rgba(255,255,255,.34) 50%,
+      transparent 65%
+    );
+
+  transform:
+    translateX(-120%);
+
+  transition:
+    transform .7s ease;
+
+  pointer-events: none;
+}
+
+
+.experience-card:hover::before {
+
+  transform:
+    translateX(120%);
 }
 
 
@@ -600,6 +1219,19 @@
   z-index: -2;
 
   pointer-events: none;
+
+  transition:
+    transform .5s ease,
+    opacity .4s ease;
+}
+
+
+.experience-card:hover .card-glow {
+
+  transform:
+    scale(1.12);
+
+  opacity: .95;
 }
 
 
@@ -622,6 +1254,20 @@
   pointer-events: none;
 
   z-index: -1;
+
+  transition:
+    transform .4s ease,
+    opacity .4s ease;
+}
+
+
+.experience-card:hover .card-watermark {
+
+  transform:
+    scale(1.06)
+    rotate(3deg);
+
+  opacity: .055;
 }
 
 
@@ -632,9 +1278,6 @@
 .experience-card.experience-water {
 
   --card-accent: #149ac5;
-  --card-dark: #08759b;
-  --card-soft: #e8f7fc;
-  --card-border: #b8dfea;
 
   background:
     linear-gradient(
@@ -655,9 +1298,11 @@
 }
 
 
-.experience-card.experience-water .experience-card-label,
-.experience-card.experience-water .experience-info-item strong,
-.experience-card.experience-water .experience-card-footer span {
+.experience-card.experience-water
+.experience-card-label,
+
+.experience-card.experience-water
+.experience-info-item strong {
 
   color:
     #08759b;
@@ -681,11 +1326,6 @@
 
 .experience-card.experience-parabolic {
 
-  --card-accent: #159a4b;
-  --card-dark: #08763a;
-  --card-soft: #eaf8ef;
-  --card-border: #b9dfc5;
-
   background:
     linear-gradient(
       145deg,
@@ -699,6 +1339,96 @@
 
   background:
     #e0f4e7;
+}
+
+
+// ============================================================
+// CREADORES STEAM
+// ============================================================
+
+.experience-card.experience-programming {
+
+  --accent: #7c4dff;
+  --accent-dark: #5930c8;
+  --accent-soft: #f0ebff;
+  --accent-border: #d6c9ff;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.97),
+      rgba(248,245,255,.92)
+    );
+
+  border-color:
+    #e2daf7;
+}
+
+
+.experience-card.experience-programming .card-glow {
+
+  background:
+    #eee7ff;
+}
+
+
+// ============================================================
+// CIRCUITOS
+// ============================================================
+
+.experience-card.experience-circuits {
+
+  --accent: #e39a18;
+  --accent-dark: #a96500;
+  --accent-soft: #fff4dc;
+  --accent-border: #efd39a;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.97),
+      rgba(255,250,239,.92)
+    );
+
+  border-color:
+    #eee0c2;
+}
+
+
+.experience-card.experience-circuits .card-glow {
+
+  background:
+    #fff0cb;
+}
+
+
+// ============================================================
+// QUÍMICA
+// ============================================================
+
+.experience-card.experience-chemistry {
+
+  --accent: #d64f9d;
+  --accent-dark: #9c2e70;
+  --accent-soft: #fcebf5;
+  --accent-border: #edc4dc;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.97),
+      rgba(255,247,252,.92)
+    );
+
+  border-color:
+    #efd9e6;
+}
+
+
+.experience-card.experience-chemistry .card-glow {
+
+  background:
+    #f9e5f1;
 }
 
 
@@ -789,6 +1519,18 @@
   box-shadow:
     0 9px 25px var(--accent-glow),
     inset 0 1px 0 #ffffff;
+
+  transition:
+    transform .3s ease;
+}
+
+
+.experience-card:hover
+.experience-card-icon {
+
+  transform:
+    translateY(-2px)
+    scale(1.04);
 }
 
 
@@ -831,7 +1573,36 @@
 
   box-shadow:
     0 0 0 3px var(--accent-soft);
+
+  animation:
+    statusPulse 2.5s ease-in-out infinite;
 }
+
+
+// ============================================================
+// PARTICULAS 21 — 40
+// ============================================================
+
+.particle-21 { left: 3%; top: 44%; width: 3px; height: 3px; animation-duration: 18s; animation-delay: -9s; }
+.particle-22 { left: 8%; top: 61%; width: 2px; height: 2px; animation-duration: 22s; animation-delay: -3s; }
+.particle-23 { left: 15%; top: 8%; width: 4px; height: 4px; animation-duration: 20s; animation-delay: -15s; }
+.particle-24 { left: 22%; top: 20%; width: 3px; height: 3px; animation-duration: 16s; animation-delay: -6s; }
+.particle-25 { left: 29%; top: 48%; width: 2px; height: 2px; animation-duration: 19s; animation-delay: -12s; }
+.particle-26 { left: 37%; top: 68%; width: 4px; height: 4px; animation-duration: 24s; animation-delay: -18s; }
+.particle-27 { left: 44%; top: 25%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -5s; }
+.particle-28 { left: 49%; top: 57%; width: 2px; height: 2px; animation-duration: 21s; animation-delay: -10s; }
+.particle-29 { left: 55%; top: 88%; width: 3px; height: 3px; animation-duration: 18s; animation-delay: -14s; }
+.particle-30 { left: 63%; top: 39%; width: 4px; height: 4px; animation-duration: 23s; animation-delay: -7s; }
+.particle-31 { left: 69%; top: 12%; width: 2px; height: 2px; animation-duration: 17s; animation-delay: -11s; }
+.particle-32 { left: 75%; top: 47%; width: 3px; height: 3px; animation-duration: 20s; animation-delay: -16s; }
+.particle-33 { left: 81%; top: 63%; width: 2px; height: 2px; animation-duration: 14s; animation-delay: -4s; }
+.particle-34 { left: 89%; top: 35%; width: 4px; height: 4px; animation-duration: 22s; animation-delay: -13s; }
+.particle-35 { left: 96%; top: 22%; width: 3px; height: 3px; animation-duration: 19s; animation-delay: -8s; }
+.particle-36 { left: 17%; top: 80%; width: 2px; height: 2px; animation-duration: 25s; animation-delay: -20s; }
+.particle-37 { left: 33%; top: 33%; width: 3px; height: 3px; animation-duration: 16s; animation-delay: -2s; }
+.particle-38 { left: 58%; top: 73%; width: 2px; height: 2px; animation-duration: 21s; animation-delay: -17s; }
+.particle-39 { left: 72%; top: 87%; width: 3px; height: 3px; animation-duration: 24s; animation-delay: -19s; }
+.particle-40 { left: 93%; top: 70%; width: 2px; height: 2px; animation-duration: 15s; animation-delay: -6s; }
 
 
 // ============================================================
@@ -875,9 +1646,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size: 28px;
 
@@ -992,7 +1764,7 @@
 
 
 // ============================================================
-// PIE
+// PIE — BOTÓN ENTRAR
 // ============================================================
 
 .experience-card-footer {
@@ -1001,31 +1773,83 @@
 
   z-index: 2;
 
+  margin-top: 17px;
+}
+
+
+.experience-enter-button {
+
+  width: 100%;
+
+  min-height: 42px;
+
+  padding: 0 14px 0 17px;
+
   display: flex;
 
   align-items: center;
 
   justify-content: space-between;
 
-  margin-top: 17px;
-}
+  border: 1px solid var(--accent-border);
 
+  border-radius: 14px;
 
-.experience-card-footer > span:first-child {
+  background:
+    rgba(255,255,255,.65);
 
   color: var(--accent-dark);
 
   font-size: 10px;
 
   font-weight: 900;
+
+  letter-spacing: .08em;
+
+  cursor: pointer;
+
+  backdrop-filter:
+    blur(10px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9);
+
+  transition:
+    background .22s ease,
+    border-color .22s ease,
+    transform .22s ease,
+    box-shadow .22s ease;
+}
+
+
+.experience-enter-button:hover {
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-dark)
+    );
+
+  border-color:
+    var(--accent);
+
+  color:
+    #ffffff;
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 8px 22px var(--accent-glow);
 }
 
 
 .footer-arrow {
 
-  width: 32px;
+  width: 29px;
 
-  height: 32px;
+  height: 29px;
 
   display: grid;
 
@@ -1048,258 +1872,19 @@
     0 7px 18px var(--accent-glow);
 
   transition:
-    transform .2s ease;
+    transform .2s ease,
+    background .2s ease;
 }
 
 
-.experience-card:hover .footer-arrow {
+.experience-enter-button:hover
+.footer-arrow {
+
+  background:
+    rgba(255,255,255,.18);
 
   transform:
     translateX(3px);
-}
-
-
-// ============================================================
-// EXPERIENCIA ACTUAL
-// ============================================================
-
-.current-stage {
-
-  position: relative;
-
-  padding: 23px 25px;
-
-  background:
-    rgba(255,255,255,.74);
-
-  border:
-    1px solid var(--border);
-
-  border-radius: 25px;
-
-  box-shadow:
-    0 15px 40px rgba(20,65,40,.055),
-    inset 0 1px 0 #ffffff;
-
-  backdrop-filter:
-    blur(16px);
-
-  -webkit-backdrop-filter:
-    blur(16px);
-}
-
-
-.stage-label {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 9px;
-
-  margin-bottom: 13px;
-
-  color: var(--text-muted);
-
-  font-size: 8px;
-
-  font-weight: 900;
-
-  letter-spacing: .16em;
-
-  text-transform: uppercase;
-}
-
-
-.label-dot {
-
-  width: 7px;
-
-  height: 7px;
-
-  background: var(--accent);
-
-  border-radius: 50%;
-
-  box-shadow:
-    0 0 0 4px var(--accent-soft);
-}
-
-
-.stage-card {
-
-  display: grid;
-
-  grid-template-columns:
-    44px 60px 1fr auto;
-
-  align-items: center;
-
-  gap: 18px;
-
-  padding: 17px 19px;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--accent-pale),
-      var(--accent-soft)
-    );
-
-  border:
-    1px solid var(--accent-border);
-
-  border-radius: 20px;
-}
-
-
-.stage-number {
-
-  width: 43px;
-
-  height: 43px;
-
-  display: grid;
-
-  place-items: center;
-
-  background: #ffffff;
-
-  border:
-    1px solid var(--accent-border);
-
-  border-radius: 50%;
-
-  color: var(--accent-dark);
-
-  font-size: 13px;
-
-  font-weight: 900;
-}
-
-
-.stage-icon {
-
-  width: 58px;
-
-  height: 58px;
-
-  display: grid;
-
-  place-items: center;
-
-  background: #ffffff;
-
-  border:
-    1px solid var(--accent-border);
-
-  border-radius: 18px;
-
-  font-size: 28px;
-
-  box-shadow:
-    0 8px 22px var(--accent-glow);
-}
-
-
-.stage-kicker {
-
-  display: block;
-
-  margin-bottom: 3px;
-
-  color: var(--accent-dark);
-
-  font-size: 7px;
-
-  font-weight: 900;
-
-  letter-spacing: .13em;
-}
-
-
-.stage-info h3 {
-
-  margin: 0;
-
-  color: var(--text);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 19px;
-
-  line-height: 1.15;
-}
-
-
-.stage-info p {
-
-  margin: 5px 0 0;
-
-  color: var(--text-soft);
-
-  font-size: 11px;
-
-  line-height: 1.5;
-}
-
-
-// ============================================================
-// BOTÓN
-// ============================================================
-
-.btn-continue {
-
-  min-height: 44px;
-
-  padding: 0 21px;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 11px;
-
-  border: 0;
-
-  border-radius: 999px;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--accent),
-      var(--accent-dark)
-    );
-
-  color: #ffffff;
-
-  font-size: 11px;
-
-  font-weight: 900;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 9px 24px var(--accent-glow);
-
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease;
-}
-
-
-.btn-continue:hover {
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 14px 30px var(--accent-glow);
 }
 
 
@@ -1326,9 +1911,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size: 30px;
 
@@ -1393,6 +1979,9 @@
 
   border:
     1px solid var(--accent-border);
+
+  animation:
+    ringPulse 6s ease-in-out infinite;
 }
 
 
@@ -1406,10 +1995,6 @@
     1px dashed var(--accent-border);
 }
 
-
-// ============================================================
-// TRAYECTORIA
-// ============================================================
 
 .cycle-track {
 
@@ -1468,6 +2053,9 @@
 
   box-shadow:
     0 5px 15px var(--accent-glow);
+
+  animation:
+    cycleRotate 5s linear infinite;
 }
 
 
@@ -1603,9 +2191,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size: 11px;
 
@@ -1838,6 +2427,9 @@
     1px solid var(--accent-border);
 
   border-radius: 50%;
+
+  animation:
+    centerGlow 4s ease-in-out infinite;
 }
 
 
@@ -1924,9 +2516,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size: 18px;
 }
@@ -2062,6 +2655,9 @@
 
   box-shadow:
     0 12px 35px rgba(20,65,40,.05);
+
+  backdrop-filter:
+    blur(14px);
 }
 
 
@@ -2108,9 +2704,10 @@
   color: var(--text);
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
   font-size: 20px;
 }
@@ -2181,8 +2778,35 @@
 
 
 // ============================================================
-// ANIMACIÓN
+// ANIMACIONES
 // ============================================================
+
+@keyframes networkDrift {
+  0% {
+    transform: translate3d(-1%, 0, 0) scale(1);
+    opacity: .12;
+  }
+  50% {
+    transform: translate3d(1.5%, -1%, 0) scale(1.015);
+    opacity: .2;
+  }
+  100% {
+    transform: translate3d(-.5%, 1%, 0) scale(1.01);
+    opacity: .14;
+  }
+}
+
+@keyframes networkPulse {
+  0%, 100% {
+    opacity: .22;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .55;
+    transform: scale(1.02);
+  }
+}
+
 
 @keyframes wave {
 
@@ -2210,6 +2834,205 @@
 }
 
 
+@keyframes particleFloat {
+
+  0% {
+    transform:
+      translate3d(0, 0, 0)
+      scale(.75);
+
+    opacity: .15;
+  }
+
+  25% {
+    opacity: .55;
+  }
+
+  50% {
+    transform:
+      translate3d(22px, -42px, 0)
+      scale(1.15);
+
+    opacity: .75;
+  }
+
+  75% {
+    opacity: .4;
+  }
+
+  100% {
+    transform:
+      translate3d(-18px, -85px, 0)
+      scale(.7);
+
+    opacity: .05;
+  }
+
+}
+
+
+@keyframes ambientFloatOne {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform:
+      translate3d(70px, 40px, 0);
+  }
+
+}
+
+
+@keyframes ambientFloatTwo {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform:
+      translate3d(-55px, -45px, 0);
+  }
+
+}
+
+
+@keyframes ambientFloatThree {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate3d(20px, -25px, 0)
+      scale(1.12);
+  }
+
+}
+
+
+@keyframes orbitRotate {
+
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
+
+}
+
+
+@keyframes orbitRotateReverse {
+
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg);
+  }
+
+}
+
+
+@keyframes corePulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 10px 30px var(--accent-glow),
+      inset 0 1px 0 #ffffff;
+  }
+
+  50% {
+    box-shadow:
+      0 12px 38px var(--accent-glow),
+      0 0 0 7px var(--accent-soft),
+      inset 0 1px 0 #ffffff;
+  }
+
+}
+
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: .7;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+
+}
+
+
+@keyframes ringPulse {
+
+  0%,
+  100% {
+    opacity: .65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+}
+
+
+@keyframes cycleRotate {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+@keyframes centerGlow {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 var(--accent-glow);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 8px var(--accent-glow);
+  }
+
+}
+
+
 // ============================================================
 // TABLET
 // ============================================================
@@ -2220,25 +3043,16 @@
     padding: 18px;
   }
 
+
   .hero {
     padding: 34px;
   }
+
 
   .experiences-grid {
     grid-template-columns: 1fr;
   }
 
-  .stage-card {
-    grid-template-columns:
-      43px 58px 1fr;
-  }
-
-  .btn-continue {
-    grid-column:
-      1 / -1;
-
-    justify-self: stretch;
-  }
 
   .cycle-container {
     width: 650px;
@@ -2254,7 +3068,20 @@
 @media (max-width: 640px) {
 
   .mi-aula-page {
+
     padding: 11px;
+  }
+
+
+  .ambient-glow-1 {
+    width: 240px;
+    height: 240px;
+  }
+
+
+  .ambient-glow-2 {
+    width: 260px;
+    height: 260px;
   }
 
 
@@ -2290,19 +3117,25 @@
 
 
   .orbit-outer {
+
     width: 82px;
+
     height: 82px;
   }
 
 
   .orbit-middle {
+
     width: 61px;
+
     height: 61px;
   }
 
 
   .orbit-inner {
+
     width: 43px;
+
     height: 43px;
   }
 
@@ -2360,51 +3193,8 @@
   }
 
 
-  .stage-card {
-
-    grid-template-columns:
-      40px 1fr;
-
-    gap: 13px;
-
-    padding: 15px;
-  }
-
-
-  .stage-number {
-
-    width: 40px;
-
-    height: 40px;
-  }
-
-
-  .stage-icon {
-
-    grid-column: 2;
-
-    width: 49px;
-
-    height: 49px;
-  }
-
-
-  .stage-info {
-
-    grid-column: 2;
-  }
-
-
-  .stage-info h3 {
-    font-size: 18px;
-  }
-
-
-  .btn-continue {
-
-    grid-column: 1 / -1;
-
-    width: 100%;
+  .experience-enter-button {
+    min-height: 44px;
   }
 
 
@@ -2509,6 +3299,20 @@
     width: 130px;
   }
 
+
+  .particle:nth-child(n + 31) {
+    display: none;
+  }
+
+  .particle {
+    width: 3px;
+    height: 3px;
+  }
+
+  .particles::before {
+    opacity: .13;
+  }
+
 }
 
 
@@ -2522,9 +3326,11 @@
   *::before,
   *::after {
 
-    animation: none !important;
+    animation:
+      none !important;
 
-    transition: none !important;
+    transition:
+      none !important;
   }
 
 }
