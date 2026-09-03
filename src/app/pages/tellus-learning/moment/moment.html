@@ -984,6 +984,535 @@
   </section>
 
 
+
+  <!-- ========================================================
+       MOMENTO 3 — PREDICCIÓN
+  ========================================================= -->
+
+  <ng-container *ngIf="isPredictionMoment()">
+    <ng-container *ngIf="predictionChallenge() as challenge">
+
+      <section class="prediction-section">
+
+        <!-- CABECERA PEDAGÓGICA -->
+        <div class="prediction-intro">
+
+          <div class="prediction-intro-index">
+            03
+          </div>
+
+          <div class="prediction-intro-content">
+            <span class="section-kicker">
+              MOMENTO 3 · PREDICCIÓN
+            </span>
+
+            <h2>
+              Antes de experimentar, atrévete a predecir.
+            </h2>
+
+            <p>
+              Ya exploraste el fenómeno. Ahora utiliza lo que observaste
+              para anticipar qué podría ocurrir. No buscamos memorizar una
+              fórmula: buscamos que construyas una explicación que después
+              puedas contrastar con los datos.
+            </p>
+          </div>
+
+          <div class="prediction-intro-mark" aria-hidden="true">
+            ?
+          </div>
+
+        </div>
+
+
+        <!-- LO QUE DEBES COMPRENDER -->
+        <article class="prediction-learning-card">
+
+          <div class="prediction-card-heading">
+            <div>
+              <span class="section-kicker">
+                ANTES DE DECIDIR
+              </span>
+
+              <h3>
+                Lo que debes comprender
+              </h3>
+            </div>
+
+            <span class="prediction-card-number">
+              01
+            </span>
+          </div>
+
+          <p class="prediction-lead">
+            Una trayectoria no depende de una sola variable.
+            La forma en que se mueve un proyectil surge de la relación
+            entre las condiciones iniciales y el efecto de la gravedad.
+          </p>
+
+          <div class="prediction-concepts">
+
+            <article class="prediction-concept">
+              <span class="prediction-concept-icon">↗</span>
+              <div>
+                <strong>Velocidad inicial</strong>
+                <p>
+                  Determina cómo comienza el movimiento y puede cambiar
+                  el alcance y la altura alcanzada.
+                </p>
+              </div>
+            </article>
+
+            <article class="prediction-concept">
+              <span class="prediction-concept-icon">∠</span>
+              <div>
+                <strong>Ángulo de lanzamiento</strong>
+                <p>
+                  Cambia la dirección inicial y modifica la forma de la
+                  trayectoria y el alcance horizontal.
+                </p>
+              </div>
+            </article>
+
+            <article class="prediction-concept">
+              <span class="prediction-concept-icon">g</span>
+              <div>
+                <strong>Gravedad</strong>
+                <p>
+                  Hace que el movimiento vertical cambie continuamente
+                  durante el vuelo.
+                </p>
+              </div>
+            </article>
+
+            <article class="prediction-concept">
+              <span class="prediction-concept-icon">⌁</span>
+              <div>
+                <strong>Trayectoria</strong>
+                <p>
+                  Es el resultado observable del movimiento del objeto
+                  mientras avanza y cae.
+                </p>
+              </div>
+            </article>
+
+          </div>
+
+        </article>
+
+
+        <!-- INFOGRAFÍA -->
+        <article class="prediction-resource-card">
+
+          <div class="prediction-resource-header">
+            <div>
+              <span class="section-kicker">
+                MAPA VISUAL
+              </span>
+
+              <h3>
+                Relaciona las variables con la trayectoria
+              </h3>
+
+              <p>
+                Observa el esquema y busca relaciones antes de responder.
+              </p>
+            </div>
+
+            <span class="prediction-resource-code">
+              RECURSO 01
+            </span>
+          </div>
+
+          <div class="prediction-resource-image">
+            <img
+              src="/assets/tellus-learning/movimiento-parabolico/momento-03-infografia-movimiento-parabolico.png"
+              alt="Infografía sobre las variables que intervienen en el movimiento parabólico"
+              loading="lazy"
+            />
+          </div>
+
+        </article>
+
+
+        <!-- VIDEO -->
+        <article class="prediction-video-card">
+
+          <div class="prediction-video-copy">
+
+            <span class="section-kicker">
+              OBSERVA Y PIENSA
+            </span>
+
+            <h3>
+              Una explicación antes de tu predicción
+            </h3>
+
+            <p>
+              Mira el recurso y presta atención a las relaciones entre
+              velocidad, ángulo, altura y alcance.
+            </p>
+
+            <div class="prediction-video-note">
+              <span>01</span>
+              <p>
+                Mientras observas, intenta responder:
+                <strong>¿qué variable cambiarías primero para modificar
+                la trayectoria?</strong>
+              </p>
+            </div>
+
+          </div>
+
+          <div class="prediction-video-frame">
+            <ng-container *ngIf="challenge.videoUrl; else videoPlaceholder">
+              <iframe
+                [src]="challenge.videoUrl"
+                [title]="challenge.videoTitle || 'Video de apoyo para la predicción'"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </ng-container>
+
+            <ng-template #videoPlaceholder>
+              <div class="prediction-video-placeholder">
+                <span class="prediction-video-play">▶</span>
+                <strong>
+                  {{ challenge.videoTitle || 'Video de apoyo' }}
+                </strong>
+                <small>
+                  El recurso audiovisual se mostrará cuando esté configurado.
+                </small>
+              </div>
+            </ng-template>
+          </div>
+
+        </article>
+
+
+        <!-- EJEMPLO RESUELTO -->
+        <article class="prediction-example-card">
+
+          <div class="prediction-example-header">
+            <div>
+              <span class="section-kicker">
+                EJEMPLO
+              </span>
+
+              <h3>
+                Observa una predicción razonada
+              </h3>
+            </div>
+
+            <span class="prediction-card-number">
+              02
+            </span>
+          </div>
+
+          <div class="prediction-example-body">
+
+            <div class="prediction-example-image">
+              <img
+                src="/assets/tellus-learning/movimiento-parabolico/momento-03-infografia2-movimiento-parabolico.png"
+                alt="Ejemplo resuelto de predicción del movimiento parabólico"
+                loading="lazy"
+              />
+            </div>
+
+            <div class="prediction-example-copy">
+              <span class="prediction-example-label">
+                PIENSA COMO INVESTIGADOR
+              </span>
+
+              <p>
+                Una buena predicción no es simplemente elegir una respuesta.
+                Debe apoyarse en una relación que después pueda comprobarse
+                mediante la experimentación.
+              </p>
+
+              <div class="prediction-example-rule">
+                <span>→</span>
+                <strong>
+                  Predicción → experimento → datos → explicación
+                </strong>
+              </div>
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- DESAFÍO ABCD -->
+        <article class="prediction-challenge-card">
+
+          <div class="prediction-challenge-header">
+
+            <div>
+              <span class="section-kicker">
+                DESAFÍO DE PREDICCIÓN
+              </span>
+
+              <h3>
+                {{ challenge.title || '¿Cuál predicción explica mejor el fenómeno?' }}
+              </h3>
+
+              <p *ngIf="challenge.instructions">
+                {{ challenge.instructions }}
+              </p>
+            </div>
+
+            <div class="prediction-attempts">
+              <span>INTENTOS</span>
+              <strong>{{ predictionAttempts() }}</strong>
+            </div>
+
+          </div>
+
+
+          <div class="prediction-question">
+
+            <span class="prediction-question-index">
+              03
+            </span>
+
+            <p>
+              {{
+                challenge.question ||
+                'Si mantenemos las demás condiciones y modificamos una variable del lanzamiento, ¿qué predicción es más razonable?'
+              }}
+            </p>
+
+          </div>
+
+
+          <div class="prediction-options">
+
+            <button
+              type="button"
+              class="prediction-option"
+              *ngFor="let option of challenge.options"
+              [class.selected]="selectedPredictionOption() === option.id"
+              [class.correct]="
+                predictionSubmitted()
+                && predictionCorrect()
+                && selectedPredictionOption() === option.id
+              "
+              [class.incorrect]="
+                predictionSubmitted()
+                && !predictionCorrect()
+                && selectedPredictionOption() === option.id
+              "
+              [disabled]="predictionSubmitted()"
+              (click)="selectPredictionOption(option.id)"
+            >
+
+              <span class="prediction-option-letter">
+                {{ option.letter || option.id }}
+              </span>
+
+              <span class="prediction-option-copy">
+                <strong>
+                  {{ option.title || option.label }}
+                </strong>
+
+                <small *ngIf="option.text || option.description">
+                  {{ option.text || option.description }}
+                </small>
+              </span>
+
+              <span class="prediction-option-state">
+                <ng-container
+                  *ngIf="
+                    predictionSubmitted()
+                    && selectedPredictionOption() === option.id
+                  "
+                >
+                  {{ predictionCorrect() ? '✓' : '×' }}
+                </ng-container>
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- RETROALIMENTACIÓN -->
+          <div
+            class="prediction-feedback"
+            *ngIf="predictionFeedback()"
+            [class.success]="predictionCorrect()"
+            [class.error]="
+              predictionSubmitted() && !predictionCorrect()
+            "
+          >
+
+            <span class="prediction-feedback-mark">
+              {{ predictionCorrect() ? '✓' : 'i' }}
+            </span>
+
+            <div>
+              <strong>
+                {{
+                  predictionCorrect()
+                    ? 'Predicción correcta'
+                    : 'Todavía puedes revisarla'
+                }}
+              </strong>
+
+              <p>
+                {{ predictionFeedback() }}
+              </p>
+            </div>
+
+          </div>
+
+
+          <!-- ACCIONES DEL DESAFÍO -->
+          <div class="prediction-actions">
+
+            <button
+              type="button"
+              class="secondary-action"
+              *ngIf="
+                predictionSubmitted()
+                && !predictionCorrect()
+              "
+              (click)="retryPrediction()"
+            >
+              Intentar nuevamente
+            </button>
+
+            <button
+              type="button"
+              class="secondary-action"
+              *ngIf="
+                predictionSubmitted()
+                && predictionCorrect()
+              "
+              (click)="resetPrediction()"
+            >
+              Volver a revisar
+            </button>
+
+            <button
+              type="button"
+              class="primary-glass-action"
+              [disabled]="!canSubmitPrediction()"
+              (click)="submitPrediction()"
+            >
+              <span>
+                Comprobar predicción
+              </span>
+
+              <strong>
+                →
+              </strong>
+            </button>
+
+          </div>
+
+
+          <!-- COMPLETADO -->
+          <div
+            class="prediction-completion"
+            *ngIf="predictionCorrect()"
+          >
+
+            <div class="prediction-completion-mark">
+              ✓
+            </div>
+
+            <div>
+              <span class="section-kicker">
+                MOMENTO 3 COMPLETADO
+              </span>
+
+              <h4>
+                {{ challenge.completion?.title || '¡Predicción completada!' }}
+              </h4>
+
+              <p>
+                {{
+                  challenge.completion?.message ||
+                  'Has construido una predicción que ahora podrás contrastar con la experimentación.'
+                }}
+              </p>
+
+              <small *ngIf="challenge.completion?.nextMessage">
+                {{ challenge.completion.nextMessage }}
+              </small>
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- PUENTE HACIA EXPERIMENTACIÓN -->
+        <section class="prediction-transition">
+
+          <div class="prediction-transition-line"></div>
+
+          <div>
+            <span class="section-kicker">
+              SIGUIENTE PASO
+            </span>
+
+            <h3>
+              Ahora pon tu predicción a prueba.
+            </h3>
+
+            <p>
+              Una hipótesis adquiere fuerza cuando puede contrastarse
+              con evidencia. En el siguiente momento experimentarás,
+              medirás y compararás tus resultados.
+            </p>
+          </div>
+
+          <div class="prediction-transition-arrow">
+            →
+          </div>
+
+        </section>
+
+
+        <!-- NAVEGACIÓN ESPECÍFICA DEL MOMENTO -->
+        <div class="prediction-navigation">
+
+          <button
+            type="button"
+            class="secondary-action"
+            (click)="previousMoment() && goToMoment(previousMoment()!.id)"
+            *ngIf="previousMoment()"
+          >
+            ← Volver a exploración
+          </button>
+
+          <button
+            type="button"
+            class="primary-glass-action"
+            [disabled]="!canContinue()"
+            (click)="continue()"
+          >
+            <span>
+              {{ nextMoment() ? 'Continuar a experimentación' : 'Finalizar' }}
+            </span>
+
+            <strong>
+              →
+            </strong>
+          </button>
+
+        </div>
+
+      </section>
+
+    </ng-container>
+  </ng-container>
+
+
   <!-- ========================================================
        CIERRE
   ========================================================= -->

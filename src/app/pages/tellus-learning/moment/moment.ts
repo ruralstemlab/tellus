@@ -1178,6 +1178,183 @@ export class MomentComponent
 
 
   // ============================================================
+  // DESAFÍO DE PREDICCIÓN — MOMENTO 3
+  // ============================================================
+
+  readonly selectedPredictionOption =
+    signal<string | null>(null);
+
+  readonly predictionSubmitted =
+    signal<boolean>(false);
+
+  readonly predictionCorrect =
+    signal<boolean>(false);
+
+  readonly predictionAttempts =
+    signal<number>(0);
+
+  readonly predictionFeedback =
+    signal<string>('');
+
+  readonly predictionChallenge =
+    computed<any | null>(() => {
+
+      const activity =
+        this.primaryActivity();
+
+      const config =
+        activity?.config as any;
+
+      return (
+        config?.settings?.predictionChallenge
+        ??
+        null
+      );
+    });
+
+  readonly isPredictionMoment =
+    computed<boolean>(() => {
+
+      return (
+        this.currentOrder() === 3
+        &&
+        !!this.predictionChallenge()
+      );
+    });
+
+  readonly canSubmitPrediction =
+    computed<boolean>(() => {
+
+      return (
+        !!this.selectedPredictionOption()
+        &&
+        !this.predictionSubmitted()
+      );
+    });
+
+  selectPredictionOption(
+    optionId: string
+  ): void {
+
+    if (
+      this.predictionSubmitted()
+    ) {
+      return;
+    }
+
+    this.selectedPredictionOption.set(
+      optionId
+    );
+
+    this.predictionFeedback.set(
+      ''
+    );
+  }
+
+  submitPrediction(): void {
+
+    const challenge =
+      this.predictionChallenge();
+
+    const selected =
+      this.selectedPredictionOption();
+
+    if (
+      !challenge
+      ||
+      !selected
+      ||
+      this.predictionSubmitted()
+    ) {
+      return;
+    }
+
+    const correctAnswer =
+      String(
+        challenge.correctAnswer
+        ??
+        ''
+      );
+
+    const isCorrect =
+      selected === correctAnswer;
+
+    this.predictionAttempts.update(
+      value => value + 1
+    );
+
+    this.predictionSubmitted.set(
+      true
+    );
+
+    this.predictionCorrect.set(
+      isCorrect
+    );
+
+    if (isCorrect) {
+
+      this.predictionFeedback.set(
+        challenge.feedback?.correct
+        ??
+        challenge.completion?.message
+        ??
+        '¡Correcto! Tu predicción coincide con el comportamiento esperado.'
+      );
+
+      return;
+    }
+
+    this.predictionFeedback.set(
+      challenge.feedback?.incorrect
+      ??
+      'Aún no. Revisa la información anterior, vuelve a pensar tu predicción e inténtalo nuevamente.'
+    );
+  }
+
+  retryPrediction(): void {
+
+    this.selectedPredictionOption.set(
+      null
+    );
+
+    this.predictionSubmitted.set(
+      false
+    );
+
+    this.predictionCorrect.set(
+      false
+    );
+
+    this.predictionFeedback.set(
+      ''
+    );
+  }
+
+  resetPrediction(): void {
+
+    this.selectedPredictionOption.set(
+      null
+    );
+
+    this.predictionSubmitted.set(
+      false
+    );
+
+    this.predictionCorrect.set(
+      false
+    );
+
+    this.predictionAttempts.set(
+      0
+    );
+
+    this.predictionFeedback.set(
+      ''
+    );
+  }
+
+
+  // ============================================================
   // PUEDE CONTINUAR
   // ============================================================
 
@@ -1199,6 +1376,15 @@ export class MomentComponent
       this.explorationGame()
     ) {
       return this.explorationCompleted();
+    }
+
+    // Momento 3: el desafío de predicción debe responderse
+    // correctamente antes de desbloquear el siguiente momento.
+    if (
+      current.order === 3 &&
+      this.predictionChallenge()
+    ) {
+      return this.predictionCorrect();
     }
 
     // Los momentos que no requieren entrega pueden continuar.
@@ -1233,14 +1419,24 @@ export class MomentComponent
 
 
     if (
-      activity?.config?.requiresSubmission
-      ===
-      true
-      &&
       !this.canContinue()
     ) {
 
-      this.focusResponse();
+      if (
+        this.currentOrder() === 3
+        &&
+        this.predictionChallenge()
+      ) {
+        return;
+      }
+
+      if (
+        activity?.config?.requiresSubmission
+        ===
+        true
+      ) {
+        this.focusResponse();
+      }
 
       return;
     }
@@ -1472,6 +1668,8 @@ export class MomentComponent
           this.saved.set(
             false
           );
+
+          this.resetPrediction();
         }
       );
   }
