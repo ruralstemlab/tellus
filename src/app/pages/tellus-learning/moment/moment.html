@@ -986,7 +986,7 @@
 
 
   <!-- ========================================================
-       MOMENTO 3 — PREDICCIÓN (CORREGIDO)
+       MOMENTO 3 — PREDICCIÓN
   ========================================================= -->
 
   <ng-container *ngIf="isPredictionMoment()">
@@ -1135,7 +1135,7 @@
         </article>
 
 
-        <!-- EJEMPLO RESUELTO / INFOGRAFÍA 2 (MODIFICADO) -->
+        <!-- EJEMPLO RESUELTO / INFOGRAFÍA 2 -->
         <article class="prediction-example-card">
 
           <div class="prediction-example-header">
@@ -1154,7 +1154,6 @@
             </span>
           </div>
 
-          <!-- TEXTO EXPLICATIVO AHORA ARRIBA -->
           <div class="prediction-example-copy-top">
             <span class="prediction-example-label">
               PIENSA COMO INVESTIGADOR
@@ -1174,7 +1173,6 @@
             </div>
           </div>
 
-          <!-- IMAGEN OCUPA TODO EL ANCHO -->
           <div class="prediction-example-image-full">
             <img
               src="/assets/tellus-learning/movimiento-parabolico/momento-03-infografia2-movimiento-parabolico.png"
@@ -1186,7 +1184,7 @@
         </article>
 
 
-        <!-- VIDEO (CON ENLACE CORREGIDO) -->
+        <!-- VIDEO -->
         <article class="prediction-video-card">
 
           <div class="prediction-video-copy">
@@ -1494,6 +1492,61 @@
       </section>
 
     </ng-container>
+  </ng-container>
+
+
+  <!-- ========================================================
+       MOMENTO 4 — EXPERIMENTACIÓN (CORREGIDO Y LIMPIO)
+  ========================================================= -->
+
+  <ng-container *ngIf="currentOrder() === 4">
+    <section class="experiment-section">
+
+      <!-- SIMULADOR ROAD TO GLORY -->
+      <article class="experiment-simulator-card">
+        <div class="experiment-simulator-header">
+          <div>
+            <span class="section-kicker">🏆 ROAD TO GLORY</span>
+            <h3>Juega y llega a la gloria</h3>
+            <p>
+              Ajusta la velocidad y el ángulo, lanza y trata de superar
+              tu propia marca. Experimenta con diferentes condiciones
+              y observa cómo cambia la trayectoria.
+            </p>
+          </div>
+          <span class="experiment-simulator-badge">SIMULADOR</span>
+        </div>
+
+        <div class="experiment-simulator-frame">
+          <iframe
+            src="https://ruralsteamlab.com/simulators/projectile-motion/"
+            title="Road to Glory - Simulador de movimiento parabólico"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            class="simulator-iframe"
+            (load)="onSimulatorLoaded()"
+          ></iframe>
+        </div>
+
+        <div class="experiment-simulator-actions">
+          <p class="simulator-hint">
+            Si el simulador no se carga correctamente, haz clic en el botón
+            para abrirlo en una nueva ventana.
+          </p>
+          <a
+            href="https://ruralsteamlab.com/simulators/projectile-motion/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="primary-glass-action"
+          >
+            <span>🎮 Abrir Road to Glory</span>
+            <strong>→</strong>
+          </a>
+        </div>
+      </article>
+
+    </section>
   </ng-container>
 
 

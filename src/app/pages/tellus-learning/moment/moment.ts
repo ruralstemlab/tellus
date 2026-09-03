@@ -1355,6 +1355,18 @@ export class MomentComponent
 
 
   // ============================================================
+  // SIMULADOR — MOMENTO 4
+  // ============================================================
+
+  readonly simulatorLoaded =
+    signal<boolean>(false);
+
+  onSimulatorLoaded(): void {
+    this.simulatorLoaded.set(true);
+  }
+
+
+  // ============================================================
   // PUEDE CONTINUAR
   // ============================================================
 
@@ -1378,13 +1390,17 @@ export class MomentComponent
       return this.explorationCompleted();
     }
 
-    // Momento 3: el desafío de predicción debe responderse
-    // correctamente antes de desbloquear el siguiente momento.
+    // Momento 3: el desafío de predicción debe responderse correctamente.
     if (
       current.order === 3 &&
       this.predictionChallenge()
     ) {
       return this.predictionCorrect();
+    }
+
+    // Momento 4: el simulador debe estar cargado.
+    if (current.order === 4) {
+      return this.simulatorLoaded();
     }
 
     // Los momentos que no requieren entrega pueden continuar.
@@ -1670,6 +1686,9 @@ export class MomentComponent
           );
 
           this.resetPrediction();
+
+          // Resetear el estado del simulador al cambiar de momento
+          this.simulatorLoaded.set(false);
         }
       );
   }

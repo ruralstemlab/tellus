@@ -319,7 +319,7 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
 
   /* ==========================================================
-   * MOMENTO 4 — EXPERIMENTACIÓN
+   * MOMENTO 4 — EXPERIMENTACIÓN (CORREGIDO)
    * ========================================================== */
 
   {
@@ -340,6 +340,17 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
       'Realiza experimentos físicos y utiliza herramientas digitales para contrastar tus predicciones.',
 
     type: 'experimentacion',
+
+    /*
+     * IMAGEN DEL MOMENTO 4
+     *
+     * Archivo:
+     * public/assets/tellus-learning/movimiento-parabolico/
+     * momento-04-movimiento-parabolico.png
+     */
+
+    image:
+      '/assets/tellus-learning/movimiento-parabolico/momento-04-movimiento-parabolico.png',
 
     objectiveIds: [
       'obj-04',
