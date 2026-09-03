@@ -1,8 +1,6 @@
-import {
-  Activity,
-  Experience,
-  Moment,
-} from '../models';
+import { Experience } from '../models/experience.model';
+import { Moment } from '../models/moment.model';
+import { Activity } from '../models/activity.model';
 
 /**
  * ============================================================
@@ -288,6 +286,17 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
       'Antes de experimentar, formula una predicción y explica qué esperas que ocurra.',
 
     type: 'prediccion',
+
+    /*
+     * IMAGEN DEL MOMENTO 3
+     *
+     * Archivo:
+     * public/assets/tellus-learning/movimiento-parabolico/
+     * momento-03-movimiento-parabolico.png
+     */
+
+    image:
+      '/assets/tellus-learning/movimiento-parabolico/momento-03-movimiento-parabolico.png',
 
     objectiveIds: [
       'obj-03',
@@ -806,6 +815,102 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       graded: false,
 
       allowsMultipleAttempts: false,
+
+      settings: {
+
+        predictionChallenge: {
+
+          id:
+            'mission-03-prediccion-trayectoria',
+
+          title:
+            '¿Qué ocurrirá con la trayectoria?',
+
+          instructions:
+            'Usa lo que observaste durante la exploración para elegir la predicción que mejor explica el comportamiento del proyectil.',
+
+          question:
+            'Si aumentamos la velocidad inicial de un lanzamiento y mantenemos el ángulo y las demás condiciones, ¿qué esperamos que ocurra con la trayectoria?',
+
+          options: [
+
+            {
+              id: 'option-a',
+
+              letter: 'A',
+
+              title:
+                'Llegará más lejos',
+
+              text:
+                'El proyectil puede alcanzar un mayor alcance horizontal.',
+            },
+
+            {
+              id: 'option-b',
+
+              letter: 'B',
+
+              title:
+                'La trayectoria será igual',
+
+              text:
+                'La velocidad inicial no modifica el movimiento del proyectil.',
+            },
+
+            {
+              id: 'option-c',
+
+              letter: 'C',
+
+              title:
+                'Solo cambiará la altura',
+
+              text:
+                'La velocidad inicial modifica únicamente la altura máxima y no el alcance.',
+            },
+
+            {
+              id: 'option-d',
+
+              letter: 'D',
+
+              title:
+                'La gravedad desaparecerá',
+
+              text:
+                'Al aumentar la velocidad inicial deja de actuar la gravedad sobre el proyectil.',
+            },
+
+          ],
+
+          correctAnswer:
+            'option-a',
+
+          feedback: {
+
+            correct:
+              'Correcto. Si aumentamos la velocidad inicial y mantenemos las demás condiciones, el proyectil puede alcanzar un mayor alcance horizontal.',
+
+            incorrect:
+              'Todavía no. Vuelve a pensar en lo que observaste durante la exploración: ¿qué sucede con el alcance cuando aumenta la velocidad inicial?',
+          },
+
+          completion: {
+
+            title:
+              '¡Predicción completada!',
+
+            message:
+              'Has formulado una predicción y la has relacionado con el comportamiento observado durante la exploración.',
+
+            nextMessage:
+              'Ahora estás listo para poner tu predicción a prueba durante la experimentación.',
+          },
+
+        },
+
+      },
 
     },
 
