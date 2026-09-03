@@ -986,7 +986,7 @@
 
 
   <!-- ========================================================
-       MOMENTO 3 — PREDICCIÓN
+       MOMENTO 3 — PREDICCIÓN (CORREGIDO)
   ========================================================= -->
 
   <ng-container *ngIf="isPredictionMoment()">
@@ -1101,7 +1101,7 @@
         </article>
 
 
-        <!-- INFOGRAFÍA -->
+        <!-- INFOGRAFÍA 1 -->
         <article class="prediction-resource-card">
 
           <div class="prediction-resource-header">
@@ -1135,7 +1135,58 @@
         </article>
 
 
-        <!-- VIDEO -->
+        <!-- EJEMPLO RESUELTO / INFOGRAFÍA 2 (MODIFICADO) -->
+        <article class="prediction-example-card">
+
+          <div class="prediction-example-header">
+            <div>
+              <span class="section-kicker">
+                EJEMPLO
+              </span>
+
+              <h3>
+                Observa una predicción razonada
+              </h3>
+            </div>
+
+            <span class="prediction-card-number">
+              02
+            </span>
+          </div>
+
+          <!-- TEXTO EXPLICATIVO AHORA ARRIBA -->
+          <div class="prediction-example-copy-top">
+            <span class="prediction-example-label">
+              PIENSA COMO INVESTIGADOR
+            </span>
+
+            <p>
+              Una buena predicción no es simplemente elegir una respuesta.
+              Debe apoyarse en una relación que después pueda comprobarse
+              mediante la experimentación.
+            </p>
+
+            <div class="prediction-example-rule">
+              <span>→</span>
+              <strong>
+                Predicción → experimento → datos → explicación
+              </strong>
+            </div>
+          </div>
+
+          <!-- IMAGEN OCUPA TODO EL ANCHO -->
+          <div class="prediction-example-image-full">
+            <img
+              src="/assets/tellus-learning/movimiento-parabolico/momento-03-infografia2-movimiento-parabolico.png"
+              alt="Ejemplo resuelto de predicción del movimiento parabólico"
+              loading="lazy"
+            />
+          </div>
+
+        </article>
+
+
+        <!-- VIDEO (CON ENLACE CORREGIDO) -->
         <article class="prediction-video-card">
 
           <div class="prediction-video-copy">
@@ -1165,80 +1216,13 @@
           </div>
 
           <div class="prediction-video-frame">
-            <ng-container *ngIf="challenge.videoUrl; else videoPlaceholder">
-              <iframe
-                [src]="challenge.videoUrl"
-                [title]="challenge.videoTitle || 'Video de apoyo para la predicción'"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-              ></iframe>
-            </ng-container>
-
-            <ng-template #videoPlaceholder>
-              <div class="prediction-video-placeholder">
-                <span class="prediction-video-play">▶</span>
-                <strong>
-                  {{ challenge.videoTitle || 'Video de apoyo' }}
-                </strong>
-                <small>
-                  El recurso audiovisual se mostrará cuando esté configurado.
-                </small>
-              </div>
-            </ng-template>
-          </div>
-
-        </article>
-
-
-        <!-- EJEMPLO RESUELTO -->
-        <article class="prediction-example-card">
-
-          <div class="prediction-example-header">
-            <div>
-              <span class="section-kicker">
-                EJEMPLO
-              </span>
-
-              <h3>
-                Observa una predicción razonada
-              </h3>
-            </div>
-
-            <span class="prediction-card-number">
-              02
-            </span>
-          </div>
-
-          <div class="prediction-example-body">
-
-            <div class="prediction-example-image">
-              <img
-                src="/assets/tellus-learning/movimiento-parabolico/momento-03-infografia2-movimiento-parabolico.png"
-                alt="Ejemplo resuelto de predicción del movimiento parabólico"
-                loading="lazy"
-              />
-            </div>
-
-            <div class="prediction-example-copy">
-              <span class="prediction-example-label">
-                PIENSA COMO INVESTIGADOR
-              </span>
-
-              <p>
-                Una buena predicción no es simplemente elegir una respuesta.
-                Debe apoyarse en una relación que después pueda comprobarse
-                mediante la experimentación.
-              </p>
-
-              <div class="prediction-example-rule">
-                <span>→</span>
-                <strong>
-                  Predicción → experimento → datos → explicación
-                </strong>
-              </div>
-            </div>
-
+            <iframe
+              src="https://www.youtube.com/embed/SAa4i9UTm24"
+              title="Video de apoyo para la predicción"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
           </div>
 
         </article>
