@@ -6,39 +6,71 @@
 >
 
   <!-- ========================================================
-       NAVEGACIÓN
+       BARRA SUPERIOR
   ========================================================= -->
 
-  <section class="moment-navigation">
+  <section class="moment-topbar">
 
     <button
       type="button"
-      class="back-button"
+      class="glass-nav"
       (click)="backToClassroom()"
     >
 
-      <span>←</span>
+      <span class="glass-nav-icon">
+        ←
+      </span>
 
-      Volver a Mi Aula
+      <span class="glass-nav-copy">
+        <small>TELLUS LEARNING</small>
+        <strong>Mi Aula</strong>
+      </span>
 
     </button>
 
 
-    <div class="moment-progress">
+    <div class="journey-progress">
 
-      <span class="progress-label">
-        MOMENTO
-      </span>
+      <div class="journey-progress-head">
 
-      <div class="progress-steps">
+        <div>
+          <span>
+            RUTA DE APRENDIZAJE
+          </span>
+
+          <strong>
+            {{ progressLabel() }}
+          </strong>
+        </div>
+
+        <b>
+          {{ progressPercentage() }}%
+        </b>
+
+      </div>
+
+
+      <div class="journey-line">
+
+        <span
+          class="journey-line-fill"
+          [style.width.%]="progressPercentage()"
+        ></span>
+
+      </div>
+
+
+      <div class="journey-dots">
 
         <button
           *ngFor="
             let moment of moments();
             trackBy: trackByMomentId
           "
+
           type="button"
-          class="progress-step"
+
+          class="journey-dot"
 
           [class.current]="
             isCurrent(moment)
@@ -52,12 +84,26 @@
             isLocked(moment)
           "
 
+          [disabled]="
+            isLocked(moment)
+          "
+
+          [attr.title]="
+            moment.order + '. ' + moment.title
+          "
+
           (click)="
             goToMoment(moment.id)
           "
         >
 
-          {{ moment.order }}
+          <span class="journey-dot-number">
+            {{ moment.order }}
+          </span>
+
+          <span class="journey-dot-title">
+            {{ moment.title }}
+          </span>
 
         </button>
 
@@ -66,14 +112,12 @@
     </div>
 
 
-    <div class="moment-counter">
+    <div class="moment-status">
 
-      <strong>
-        {{ currentOrder() }}
-      </strong>
+      <span class="status-pulse"></span>
 
       <span>
-        de {{ totalMoments() }}
+        MOMENTO {{ currentOrder() }}
       </span>
 
     </div>
@@ -87,22 +131,43 @@
 
   <section class="moment-hero">
 
-    <div class="hero-copy">
+    <div class="hero-particles" aria-hidden="true">
 
-      <span class="mission-label">
+      <span class="particle particle-01"></span>
+      <span class="particle particle-02"></span>
+      <span class="particle particle-03"></span>
+      <span class="particle particle-04"></span>
+      <span class="particle particle-05"></span>
+      <span class="particle particle-06"></span>
+      <span class="particle particle-07"></span>
+      <span class="particle particle-08"></span>
+
+      <span class="hero-trajectory hero-trajectory-01"></span>
+      <span class="hero-trajectory hero-trajectory-02"></span>
+
+    </div>
+
+
+    <div class="hero-content">
+
+      <span class="hero-kicker">
         MISIÓN {{ currentOrder() }}
+        ·
+        {{ experienceThemeLabel() }}
       </span>
 
 
-      <span class="experience-label">
+      <div class="hero-subject">
 
-        <span>
+        <span class="subject-mark">
           {{ experienceIcon() }}
         </span>
 
-        {{ experienceThemeLabel() }}
+        <span>
+          {{ getSubject() }}
+        </span>
 
-      </span>
+      </div>
 
 
       <h1>
@@ -110,57 +175,37 @@
       </h1>
 
 
-      <div class="hero-divider"></div>
+      <div class="hero-accent-line"></div>
 
 
-      <h2
-        *ngIf="
-          currentMoment()?.subtitle
-        "
-      >
-
-        {{ currentMoment()?.subtitle }}
-
+      <h2>
+        {{ currentMomentSubtitle() }}
       </h2>
 
 
       <p class="hero-description">
-
         {{ currentMomentDescription() }}
-
       </p>
 
 
       <div class="hero-meta">
 
-        <span>
-
-          <strong>◷</strong>
-
+        <span class="meta-chip">
+          <b>TIEMPO</b>
           {{ getDuration() }} min
-
         </span>
 
-
-        <span>
-
-          <strong>◈</strong>
-
+        <span class="meta-chip">
+          <b>CAMPO</b>
           {{ getSubject() }}
-
         </span>
-
 
         <span
-          *ngIf="
-            getGradeLevel()
-          "
+          class="meta-chip"
+          *ngIf="getGradeLevel()"
         >
-
-          <strong>◆</strong>
-
+          <b>NIVEL</b>
           {{ getGradeLevel() }}
-
         </span>
 
       </div>
@@ -168,13 +213,26 @@
     </div>
 
 
-    <!-- IMAGEN -->
+    <!-- VISUAL PRINCIPAL -->
 
     <div class="hero-visual">
 
-      <div class="visual-glow"></div>
+      <div class="hero-visual-glow"></div>
 
-      <div class="visual-frame">
+      <div class="hero-image-shell">
+
+        <div class="image-topline">
+
+          <span>
+            TELLUS LAB
+          </span>
+
+          <span>
+            {{ currentOrder() }} / {{ totalMoments() }}
+          </span>
+
+        </div>
+
 
         <ng-container
           *ngIf="
@@ -184,25 +242,17 @@
         >
 
           <img
-            class="moment-image"
-
-            [src]="
-              currentMomentImage()
-            "
-
-            [alt]="
-              currentMomentTitle()
-            "
+            [src]="currentMomentImage()"
+            [alt]="currentMomentTitle()"
+            class="hero-image"
           />
 
         </ng-container>
 
 
-        <ng-template
-          #defaultVisual
-        >
+        <ng-template #defaultVisual>
 
-          <div class="default-visual">
+          <div class="hero-image-fallback">
 
             <span>
               {{ experienceIcon() }}
@@ -212,23 +262,23 @@
               {{ experienceThemeLabel() }}
             </strong>
 
-            <small>
-              TELLUS LEARNING
-            </small>
-
           </div>
 
         </ng-template>
 
 
-        <div class="visual-caption">
+        <div class="image-bottomline">
 
           <span>
-            {{ experienceIcon() }}
+            OBSERVA
           </span>
 
           <span>
-            EXPLORA · DESCUBRE · COMPRENDE
+            EXPLORA
+          </span>
+
+          <span>
+            COMPRENDE
           </span>
 
         </div>
@@ -241,91 +291,176 @@
 
 
   <!-- ========================================================
-       RETO
+       APERTURA PEDAGÓGICA
   ========================================================= -->
 
-  <section class="challenge-card">
+  <ng-container *ngIf="currentOrder() === 1">
 
-    <div class="challenge-icon">
-      {{ experienceIcon() }}
+  <section class="learning-opening">
+
+    <div class="opening-number">
+      01
     </div>
 
 
-    <div class="challenge-content">
+    <div class="opening-content">
 
-      <span class="section-eyebrow">
-        TU RETO
+      <span class="section-kicker">
+        PUNTO DE PARTIDA
+      </span>
+
+      <h2>
+        Primero observa.
+      </h2>
+
+      <p>
+        Antes de calcular, queremos que mires el fenómeno,
+        encuentres patrones y construyas una primera explicación.
+      </p>
+
+    </div>
+
+
+    <div class="opening-side">
+
+      <span class="opening-side-line"></span>
+
+      <span>
+        APRENDER COMIENZA CON UNA PREGUNTA
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       OBSERVACIÓN
+  ========================================================= -->
+
+  <section class="observation-section">
+
+    <div class="observation-text">
+
+      <span class="section-kicker">
+        OBSERVACIÓN
       </span>
 
 
       <h2>
-
-        {{
-          experienceTheme() === 'water'
-
-            ? 'Observa el agua antes de explicarla'
-
-            : experienceTheme() === 'parabolic'
-
-              ? 'Observa antes de explicar el movimiento'
-
-              : experienceTheme() === 'circuits'
-
-                ? 'Observa la energía antes de explicarla'
-
-                : 'Observa antes de explicar'
-        }}
-
+        Un lanzamiento puede cambiar
+        mucho más de lo que parece.
       </h2>
 
 
-      <p>
+      <p class="observation-lead">
 
-        {{
-          experienceTheme() === 'water'
+        Piensa en algo que ya conoces:
+        lanzar una pelota, una piedra o cualquier
+        objeto al aire.
 
-            ? 'Explora cómo llega, se almacena, se distribuye y se utiliza el agua en tu territorio.'
-
-            : experienceTheme() === 'parabolic'
-
-              ? 'Observa la trayectoria y descubre qué variables pueden cambiar el movimiento.'
-
-              : experienceTheme() === 'circuits'
-
-                ? 'Observa cómo circula la energía y descubre qué elementos permiten construir un circuito.'
-
-                : 'Explora el fenómeno, encuentra pistas y construye tus primeras ideas.'
-        }}
+        Sin usar todavía ecuaciones,
+        observa qué puede cambiar su trayectoria.
 
       </p>
 
 
-      <div class="challenge-question">
+      <div class="question-block">
 
-        <span class="question-mark">
-          ?
+        <span class="question-index">
+          01
         </span>
 
+        <div>
 
-        <strong>
+          <span class="question-tag">
+            OBSERVA
+          </span>
 
-          {{
-            experienceTheme() === 'water'
+          <p>
+            ¿Lanzarla con mayor fuerza siempre hará
+            que llegue más lejos?
+          </p>
 
-              ? '¿Qué puedes descubrir sobre el agua que utilizamos todos los días?'
+        </div>
 
-              : experienceTheme() === 'parabolic'
+      </div>
 
-                ? '¿Qué factores pueden cambiar la trayectoria de un objeto lanzado al aire?'
 
-                : experienceTheme() === 'circuits'
+      <div
+        class="question-block question-block-secondary"
+      >
 
-                  ? '¿Qué necesita un circuito para que la corriente pueda circular?'
+        <span class="question-index">
+          02
+        </span>
 
-                  : '¿Qué puedes descubrir si observas antes de buscar una respuesta?'
-          }}
+        <div>
 
-        </strong>
+          <span class="question-tag">
+            IMAGINA
+          </span>
+
+          <p>
+            ¿Qué podría ocurrir si modificamos
+            el ángulo con el que sale?
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="observation-note">
+
+        <span class="note-mark">
+          ·
+        </span>
+
+        <p>
+          Aquí no buscamos todavía una respuesta correcta.
+          Queremos conocer tu manera de pensar antes
+          de comenzar a experimentar.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="observation-visual">
+
+      <div class="visual-grid"></div>
+
+      <div class="observation-image-frame">
+
+        <div class="visual-aura"></div>
+
+
+        <div class="floating-label floating-label-one">
+          ÁNGULO
+        </div>
+
+        <div class="floating-label floating-label-two">
+          VELOCIDAD
+        </div>
+
+        <div class="floating-label floating-label-three">
+          TRAYECTORIA
+        </div>
+
+
+        <span class="launch-point"></span>
+
+        <span class="trajectory trajectory-01"></span>
+        <span class="trajectory trajectory-02"></span>
+        <span class="trajectory trajectory-03"></span>
+
+
+        <span class="trajectory-point point-01"></span>
+        <span class="trajectory-point point-02"></span>
+        <span class="trajectory-point point-03"></span>
+        <span class="trajectory-point point-04"></span>
 
       </div>
 
@@ -335,119 +470,138 @@
 
 
   <!-- ========================================================
-       ACTIVIDADES
+       RESPUESTA
   ========================================================= -->
 
-  <section class="activities-section">
+  <section class="response-section">
 
-    <header class="section-header">
+    <div class="response-header">
 
-      <div>
+      <span class="section-kicker">
+        TU PRIMERA EXPLICACIÓN
+      </span>
 
-        <span class="section-eyebrow">
-          TU RECORRIDO
-        </span>
+      <h2>
+        Ahora cuéntanos qué piensas.
+      </h2>
 
+      <p>
+        Esta explicación será tu punto de partida.
+        Más adelante podrás contrastarla con tus
+        experimentos, datos y resultados.
+      </p>
 
-        <h2>
-          Explora, piensa y descubre
-        </h2>
-
-
-        <p>
-          Cada actividad aporta una nueva pista a tu misión.
-        </p>
-
-      </div>
+    </div>
 
 
-      <div class="activity-count">
+    <ng-container
+      *ngIf="
+        primaryActivity() as activity;
+        else noActivity
+      "
+    >
 
-        <strong>
-          {{ currentActivities().length }}
-        </strong>
+      <article class="response-card">
 
-        <span>
-          actividades
-        </span>
+        <div class="response-card-top">
 
-      </div>
+          <div class="activity-identification">
 
-    </header>
+            <div class="activity-code">
+              {{ getActivityIcon(activity.type) }}
+            </div>
 
+            <div>
 
-    <div class="activity-grid">
+              <span>
+                ACTIVIDAD {{ activity.order }}
+              </span>
 
-      <article
-        *ngFor="
-          let activity of currentActivities();
-          trackBy: trackByActivityId
-        "
-        class="activity-card"
-        (click)="
-          openActivity(activity)
-        "
-      >
+              <strong>
+                {{ activity.title }}
+              </strong>
 
-        <div class="activity-number">
-          {{ activity.order }}
-        </div>
+            </div>
 
-
-        <div class="activity-icon">
-
-          {{
-            getActivityIcon(
-              activity.type
-            )
-          }}
-
-        </div>
+          </div>
 
 
-        <div class="activity-content">
-
-          <span class="activity-type">
-
-            {{
-              getActivityTypeLabel(
-                activity
-              )
-            }}
-
+          <span class="response-time">
+            {{ activity.estimatedDurationMinutes ?? 15 }}
+            min
           </span>
 
-
-          <h3>
-            {{ activity.title }}
-          </h3>
+        </div>
 
 
-          <p
-            *ngIf="
-              activity.description
-            "
+        <div class="response-question">
+
+          <span
+            class="response-quote"
+            aria-hidden="true"
           >
+            “
+          </span>
 
-            {{ activity.description }}
-
+          <p>
+            {{ primaryQuestion() }}
           </p>
 
+        </div>
 
-          <div class="activity-meta">
+
+        <div
+          class="response-guidance"
+          *ngIf="primaryHint()"
+        >
+
+          <span>
+            PISTA
+          </span>
+
+          <p>
+            {{ primaryHint() }}
+          </p>
+
+        </div>
+
+
+        <div
+          class="response-editor"
+          *ngIf="
+            activity.config?.requiresSubmission
+          "
+        >
+
+          <label
+            for="moment-response"
+          >
+            ESCRIBE CON TUS PROPIAS PALABRAS
+          </label>
+
+
+          <textarea
+            id="moment-response"
+            class="response-field"
+            rows="7"
+            [value]="response()"
+            placeholder="Escribe aquí lo que piensas..."
+            (input)="onResponseChange($event)"
+          ></textarea>
+
+
+          <div class="response-footer">
 
             <span
-              *ngIf="
-                activity.estimatedDurationMinutes
-              "
+              class="response-status"
+              *ngIf="saved()"
             >
+              ✓ Borrador guardado
+            </span>
 
-              ◷
-              {{
-                activity.estimatedDurationMinutes
-              }}
-              min
 
+            <span class="response-counter">
+              {{ response().length }} caracteres
             </span>
 
           </div>
@@ -455,43 +609,375 @@
         </div>
 
 
-        <div class="activity-action">
+        <div class="response-action">
 
-          <span>
-            Abrir
-          </span>
+          <p>
+            No necesitas una fórmula todavía.
+            Queremos conocer tu explicación inicial.
+          </p>
 
-          <strong>
-            →
-          </strong>
+
+          <div class="response-actions">
+
+            <button
+              type="button"
+              class="secondary-action"
+              (click)="focusResponse()"
+              *ngIf="
+                activity.config?.requiresSubmission
+              "
+            >
+              Escribir mi explicación
+            </button>
+
+
+            <button
+              type="button"
+              class="secondary-action"
+              (click)="saveDraft()"
+              *ngIf="
+                activity.config?.requiresSubmission
+                && response().trim()
+              "
+            >
+              Guardar borrador
+            </button>
+
+
+            <button
+              type="button"
+              class="primary-glass-action"
+              [disabled]="!canContinue()"
+              (click)="continue()"
+            >
+
+              <span>
+                {{
+                  nextMoment()
+                    ? 'Continuar'
+                    : 'Finalizar'
+                }}
+              </span>
+
+              <strong>
+                →
+              </strong>
+
+            </button>
+
+          </div>
 
         </div>
 
       </article>
 
+    </ng-container>
 
-      <div
-        class="empty-activities"
 
-        *ngIf="
-          currentActivities().length === 0
-        "
-      >
+    <ng-template #noActivity>
 
-        <span>
-          🌱
-        </span>
+      <div class="response-empty">
 
-        <h3>
-          Este momento está preparando nuevas actividades.
-        </h3>
-
-        <p>
-          Pronto encontrarás aquí recursos,
-          experimentos y desafíos.
-        </p>
+        Este momento todavía no tiene
+        una actividad configurada.
 
       </div>
+
+    </ng-template>
+
+
+  </section>
+
+
+  </ng-container>
+
+
+  <!-- ========================================================
+       JUEGO DE EXPLORACIÓN — MOMENTO 2
+  ========================================================= -->
+
+  <section
+    class="exploration-game-section"
+    *ngIf="currentOrder() === 2 && explorationGame() as game"
+  >
+
+    <div class="exploration-game-header">
+      <div class="exploration-game-title">
+        <span class="game-eyebrow">MISIÓN 2 · EXPLORACIÓN</span>
+
+        <h2>{{ game.title }}</h2>
+
+        <p>{{ game.instructions }}</p>
+      </div>
+    </div>
+
+
+    <!-- PUNTAJE INDEPENDIENTE -->
+
+    <div class="exploration-score-card">
+
+      <div class="exploration-score-copy">
+        <span>PUNTAJE DE EXPLORACIÓN</span>
+
+        <div class="exploration-score-value">
+          <strong>{{ explorationScore() | number:'1.0-1' }}</strong>
+          <small>/ {{ game.targetScore }}</small>
+        </div>
+      </div>
+
+      <div
+        class="exploration-score-track"
+        aria-label="Progreso de la misión"
+      >
+        <span [style.width.%]="explorationScore()"></span>
+      </div>
+
+    </div>
+
+
+    <!-- RETROALIMENTACIÓN -->
+
+    <div
+      class="exploration-feedback"
+      *ngIf="explorationFeedback()"
+      [class.success]="explorationCompleted()"
+    >
+      <span class="exploration-feedback-mark">
+        {{ explorationCompleted() ? '✓' : 'i' }}
+      </span>
+
+      <p>{{ explorationFeedback() }}</p>
+    </div>
+
+
+    <!-- INSTRUCCIÓN -->
+
+    <div
+      class="exploration-instruction"
+      *ngIf="!explorationCompleted()"
+    >
+      <span>01</span>
+
+      <div>
+        <strong>Selecciona un factor</strong>
+
+        <p>
+          Tócalo o arrástralo hasta la zona que consideres correcta.
+        </p>
+      </div>
+
+      <small>
+        {{ availableFactors().length }} pendientes
+      </small>
+    </div>
+
+
+    <!-- FACTORES -->
+
+    <div
+      class="exploration-factors"
+      *ngIf="!explorationCompleted()"
+    >
+
+      <div class="exploration-factors-head">
+        <div>
+          <span>FACTORES</span>
+          <small>Selecciona o arrastra</small>
+        </div>
+
+        <b>{{ availableFactors().length }}</b>
+      </div>
+
+      <div class="factor-grid">
+
+        <button
+          type="button"
+          class="factor-card"
+          *ngFor="let factor of availableFactors()"
+          [class.selected]="selectedFactorId() === factor.id"
+          draggable="true"
+          [attr.aria-pressed]="selectedFactorId() === factor.id"
+          (click)="selectFactor(factor.id)"
+          (dragstart)="dragFactor($event, factor.id)"
+        >
+          <span class="factor-icon">
+            {{ factor.icon }}
+          </span>
+
+          <span class="factor-label">
+            {{ factor.label }}
+          </span>
+
+          <span class="factor-drag">
+            ⠿
+          </span>
+
+          <small>
+            {{
+              selectedFactorId() === factor.id
+                ? 'SELECCIONADO'
+                : 'TOCA O ARRASTRA'
+            }}
+          </small>
+        </button>
+
+      </div>
+    </div>
+
+
+    <!-- ZONAS -->
+
+    <div
+      class="exploration-zones"
+      *ngIf="!explorationCompleted()"
+    >
+
+      <div class="exploration-zones-head">
+
+        <div>
+          <span>CLASIFICA EL FACTOR</span>
+
+          <small>
+            {{
+              selectedFactorId()
+                ? 'Ahora elige una zona'
+                : 'Selecciona primero un factor'
+            }}
+          </small>
+        </div>
+
+        <b>02</b>
+      </div>
+
+
+      <div class="zone-grid">
+
+        <button
+          type="button"
+          class="exploration-zone"
+          *ngFor="let zone of game.zones"
+          [class.zone-active]="!!selectedFactorId()"
+          (dragover)="allowDrop($event)"
+          (drop)="dropFactor($event, zone.id)"
+          (click)="
+            selectedFactorId()
+              && placeFactor(
+                selectedFactorId()!,
+                zone.id
+              )
+          "
+        >
+
+          <span class="zone-number">
+            {{
+              zone.id === 'zone-mas-alto'
+                ? '↑'
+                : zone.id === 'zone-mas-lejos'
+                  ? '→'
+                  : zone.id === 'zone-ambas'
+                    ? '◎'
+                    : zone.id === 'zone-depende'
+                      ? '?'
+                      : '×'
+            }}
+          </span>
+
+          <strong class="zone-label">
+            {{ zone.label }}
+          </strong>
+
+          <small>
+            {{
+              selectedFactorId()
+                ? 'SOLTAR AQUÍ'
+                : 'SELECCIONA UN FACTOR'
+            }}
+          </small>
+
+
+          <!-- FACTORES CORRECTAMENTE COLOCADOS DENTRO DE LA ZONA -->
+
+          <div
+            class="zone-items"
+            *ngIf="placedFactorEntries().length > 0"
+          >
+
+            <span
+              class="placed-factor-chip"
+              *ngFor="let entry of placedFactorEntries()"
+              [hidden]="entry.zoneId !== zone.id"
+            >
+              <b>{{ entry.factor?.icon }}</b>
+
+              <span>{{ entry.factor?.label }}</span>
+
+              <i>✓</i>
+            </span>
+
+          </div>
+
+        </button>
+
+      </div>
+    </div>
+
+
+    <!-- COMPLETADO -->
+
+    <div
+      class="exploration-completion"
+      *ngIf="explorationCompleted()"
+    >
+
+      <div class="completion-mark">✓</div>
+
+      <span class="section-kicker">
+        MISIÓN COMPLETADA
+      </span>
+
+      <h3>
+        {{ game.completion?.title || '¡Misión 2 completada!' }}
+      </h3>
+
+      <p>
+        {{ game.completion?.message }}
+      </p>
+
+      <strong>
+        {{ explorationScore() | number:'1.0-1' }} / {{ game.targetScore }}
+      </strong>
+
+      <small>
+        {{ game.completion?.nextMessage }}
+      </small>
+
+    </div>
+
+
+    <!-- ACCIONES -->
+
+    <div class="exploration-game-actions">
+
+      <button
+        type="button"
+        class="secondary-action"
+        (click)="resetExplorationGame()"
+      >
+        Reiniciar misión
+      </button>
+
+      <button
+        type="button"
+        class="primary-glass-action"
+        [disabled]="!canContinue()"
+        (click)="continue()"
+      >
+        <span>
+          {{ nextMoment() ? 'Continuar' : 'Finalizar' }}
+        </span>
+
+        <strong>→</strong>
+      </button>
 
     </div>
 
@@ -499,159 +985,104 @@
 
 
   <!-- ========================================================
-       REFLEXIÓN
+       CIERRE
   ========================================================= -->
 
-  <section class="reflection-card">
+  <section class="moment-closing">
 
-    <div class="reflection-symbol">
-      {{ experienceIcon() }}
+    <div class="closing-mark">
+      {{ currentOrder() }}
     </div>
 
 
-    <div class="reflection-content">
+    <div class="closing-content">
 
-      <span class="section-eyebrow">
-        PIENSA
+      <span class="section-kicker">
+        SIGUE EXPLORANDO
       </span>
 
-
       <h2>
-
-        {{
-          experienceTheme() === 'water'
-
-            ? 'Cada gota cuenta'
-
-            : experienceTheme() === 'parabolic'
-
-              ? 'La curiosidad cambia la trayectoria'
-
-              : experienceTheme() === 'circuits'
-
-                ? 'La energía necesita un camino'
-
-                : 'La curiosidad es el comienzo'
-        }}
-
+        La curiosidad cambia la trayectoria.
       </h2>
 
-
       <p>
-
-        {{
-          experienceTheme() === 'water'
-
-            ? 'Relaciona lo que has observado con el agua de tu comunidad y piensa en qué evidencias necesitarías para comprender mejor la situación.'
-
-            : experienceTheme() === 'parabolic'
-
-              ? 'Todavía no necesitas conocer todas las ecuaciones. Primero observa, compara y formula tus propias ideas.'
-
-              : experienceTheme() === 'circuits'
-
-                ? 'Antes de memorizar símbolos y fórmulas, observa qué ocurre cuando los elementos de un circuito se conectan de diferentes maneras.'
-
-                : 'Todavía no necesitas conocer la respuesta. Primero queremos conocer tus ideas.'
-        }}
-
+        Cada momento agrega una nueva pieza
+        a tu explicación del fenómeno.
       </p>
 
     </div>
 
 
-    <button
-      type="button"
-      class="acknowledge-button"
-      [class.done]="acknowledged()"
-      (click)="
-        acknowledgeChallenge()
-      "
-    >
+    <div class="closing-next">
 
       <span>
-
-        {{
-          acknowledged()
-
-            ? '¡Observación registrada!'
-
-            : 'He observado el fenómeno'
-        }}
-
+        DESPUÉS
       </span>
 
-
       <strong>
-
         {{
-          acknowledged()
-            ? '✓'
-            : '→'
+          nextMoment()?.title
+          ??
+          'Experiencia completada'
         }}
-
       </strong>
 
-    </button>
+    </div>
 
   </section>
 
 
   <!-- ========================================================
-       NAVEGACIÓN INFERIOR
+       NAVEGACIÓN FINAL
   ========================================================= -->
 
-  <section class="bottom-navigation">
+  <section class="glass-navigation">
 
     <button
       type="button"
-      class="nav-moment-button"
+      class="glass-navigation-button"
 
-      [disabled]="
-        !previousMoment()
-      "
+      [disabled]="!previousMoment()"
 
       (click)="
         previousMoment()
-        && goToMoment(
+        &&
+        goToMoment(
           previousMoment()!.id
         )
       "
     >
 
-      <span>
+      <span class="glass-button-icon">
         ←
       </span>
 
-
-      <div>
+      <span class="glass-button-content">
 
         <small>
           ANTERIOR
         </small>
 
         <strong>
-
           {{
             previousMoment()?.title
-            ?? 'Inicio'
+            ??
+            'Inicio'
           }}
-
         </strong>
 
-      </div>
+      </span>
 
     </button>
 
 
-    <div class="bottom-progress">
+    <div class="glass-navigation-progress">
 
       <span>
         {{ progressLabel() }}
       </span>
 
-
-      <div class="progress-line">
+      <div class="glass-progress-track">
 
         <span
           [style.width.%]="
@@ -666,36 +1097,32 @@
 
     <button
       type="button"
-      class="nav-moment-button next"
+      class="glass-navigation-button glass-navigation-next"
       (click)="continue()"
     >
 
-      <div>
+      <span class="glass-button-content">
 
         <small>
-
           {{
             nextMoment()
               ? 'SIGUIENTE'
               : 'FINALIZAR'
           }}
-
         </small>
 
-
         <strong>
-
           {{
             nextMoment()?.title
-            ?? 'Volver a Mi Aula'
+            ??
+            'Volver a Mi Aula'
           }}
-
         </strong>
 
-      </div>
+      </span>
 
 
-      <span>
+      <span class="glass-button-icon">
         →
       </span>
 
@@ -704,6 +1131,5 @@
   </section>
 
 </main>
-
 
 <app-footer></app-footer>
