@@ -18,6 +18,12 @@ import {
   QUIMICA_ENTORNO_MOCK,
 } from './quimica-entorno.mock';
 
+import {
+  Activity,
+  Experience,
+  Moment,
+} from '../models';
+
 
 /**
  * ============================================================
@@ -28,16 +34,17 @@ import {
  * Todas las experiencias disponibles para Tellus Learning
  * se registran aquí.
  *
- * Este registro permite que Tellus sea escalable:
+ * Cada experiencia contiene:
  *
- * - Movimiento Parabólico
- * - Agua en nuestro territorio
- * - Creadores STEAM con IA
- * - Circuitos eléctricos
- * - Química en nuestro entorno
+ * - experience
+ * - moments
+ * - activities
  *
- * En el futuro podrán agregarse nuevas experiencias
- * sin modificar el motor principal de Tellus Learning.
+ * El motor principal consulta este registro para determinar
+ * qué contenido corresponde a cada experiencia.
+ *
+ * Las experiencias nuevas se agregan aquí sin modificar
+ * el motor principal de Tellus Learning.
  * ============================================================
  */
 
@@ -91,14 +98,6 @@ export const EXPERIENCE_REGISTRY = {
  * ============================================================
  * OBTENER UNA EXPERIENCIA
  * ============================================================
- *
- * Busca una experiencia por su identificador.
- *
- * Ejemplo:
- *
- * getExperienceById('agua-territorio')
- *
- * ============================================================
  */
 
 export function getExperienceById(
@@ -119,19 +118,148 @@ export function getExperienceById(
  * ============================================================
  * OBTENER TODAS LAS EXPERIENCIAS
  * ============================================================
- *
- * Devuelve todas las experiencias registradas.
- *
- * Mi Aula utiliza esta función para construir
- * dinámicamente las rutas de aprendizaje.
- *
- * ============================================================
  */
 
 export function getAllExperiences() {
 
   return Object.values(
-    EXPERIENCE_REGISTRY
+    EXPERIENCE_REGISTRY,
+  );
+
+}
+
+
+/**
+ * ============================================================
+ * OBTENER UN MOMENTO
+ * ============================================================
+ *
+ * La búsqueda se realiza dentro de la experiencia indicada.
+ *
+ * Esto evita que MomentComponent tenga que conocer
+ * experiencias particulares.
+ * ============================================================
+ */
+
+export function getMomentById(
+  experienceId: string,
+  momentId: string,
+): Moment | null {
+
+  const experienceData =
+    getExperienceById(
+      experienceId,
+    );
+
+  if (!experienceData) {
+    return null;
+  }
+
+  return (
+    experienceData.moments.find(
+      (
+        moment: Moment,
+      ) =>
+        moment.id === momentId,
+    )
+    ?? null
+  );
+
+}
+
+
+/**
+ * ============================================================
+ * OBTENER UNA ACTIVIDAD
+ * ============================================================
+ *
+ * La búsqueda se realiza dentro de la experiencia indicada.
+ *
+ * Ejemplo:
+ *
+ * getActivityById(
+ *   'exp-movimiento-parabolico',
+ *   'act-motivacion-video',
+ * )
+ *
+ * Esto permite que ActivityComponent sea completamente
+ * independiente de Agua, Física, Química, etc.
+ * ============================================================
+ */
+
+export function getActivityById(
+  experienceId: string,
+  activityId: string,
+): Activity | null {
+
+  const experienceData =
+    getExperienceById(
+      experienceId,
+    );
+
+  if (!experienceData) {
+    return null;
+  }
+
+  return (
+    experienceData.activities.find(
+      (
+        activity: Activity,
+      ) =>
+        activity.id === activityId,
+    )
+    ?? null
+  );
+
+}
+
+
+/**
+ * ============================================================
+ * OBTENER ACTIVIDADES DE UN MOMENTO
+ * ============================================================
+ *
+ * Recupera únicamente las actividades relacionadas
+ * con el momento indicado.
+ * ============================================================
+ */
+
+export function getActivitiesByMomentId(
+  experienceId: string,
+  momentId: string,
+): Activity[] {
+
+  const experienceData =
+    getExperienceById(
+      experienceId,
+    );
+
+  if (!experienceData) {
+    return [];
+  }
+
+  const moment =
+    experienceData.moments.find(
+      (
+        item: Moment,
+      ) =>
+        item.id === momentId,
+    );
+
+  if (!moment) {
+    return [];
+  }
+
+  const activityIds =
+    moment.activityIds ?? [];
+
+  return experienceData.activities.filter(
+    (
+      activity: Activity,
+    ) =>
+      activityIds.includes(
+        activity.id,
+      ),
   );
 
 }

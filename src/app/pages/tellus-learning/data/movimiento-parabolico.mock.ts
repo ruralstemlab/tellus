@@ -236,10 +236,15 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
     type: 'exploracion',
 
     /*
-     * Se deja sin imagen específica por ahora.
-     * Cuando tengamos la ilustración del momento 2,
-     * solamente se agrega aquí.
+     * IMAGEN DEL MOMENTO 2
+     *
+     * Archivo:
+     * public/assets/tellus-learning/movimiento-parabolico/
+     * momento-02-movimiento-parabolico.png
      */
+
+    image:
+      '/assets/tellus-learning/movimiento-parabolico/momento-02-movimiento-parabolico.png',
 
     objectiveIds: [
       'obj-02',
@@ -613,6 +618,107 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       settings: {
 
         allowFreeExploration: true,
+
+        explorationGame: {
+          id: 'mission-02-factores-trayectoria',
+
+          title:
+            '¿Qué puede cambiar la trayectoria?',
+
+          instructions:
+            'Clasifica cada factor según el efecto que puede tener sobre la trayectoria de un proyectil.',
+
+          targetScore: 100,
+
+          pointsPerCorrectAnswer: 12.5,
+
+          factors: [
+            {
+              id: 'factor-velocidad',
+              label: 'Velocidad inicial',
+              icon: '⚡',
+            },
+            {
+              id: 'factor-angulo',
+              label: 'Ángulo de lanzamiento',
+              icon: '📐',
+            },
+            {
+              id: 'factor-fuerza',
+              label: 'Fuerza del lanzamiento',
+              icon: '💥',
+            },
+            {
+              id: 'factor-masa',
+              label: 'Masa del objeto',
+              icon: '⚖️',
+            },
+            {
+              id: 'factor-forma',
+              label: 'Forma del objeto',
+              icon: '🔵',
+            },
+            {
+              id: 'factor-tamano',
+              label: 'Tamaño del objeto',
+              icon: '📦',
+            },
+            {
+              id: 'factor-material',
+              label: 'Material',
+              icon: '🧱',
+            },
+            {
+              id: 'factor-color',
+              label: 'Color',
+              icon: '🎨',
+            },
+          ],
+
+          zones: [
+            {
+              id: 'zone-mas-alto',
+              label: 'Puede hacerlo más alto',
+            },
+            {
+              id: 'zone-mas-lejos',
+              label: 'Puede hacerlo llegar más lejos',
+            },
+            {
+              id: 'zone-ambas',
+              label: 'Puede afectar ambas',
+            },
+            {
+              id: 'zone-depende',
+              label: 'Depende de las condiciones',
+            },
+            {
+              id: 'zone-no-directo',
+              label: 'No tiene efecto directo',
+            },
+          ],
+
+          answers: {
+            'factor-velocidad': 'zone-ambas',
+            'factor-angulo': 'zone-depende',
+            'factor-fuerza': 'zone-ambas',
+            'factor-masa': 'zone-no-directo',
+            'factor-forma': 'zone-depende',
+            'factor-tamano': 'zone-depende',
+            'factor-material': 'zone-no-directo',
+            'factor-color': 'zone-no-directo',
+          },
+
+          completion: {
+            title: '¡Misión 2 completada!',
+
+            message:
+              'Excelente. Has identificado qué variables pueden modificar la trayectoria y cuáles no tienen un efecto directo.',
+
+            nextMessage:
+              'Ahora estás listo para formular una predicción sobre el movimiento.',
+          },
+        },
 
       },
 

@@ -37,11 +37,6 @@ import {
   Activity,
 } from '../models/activity.model';
 
-import {
-  AguaResource,
-  getAguaResourceById,
-} from '../data/resources/agua-territorio.resources';
-
 
 @Component({
   selector: 'app-moment',
@@ -96,7 +91,10 @@ export class MomentComponent
   // ESTADO
   // ============================================================
 
-  readonly acknowledged =
+  readonly response =
+    signal<string>('');
+
+  readonly saved =
     signal<boolean>(false);
 
 
@@ -115,7 +113,6 @@ export class MomentComponent
       }
 
       return getExperienceById(id);
-
     });
 
 
@@ -130,7 +127,6 @@ export class MomentComponent
       }
 
       return data.experience as Experience;
-
     });
 
 
@@ -148,8 +144,17 @@ export class MomentComponent
         return [];
       }
 
-      return data.moments as Moment[];
-
+      return [
+        ...data.moments,
+      ]
+        .sort(
+          (
+            a: Moment,
+            b: Moment,
+          ) =>
+            a.order -
+            b.order
+        ) as Moment[];
     });
 
 
@@ -167,8 +172,17 @@ export class MomentComponent
         return [];
       }
 
-      return data.activities as Activity[];
-
+      return [
+        ...data.activities,
+      ]
+        .sort(
+          (
+            a: Activity,
+            b: Activity,
+          ) =>
+            a.order -
+            b.order
+        ) as Activity[];
     });
 
 
@@ -179,34 +193,31 @@ export class MomentComponent
   readonly currentMoment =
     computed<Moment | null>(() => {
 
-      const allMoments =
-        this.moments();
-
       const id =
         this.momentId();
 
+      const allMoments =
+        this.moments();
+
       return (
         allMoments.find(
-          (moment: Moment) =>
+          (
+            moment: Moment
+          ) =>
             moment.id === id
         )
-
         ??
-
         allMoments.find(
-          (moment: Moment) =>
+          (
+            moment: Moment
+          ) =>
             moment.order === 1
         )
-
         ??
-
         allMoments[0]
-
         ??
-
         null
       );
-
     });
 
 
@@ -225,80 +236,133 @@ export class MomentComponent
       }
 
       const ids =
-        moment.activityIds
-        ?? [];
+        moment.activityIds ?? [];
 
       return this.activities()
         .filter(
-          (activity: Activity) =>
-            ids.includes(activity.id)
+          (
+            activity: Activity
+          ) =>
+            ids.includes(
+              activity.id
+            )
+        )
+        .sort(
+          (
+            a: Activity,
+            b: Activity,
+          ) =>
+            a.order -
+            b.order
         );
-
     });
 
 
   // ============================================================
-  // RECURSOS DIRECTOS DEL MOMENTO
+  // ACTIVIDAD PRINCIPAL
   // ============================================================
 
-  readonly currentResources =
-    computed<AguaResource[]>(() => {
+  readonly primaryActivity =
+    computed<Activity | null>(() => {
 
-      const moment =
-        this.currentMoment();
+      return (
+        this.currentActivities()[0]
+        ??
+        null
+      );
+    });
 
-      if (!moment) {
-        return [];
+
+  // ============================================================
+  // PREGUNTA
+  // ============================================================
+
+  readonly primaryQuestion =
+    computed<string>(() => {
+
+      const activity =
+        this.primaryActivity();
+
+      if (!activity) {
+        return '';
       }
 
-      const resourceIds:
-        string[] =
-        moment.resourceIds
-        ?? [];
-
-      const resources:
-        AguaResource[] = [];
-
-      for (
-        const resourceId
-        of resourceIds
+      if (
+        activity.content?.type ===
+        'questionnaire'
       ) {
 
-        const resource =
-          getAguaResourceById(
-            resourceId
-          );
+        const questions =
+          activity.content.data?.questions;
 
         if (
-          resource &&
-          resource.published !== false
+          Array.isArray(
+            questions
+          )
+          &&
+          questions.length > 0
         ) {
 
-          resources.push(
-            resource
+          return (
+            questions[0]?.text
+            ??
+            ''
           );
-
         }
-
       }
 
-      resources.sort(
-        (
-          a: AguaResource,
-          b: AguaResource,
-        ) =>
-          (a.order ?? 999)
-          -
-          (b.order ?? 999)
+      return (
+        activity.description
+        ??
+        ''
       );
-
-      return resources;
-
     });
 
 
   // ============================================================
-  // MOMENTO ANTERIOR
+  // PISTA
+  // ============================================================
+
+  readonly primaryHint =
+    computed<string>(() => {
+
+      const activity =
+        this.primaryActivity();
+
+      if (!activity) {
+        return '';
+      }
+
+      if (
+        activity.content?.type ===
+        'questionnaire'
+      ) {
+
+        const questions =
+          activity.content.data?.questions;
+
+        if (
+          Array.isArray(
+            questions
+          )
+          &&
+          questions.length > 0
+        ) {
+
+          return (
+            questions[0]?.hint
+            ??
+            ''
+          );
+        }
+      }
+
+      return '';
+    });
+
+
+  // ============================================================
+  // ANTERIOR
   // ============================================================
 
   readonly previousMoment =
@@ -313,21 +377,20 @@ export class MomentComponent
 
       return (
         this.moments().find(
-          (moment: Moment) =>
+          (
+            moment: Moment
+          ) =>
             moment.order ===
             current.order - 1
         )
-
         ??
-
         null
       );
-
     });
 
 
   // ============================================================
-  // MOMENTO SIGUIENTE
+  // SIGUIENTE
   // ============================================================
 
   readonly nextMoment =
@@ -342,16 +405,15 @@ export class MomentComponent
 
       return (
         this.moments().find(
-          (moment: Moment) =>
+          (
+            moment: Moment
+          ) =>
             moment.order ===
             current.order + 1
         )
-
         ??
-
         null
       );
-
     });
 
 
@@ -367,7 +429,6 @@ export class MomentComponent
         ??
         1
       );
-
     });
 
 
@@ -375,7 +436,6 @@ export class MomentComponent
     computed<number>(() => {
 
       return this.moments().length;
-
     });
 
 
@@ -385,41 +445,36 @@ export class MomentComponent
       const total =
         this.totalMoments();
 
-      if (total <= 1) {
+      const current =
+        this.currentOrder();
+
+      if (
+        total <= 0
+      ) {
         return 0;
       }
 
       return Math.round(
         (
-          (this.currentOrder() - 1)
-          /
-          (total - 1)
-        )
-        * 100
+          current /
+          total
+        ) *
+        100
       );
-
     });
 
 
   readonly progressLabel =
     computed<string>(() => {
 
-      const total =
-        this.totalMoments();
-
-      if (!total) {
-        return 'Sin momentos';
-      }
-
       return (
-        `Momento ${this.currentOrder()} de ${total}`
+        `Momento ${this.currentOrder()} de ${this.totalMoments()}`
       );
-
     });
 
 
   // ============================================================
-  // TEXTO PRINCIPAL
+  // CONTENIDO
   // ============================================================
 
   readonly currentMomentTitle =
@@ -428,9 +483,19 @@ export class MomentComponent
       return (
         this.currentMoment()?.title
         ??
-        'Comienza tu experiencia'
+        'Experiencia de aprendizaje'
       );
+    });
 
+
+  readonly currentMomentSubtitle =
+    computed<string>(() => {
+
+      return (
+        this.currentMoment()?.subtitle
+        ??
+        ''
+      );
     });
 
 
@@ -440,15 +505,10 @@ export class MomentComponent
       return (
         this.currentMoment()?.description
         ??
-        'Explora, observa y construye tus primeras ideas.'
+        ''
       );
-
     });
 
-
-  // ============================================================
-  // IMAGEN PRINCIPAL
-  // ============================================================
 
   readonly currentMomentImage =
     computed<string>(() => {
@@ -456,93 +516,36 @@ export class MomentComponent
       const moment =
         this.currentMoment();
 
+      if (
+        moment?.image
+      ) {
+
+        return moment.image;
+      }
+
       const experience =
         this.experience();
 
-      return (
-        moment?.image
-        ??
-        this.getExperienceImage(
-          experience
-        )
-        ??
-        ''
-      );
+      if (
+        experience?.coverUrl
+      ) {
 
+        return experience.coverUrl;
+      }
+
+      if (
+        experience?.thumbnailUrl
+      ) {
+
+        return experience.thumbnailUrl;
+      }
+
+      return '';
     });
 
 
   // ============================================================
-  // DURACIÃ“N
-  // ============================================================
-
-  getDuration(): number {
-
-    const moment =
-      this.currentMoment();
-
-    if (
-      moment?.estimatedDurationMinutes
-      != null
-    ) {
-
-      return (
-        moment.estimatedDurationMinutes
-      );
-
-    }
-
-    const experience =
-      this.experience();
-
-    if (
-      experience?.estimatedDurationMinutes
-      != null
-    ) {
-
-      return (
-        experience.estimatedDurationMinutes
-      );
-
-    }
-
-    return 15;
-
-  }
-
-
-  // ============================================================
-  // ASIGNATURA
-  // ============================================================
-
-  getSubject(): string {
-
-    return (
-      this.experience()?.subject
-      ??
-      'STEAM'
-    );
-
-  }
-
-
-  // ============================================================
-  // GRADO
-  // ============================================================
-
-  getGradeLevel(): string {
-
-    return (
-      this.experience()?.gradeLevel
-      ??
-      ''
-    );
-
-  }
-
-
-  // ============================================================
-  // TEMA VISUAL
+  // IDENTIDAD VISUAL
   // ============================================================
 
   readonly experienceTheme =
@@ -556,21 +559,22 @@ export class MomentComponent
       }
 
       const id =
-        experience.id.toLowerCase();
+        experience.id
+          .toLowerCase();
 
       const title =
-        experience.title.toLowerCase();
+        experience.title
+          .toLowerCase();
 
 
       if (
         id.includes('agua') ||
         id.includes('water') ||
-        id.includes('territorio') ||
-        title.includes('agua')
+        title.includes('agua') ||
+        title.includes('territorio')
       ) {
 
         return 'water';
-
       }
 
 
@@ -581,7 +585,6 @@ export class MomentComponent
       ) {
 
         return 'parabolic';
-
       }
 
 
@@ -589,13 +592,11 @@ export class MomentComponent
         id.includes('creadores') ||
         id.includes('steam') ||
         id.includes('ia') ||
-        id.includes('program') ||
         title.includes('creadores') ||
         title.includes('ia')
       ) {
 
         return 'programming';
-
       }
 
 
@@ -606,53 +607,31 @@ export class MomentComponent
       ) {
 
         return 'circuits';
-
       }
 
 
       if (
-        id.includes('quimica') ||
-        id.includes('quÃ­mica') ||
-        title.includes('quimica') ||
-        title.includes('quÃ­mica')
+        id.includes('quim') ||
+        title.includes('quim')
       ) {
 
         return 'chemistry';
-
-      }
-
-
-      if (
-        id.includes('fluido') ||
-        id.includes('fluid') ||
-        title.includes('fluido')
-      ) {
-
-        return 'fluids';
-
       }
 
 
       if (
         id.includes('energia') ||
-        id.includes('energÃ­a') ||
         id.includes('energy') ||
         title.includes('energ')
       ) {
 
         return 'energy';
-
       }
 
 
       return 'default';
-
     });
 
-
-  // ============================================================
-  // NOMBRE DEL TEMA
-  // ============================================================
 
   readonly experienceThemeLabel =
     computed<string>(() => {
@@ -664,42 +643,35 @@ export class MomentComponent
           'AGUA Y TERRITORIO',
 
         parabolic:
-          'MOVIMIENTO PARABÃ“LICO',
+          'MOVIMIENTO PARABÓLICO',
 
         programming:
           'CREADORES STEAM CON IA',
 
         circuits:
-          'CIRCUITOS ELÃ‰CTRICOS',
+          'CIRCUITOS ELÉCTRICOS',
 
         chemistry:
-          'QUÃMICA EN NUESTRO ENTORNO',
-
-        fluids:
-          'MECÃNICA DE FLUIDOS',
+          'QUÍMICA EN NUESTRO ENTORNO',
 
         energy:
-          'ENERGÃA',
+          'ENERGÍA',
 
         default:
           'TELLUS LEARNING',
-
       };
 
+
+      const theme =
+        this.experienceTheme();
+
       return (
-        labels[
-          this.experienceTheme()
-        ]
+        labels[theme]
         ??
         labels['default']
       );
-
     });
 
-
-  // ============================================================
-  // ICONO DE EXPERIENCIA
-  // ============================================================
 
   readonly experienceIcon =
     computed<string>(() => {
@@ -708,71 +680,758 @@ export class MomentComponent
         Record<string, string> = {
 
         water:
-          'ðŸ’§',
+          '≈',
 
         parabolic:
-          'ðŸ¹',
+          '⌁',
 
         programming:
-          'ðŸ¤–',
+          '◇',
 
         circuits:
-          'âš¡',
+          'ϟ',
 
         chemistry:
-          'ðŸ§ª',
-
-        fluids:
-          'ðŸŒŠ',
+          '◈',
 
         energy:
-          'ðŸ”‹',
+          '✦',
 
         default:
-          'ðŸŒ±',
-
+          '·',
       };
 
+
+      const theme =
+        this.experienceTheme();
+
       return (
-        icons[
-          this.experienceTheme()
-        ]
+        icons[theme]
         ??
         icons['default']
       );
-
     });
 
 
   // ============================================================
-  // ICONOS DE MOMENTOS
+  // ACTIVIDAD
   // ============================================================
 
-  readonly momentIcons:
-    Record<string, string> = {
+  getActivityIcon(
+    type: unknown
+  ): string {
 
-    motivacion:
-      'ðŸ’¡',
+    const value =
+      String(
+        type ?? ''
+      ).toLowerCase();
 
-    exploracion:
-      'ðŸ”Ž',
 
-    prediccion:
-      'ðŸŽ¯',
+    if (
+      value.includes(
+        'simulation'
+      ) ||
+      value.includes(
+        'simul'
+      )
+    ) {
 
-    experimentacion:
-      'ðŸ§ª',
+      return 'LAB';
+    }
 
-    construccion:
-      'ðŸ§ ',
 
-    analisis_evaluacion:
-      'ðŸ“Š',
+    if (
+      value.includes(
+        'question'
+      ) ||
+      value.includes(
+        'quiz'
+      )
+    ) {
 
-    reflexion:
-      'ðŸŒŽ',
+      return 'IDEA';
+    }
 
-  };
+
+    if (
+      value.includes(
+        'reflection'
+      ) ||
+      value.includes(
+        'reflex'
+      )
+    ) {
+
+      return 'REF';
+    }
+
+
+    if (
+      value.includes(
+        'analysis'
+      ) ||
+      value.includes(
+        'data'
+      )
+    ) {
+
+      return 'DATA';
+    }
+
+
+    if (
+      value.includes(
+        'experiment'
+      ) ||
+      value.includes(
+        'lab'
+      )
+    ) {
+
+      return 'LAB';
+    }
+
+
+    if (
+      value.includes(
+        'predict'
+      ) ||
+      value.includes(
+        'preinforme'
+      )
+    ) {
+
+      return 'PRED';
+    }
+
+
+    return 'ACT';
+  }
+
+
+  // ============================================================
+  // RESPUESTA
+  // ============================================================
+
+  onResponseChange(
+    event: Event
+  ): void {
+
+    const target =
+      event.target;
+
+    if (
+      !(target instanceof HTMLTextAreaElement)
+    ) {
+
+      return;
+    }
+
+    this.response.set(
+      target.value
+    );
+
+    this.saved.set(
+      false
+    );
+  }
+
+
+  // ============================================================
+  // GUARDAR
+  // ============================================================
+
+  saveDraft(): void {
+
+    const value =
+      this.response()
+        .trim();
+
+    if (!value) {
+      return;
+    }
+
+    this.saved.set(
+      true
+    );
+  }
+
+
+  // ============================================================
+  // ENFOCAR RESPUESTA
+  // ============================================================
+
+  focusResponse(): void {
+
+    const element =
+      document.getElementById(
+        'moment-response'
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+
+    window.setTimeout(
+      () => {
+
+        if (
+          element instanceof
+          HTMLTextAreaElement
+        ) {
+
+          element.focus();
+        }
+
+      },
+      450
+    );
+  }
+
+
+  // ============================================================
+  // JUEGO DE EXPLORACIÓN — MOMENTO 2
+  // ============================================================
+
+  readonly selectedFactorId =
+    signal<string | null>(null);
+
+  readonly placedFactors =
+    signal<Record<string, string>>({});
+
+  readonly explorationScore =
+    signal<number>(0);
+
+  readonly explorationCompleted =
+    signal<boolean>(false);
+
+  readonly explorationFeedback =
+    signal<string>('');
+
+  readonly explorationGame =
+    computed<any | null>(() => {
+
+      const activity =
+        this.currentActivities()[0];
+
+      const config =
+        activity?.config as any;
+
+      return (
+        config?.settings?.explorationGame
+        ??
+        null
+      );
+    });
+
+  readonly availableFactors =
+    computed<any[]>(() => {
+
+      const game =
+        this.explorationGame();
+
+      if (!game) {
+        return [];
+      }
+
+      const placed =
+        this.placedFactors();
+
+      return (
+        game.factors ?? []
+      ).filter(
+        (factor: any) =>
+          !Object.prototype.hasOwnProperty.call(
+            placed,
+            factor.id
+          )
+      );
+    });
+
+  readonly placedFactorEntries =
+    computed<any[]>(() => {
+
+      const game =
+        this.explorationGame();
+
+      if (!game) {
+        return [];
+      }
+
+      const placed =
+        this.placedFactors();
+
+      return Object.entries(
+        placed
+      ).map(
+        ([factorId, zoneId]) => {
+
+          const factor =
+            (game.factors ?? []).find(
+              (item: any) =>
+                item.id === factorId
+            );
+
+          const zone =
+            (game.zones ?? []).find(
+              (item: any) =>
+                item.id === zoneId
+            );
+
+          return {
+            factor,
+            zone,
+            zoneId,
+            label: factor?.label ?? '',
+          };
+        }
+      );
+    });
+
+  selectFactor(
+    factorId: string
+  ): void {
+
+    this.selectedFactorId.set(
+      factorId
+    );
+  }
+
+  dragFactor(
+    event: DragEvent,
+    factorId: string
+  ): void {
+
+    event.dataTransfer?.setData(
+      'text/plain',
+      factorId
+    );
+
+    this.selectedFactorId.set(
+      factorId
+    );
+  }
+
+  allowDrop(
+    event: DragEvent
+  ): void {
+
+    event.preventDefault();
+  }
+
+  dropFactor(
+    event: DragEvent,
+    zoneId: string
+  ): void {
+
+    event.preventDefault();
+
+    const factorId =
+      event.dataTransfer?.getData(
+        'text/plain'
+      )
+      ??
+      this.selectedFactorId();
+
+    if (!factorId) {
+      return;
+    }
+
+    this.placeFactor(
+      factorId,
+      zoneId
+    );
+  }
+
+  placeFactor(
+    factorId: string,
+    zoneId: string
+  ): void {
+
+    const game =
+      this.explorationGame();
+
+    if (!game) {
+      return;
+    }
+
+    const placed =
+      this.placedFactors();
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        placed,
+        factorId
+      )
+    ) {
+      return;
+    }
+
+    const correctZone =
+      game.answers?.[factorId];
+
+    if (
+      correctZone === zoneId
+    ) {
+
+      const nextPlaced = {
+        ...placed,
+        [factorId]: zoneId,
+      };
+
+      const points =
+        Number(
+          game.pointsPerCorrectAnswer
+        )
+        ||
+        0;
+
+      const target =
+        Number(
+          game.targetScore
+        )
+        ||
+        100;
+
+      const nextScore =
+        Math.min(
+          target,
+          this.explorationScore() + points
+        );
+
+      this.placedFactors.set(
+        nextPlaced
+      );
+
+      this.explorationScore.set(
+        nextScore
+      );
+
+      this.explorationFeedback.set(
+        '¡Correcto! Ese factor puede influir de esa manera.'
+      );
+
+      if (
+        nextScore >= target
+      ) {
+
+        this.explorationCompleted.set(
+          true
+        );
+
+        this.explorationFeedback.set(
+          game.completion?.message
+          ??
+          '¡Exploración completada!'
+        );
+      }
+
+      this.selectedFactorId.set(
+        null
+      );
+
+      return;
+    }
+
+    this.explorationFeedback.set(
+      'Aún no. Analiza nuevamente qué efecto directo puede tener este factor sobre la trayectoria.'
+    );
+  }
+
+  resetExplorationGame(): void {
+
+    this.selectedFactorId.set(
+      null
+    );
+
+    this.placedFactors.set(
+      {}
+    );
+
+    this.explorationScore.set(
+      0
+    );
+
+    this.explorationCompleted.set(
+      false
+    );
+
+    this.explorationFeedback.set(
+      ''
+    );
+  }
+
+  isFactorPlaced(
+    factorId: string
+  ): boolean {
+
+    return Object.prototype.hasOwnProperty.call(
+      this.placedFactors(),
+      factorId
+    );
+  }
+
+
+  // ============================================================
+  // PUEDE CONTINUAR
+  // ============================================================
+
+  canContinue(): boolean {
+
+    const current =
+      this.currentMoment();
+
+    if (!current) {
+      return false;
+    }
+
+    const activity =
+      this.primaryActivity();
+
+    // Momento 2: el juego de exploración debe completarse.
+    if (
+      current.order === 2 &&
+      this.explorationGame()
+    ) {
+      return this.explorationCompleted();
+    }
+
+    // Los momentos que no requieren entrega pueden continuar.
+    if (!activity) {
+      return true;
+    }
+
+    if (
+      activity.config?.requiresSubmission
+      !==
+      true
+    ) {
+      return true;
+    }
+
+    return (
+      this.response()
+        .trim()
+        .length > 0
+    );
+  }
+
+
+  // ============================================================
+  // CONTINUAR
+  // ============================================================
+
+  continue(): void {
+
+    const activity =
+      this.primaryActivity();
+
+
+    if (
+      activity?.config?.requiresSubmission
+      ===
+      true
+      &&
+      !this.canContinue()
+    ) {
+
+      this.focusResponse();
+
+      return;
+    }
+
+
+    if (
+      this.response()
+        .trim()
+        .length > 0
+    ) {
+
+      this.saveDraft();
+    }
+
+
+    const next =
+      this.nextMoment();
+
+
+    if (!next) {
+
+      this.router.navigate([
+        '/mi-aula',
+      ]);
+
+      return;
+    }
+
+
+    this.goToMoment(
+      next.id
+    );
+  }
+
+
+  // ============================================================
+  // NAVEGACIÓN A MOMENTO
+  // ============================================================
+
+  goToMoment(
+    targetMomentId: string
+  ): void {
+
+    const target =
+      this.moments().find(
+        (
+          moment: Moment
+        ) =>
+          moment.id ===
+          targetMomentId
+      );
+
+    if (!target) {
+      return;
+    }
+
+
+    if (
+      target.order >
+      this.currentOrder() + 1
+    ) {
+      return;
+    }
+
+    if (
+      target.order ===
+      this.currentOrder() + 1
+      &&
+      !this.canContinue()
+    ) {
+      return;
+    }
+
+
+    const experienceId =
+      this.experienceId();
+
+    if (!experienceId) {
+      return;
+    }
+
+
+    this.router.navigate([
+      '/experiencia',
+      experienceId,
+      'momento',
+      target.id,
+    ]);
+  }
+
+
+  // ============================================================
+  // VOLVER
+  // ============================================================
+
+  backToClassroom(): void {
+
+    this.router.navigate([
+      '/mi-aula',
+    ]);
+  }
+
+
+  // ============================================================
+  // ESTADOS DEL TIMELINE
+  // ============================================================
+
+  isCurrent(
+    moment: Moment
+  ): boolean {
+
+    return (
+      moment.id ===
+      this.currentMoment()?.id
+    );
+  }
+
+
+  isCompleted(
+    moment: Moment
+  ): boolean {
+
+    return (
+      moment.order <
+      this.currentOrder()
+    );
+  }
+
+
+  isLocked(
+    moment: Moment
+  ): boolean {
+
+    return (
+      moment.order >
+      this.currentOrder()
+    );
+  }
+
+
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
+
+  getDuration(): number {
+
+    return (
+      this.currentMoment()
+        ?.estimatedDurationMinutes
+      ??
+      15
+    );
+  }
+
+
+  getSubject(): string {
+
+    return (
+      this.experience()?.subject
+      ??
+      'STEAM'
+    );
+  }
+
+
+  getGradeLevel(): string {
+
+    return (
+      this.experience()?.gradeLevel
+      ??
+      ''
+    );
+  }
+
+
+  trackByMomentId(
+    _index: number,
+    moment: Moment
+  ): string {
+
+    return moment.id;
+  }
+
+
+  trackByActivityId(
+    _index: number,
+    activity: Activity
+  ): string {
+
+    return activity.id;
+  }
 
 
   // ============================================================
@@ -787,30 +1446,34 @@ export class MomentComponent
           this.destroy$
         )
       )
-      .subscribe(params => {
+      .subscribe(
+        params => {
 
-        this.experienceId.set(
-          params.get(
-            'experienceId'
-          )
-          ??
-          ''
-        );
+          this.experienceId.set(
+            params.get(
+              'experienceId'
+            )
+            ??
+            ''
+          );
 
-        this.momentId.set(
-          params.get(
-            'momentId'
-          )
-          ??
-          ''
-        );
+          this.momentId.set(
+            params.get(
+              'momentId'
+            )
+            ??
+            ''
+          );
 
-        this.acknowledged.set(
-          false
-        );
+          this.response.set(
+            ''
+          );
 
-      });
-
+          this.saved.set(
+            false
+          );
+        }
+      );
   }
 
 
@@ -819,575 +1482,6 @@ export class MomentComponent
     this.destroy$.next();
 
     this.destroy$.complete();
-
-  }
-
-
-  // ============================================================
-  // IMAGEN DE EXPERIENCIA
-  // ============================================================
-
-  private getExperienceImage(
-    experience: Experience | null
-  ): string {
-
-    if (!experience) {
-      return '';
-    }
-
-    return (
-      experience.coverUrl
-      ??
-      experience.thumbnailUrl
-      ??
-      ''
-    );
-
-  }
-
-
-  // ============================================================
-  // ICONO DEL MOMENTO
-  // ============================================================
-
-  getMomentIcon(
-    moment: Moment
-  ): string {
-
-    return (
-      this.momentIcons[
-        String(moment.type)
-      ]
-      ??
-      this.getFallbackIcon(
-        moment.order
-      )
-    );
-
-  }
-
-
-  private getFallbackIcon(
-    order: number
-  ): string {
-
-    const icons: string[] = [
-
-      'ðŸ’¡',
-      'ðŸ”Ž',
-      'ðŸŽ¯',
-      'ðŸ§ª',
-      'ðŸ§ ',
-      'ðŸ“Š',
-      'ðŸŒŽ',
-
-    ];
-
-    return (
-      icons[order - 1]
-      ??
-      'ðŸŒ±'
-    );
-
-  }
-
-
-  // ============================================================
-  // ICONO DE ACTIVIDAD
-  // ============================================================
-
-  getActivityIcon(
-    type: unknown
-  ): string {
-
-    const value =
-      String(
-        type
-        ??
-        ''
-      ).toLowerCase();
-
-
-    if (
-      value.includes('video')
-    ) {
-      return 'â–¶ï¸';
-    }
-
-
-    if (
-      value.includes('simulation') ||
-      value.includes('simul')
-    ) {
-      return 'ðŸŽ®';
-    }
-
-
-    if (
-      value.includes('question') ||
-      value.includes('quiz')
-    ) {
-      return 'â“';
-    }
-
-
-    if (
-      value.includes('reflection') ||
-      value.includes('reflex')
-    ) {
-      return 'ðŸŒ±';
-    }
-
-
-    if (
-      value.includes('analysis') ||
-      value.includes('data')
-    ) {
-      return 'ðŸ“Š';
-    }
-
-
-    if (
-      value.includes('experiment') ||
-      value.includes('lab')
-    ) {
-      return 'ðŸ§ª';
-    }
-
-
-    if (
-      value.includes('preinforme') ||
-      value.includes('predict')
-    ) {
-      return 'ðŸŽ¯';
-    }
-
-
-    if (
-      value.includes('explor')
-    ) {
-      return 'ðŸ”Ž';
-    }
-
-
-    return 'âœ¦';
-
-  }
-
-
-  // ============================================================
-  // TIPO DE ACTIVIDAD
-  // ============================================================
-
-  getActivityTypeLabel(
-    activity: Activity
-  ): string {
-
-    const type =
-      String(
-        activity.type
-        ??
-        ''
-      ).toLowerCase();
-
-
-    const labels:
-      Record<string, string> = {
-
-      video:
-        'DESCUBRE',
-
-      reflection:
-        'REFLEXIONA',
-
-      data_analysis:
-        'INVESTIGA',
-
-      simulation:
-        'EXPERIMENTA',
-
-      questionnaire:
-        'RESPONDE',
-
-      preinforme:
-        'PREDICE',
-
-      lab_physical:
-        'COMPRUEBA',
-
-      question:
-        'PIENSA',
-
-      experiment:
-        'COMPRUEBA',
-
-      open:
-        'EXPLORA',
-
-      problem:
-        'RESUELVE',
-
-    };
-
-
-    return (
-      labels[type]
-      ??
-      'EXPLORA'
-    );
-
-  }
-
-
-  // ============================================================
-  // TIPO DE RECURSO
-  // ============================================================
-
-  isImage(
-    resource: AguaResource
-  ): boolean {
-
-    return (
-      resource.type === 'image' ||
-      resource.type === 'infographic'
-    );
-
-  }
-
-
-  isVideo(
-    resource: AguaResource
-  ): boolean {
-
-    return (
-      resource.type === 'video'
-    );
-
-  }
-
-
-  isSimulation(
-    resource: AguaResource
-  ): boolean {
-
-    return (
-      resource.type === 'simulation'
-    );
-
-  }
-
-
-  isInformationResource(
-    resource: AguaResource
-  ): boolean {
-
-    return (
-      resource.type === 'data' ||
-      resource.type === 'map' ||
-      resource.type === 'document' ||
-      resource.type === 'worked-example' ||
-      resource.type === 'link'
-    );
-
-  }
-
-
-  getResourceIcon(
-    resource: AguaResource
-  ): string {
-
-    const icons:
-      Record<string, string> = {
-
-      image:
-        'ðŸ–¼ï¸',
-
-      infographic:
-        'ðŸ“Š',
-
-      video:
-        'â–¶ï¸',
-
-      map:
-        'ðŸ—ºï¸',
-
-      data:
-        'ðŸ“ˆ',
-
-      document:
-        'ðŸ“„',
-
-      'worked-example':
-        'ðŸ§ ',
-
-      link:
-        'ðŸ”—',
-
-      simulation:
-        'ðŸ”¬',
-
-    };
-
-    return (
-      icons[
-        resource.type
-      ]
-      ??
-      'ðŸŒ±'
-    );
-
-  }
-
-
-  hasResourceUrl(
-    resource: AguaResource
-  ): boolean {
-
-    return !!resource.url;
-
-  }
-
-
-  hasSourceUrl(
-    resource: AguaResource
-  ): boolean {
-
-    return !!resource.sourceUrl;
-
-  }
-
-
-  // ============================================================
-  // ESTADOS
-  // ============================================================
-
-  isCurrent(
-    moment: Moment
-  ): boolean {
-
-    return (
-      moment.id ===
-      this.currentMoment()?.id
-    );
-
-  }
-
-
-  isCompleted(
-    moment: Moment
-  ): boolean {
-
-    return (
-      moment.order <
-      this.currentOrder()
-    );
-
-  }
-
-
-  isLocked(
-    moment: Moment
-  ): boolean {
-
-    return (
-      moment.order >
-      this.currentOrder()
-    );
-
-  }
-
-
-  isFirstMoment(): boolean {
-
-    return (
-      this.currentOrder() === 1
-    );
-
-  }
-
-
-  isLastMoment(): boolean {
-
-    return (
-      this.currentOrder()
-      ===
-      this.totalMoments()
-    );
-
-  }
-
-
-  // ============================================================
-  // REGISTRAR OBSERVACIÃ“N
-  // ============================================================
-
-  acknowledgeChallenge(): void {
-
-    this.acknowledged.set(
-      true
-    );
-
-  }
-
-
-  // ============================================================
-  // ABRIR ACTIVIDAD
-  // ============================================================
-
-  openActivity(
-    activity: Activity
-  ): void {
-
-    if (!activity?.id) {
-      return;
-    }
-
-    const experienceId =
-      this.experienceId();
-
-    if (!experienceId) {
-      return;
-    }
-
-    this.router.navigate([
-      '/experiencia',
-      experienceId,
-      'actividad',
-      activity.id,
-    ]);
-
-  }
-
-
-  // ============================================================
-  // VOLVER AL AULA
-  // ============================================================
-
-  backToClassroom(): void {
-
-    this.router.navigate([
-      '/mi-aula',
-    ]);
-
-  }
-
-
-  // ============================================================
-  // CONTINUAR
-  // ============================================================
-
-  continue(): void {
-
-    const next =
-      this.nextMoment();
-
-    if (!next) {
-
-      this.router.navigate([
-        '/mi-aula',
-      ]);
-
-      return;
-
-    }
-
-    const experienceId =
-      this.experienceId();
-
-    if (!experienceId) {
-      return;
-    }
-
-    this.router.navigate([
-      '/experiencia',
-      experienceId,
-      'momento',
-      next.id,
-    ]);
-
-  }
-
-
-  // ============================================================
-  // IR A MOMENTO
-  // ============================================================
-
-  goToMoment(
-    momentId: string
-  ): void {
-
-    const target =
-      this.moments().find(
-        (moment: Moment) =>
-          moment.id === momentId
-      );
-
-    if (!target) {
-      return;
-    }
-
-    if (
-      this.isLocked(target)
-    ) {
-      return;
-    }
-
-    const experienceId =
-      this.experienceId();
-
-    if (!experienceId) {
-      return;
-    }
-
-    this.router.navigate([
-      '/experiencia',
-      experienceId,
-      'momento',
-      target.id,
-    ]);
-
-  }
-
-
-  // ============================================================
-  // TRACK MOMENTOS
-  // ============================================================
-
-  trackByMomentId(
-    _index: number,
-    moment: Moment
-  ): string {
-
-    return moment.id;
-
-  }
-
-
-  // ============================================================
-  // TRACK ACTIVIDADES
-  // ============================================================
-
-  trackByActivityId(
-    _index: number,
-    activity: Activity
-  ): string {
-
-    return activity.id;
-
-  }
-
-
-  // ============================================================
-  // TRACK RECURSOS
-  // ============================================================
-
-  trackByResourceId(
-    _index: number,
-    resource: AguaResource
-  ): string {
-
-    return resource.id;
-
   }
 
 }

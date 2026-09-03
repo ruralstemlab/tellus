@@ -3334,3 +3334,96 @@
   }
 
 }
+/* ============================================================
+   AGUA — IDENTIDAD AZUL COMPLETA
+   ============================================================ */
+
+.experience-card.experience-water {
+
+  --accent: #149ac5;
+  --accent-dark: #08759b;
+  --accent-deep: #075473;
+
+  --accent-soft: #e8f7fc;
+  --accent-pale: #f5fcfe;
+  --accent-border: #b8dfea;
+
+  --accent-glow: rgba(20, 154, 197, .18);
+
+  --particle-color: rgba(20, 154, 197, .52);
+
+  --border: #d8eaf0;
+}
+
+
+/* Botón ENTRAR de Agua */
+
+.experience-card.experience-water
+.experience-enter-button {
+
+  background:
+    linear-gradient(
+      135deg,
+      #149ac5,
+      #08759b
+    );
+
+  border-color:
+    #149ac5;
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 8px 22px rgba(20, 154, 197, .22);
+}
+
+
+/* Flecha */
+
+.experience-card.experience-water
+.footer-arrow {
+
+  background:
+    rgba(255, 255, 255, .20);
+
+  color:
+    #ffffff;
+
+  box-shadow:
+    0 6px 16px rgba(20, 154, 197, .20);
+}
+
+
+/* Hover del botón */
+
+.experience-card.experience-water
+.experience-enter-button:hover {
+
+  background:
+    linear-gradient(
+      135deg,
+      #08759b,
+      #075473
+    );
+
+  border-color:
+    #08759b;
+
+  box-shadow:
+    0 10px 28px rgba(20, 154, 197, .30);
+}
+
+
+/* Hover de la flecha */
+
+.experience-card.experience-water
+.experience-enter-button:hover
+.footer-arrow {
+
+  background:
+    rgba(255, 255, 255, .25);
+
+  transform:
+    translateX(3px);
+}

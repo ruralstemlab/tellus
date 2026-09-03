@@ -18,8 +18,8 @@ import { Activity } from '../models';
 import { ActivityService } from '../services/activity.service';
 
 import {
-  AGUA_TERRITORIO_ACTIVITIES,
-} from '../data/agua-territorio.mock';
+  getActivityById,
+} from '../data/experience-registry';
 
 import {
   AguaResource,
@@ -29,8 +29,9 @@ import {
 
 // ============================================================
 // TELLUS LEARNING
-// VISOR DE ACTIVIDADES
-// ============================================================
+// ACTIVITY COMPONENT
+//
+// La actividad muestra directamente su recurso principal.
 //
 // Flujo:
 //
@@ -38,19 +39,22 @@ import {
 //   ↓
 // ActivityComponent
 //   ↓
-// MOCK LOCAL
+// experienceId + activityId
+//   ↓
+// EXPERIENCE_REGISTRY
 //   ↓
 // Activity
 //   ↓
 // resourceIds
 //   ↓
-// Recursos Agua-Territorio
+// Recurso
+//   ↓
+// Imagen / Infografía / Video / Mapa / Simulación
 //
-// Firestore queda como respaldo únicamente si la actividad
-// no existe en el catálogo local.
+// La actividad ya no depende de una experiencia específica
+// para localizarse.
 //
 // ============================================================
-
 
 @Component({
   selector: 'app-activity',
@@ -72,7 +76,6 @@ import {
 })
 export class ActivityComponent
   implements OnInit {
-
 
   // ==========================================================
   // SERVICIOS
@@ -104,15 +107,24 @@ export class ActivityComponent
   readonly resources =
     signal<AguaResource[]>([]);
 
+  readonly primaryResource =
+    signal<AguaResource | null>(null);
+
   readonly experienceId =
     signal('');
 
   readonly activityId =
     signal('');
 
+  readonly response =
+    signal('');
+
+  readonly saved =
+    signal(false);
+
 
   // ==========================================================
-  // CICLO DE VIDA
+  // INICIO
   // ==========================================================
 
   async ngOnInit(): Promise<void> {
@@ -138,7 +150,7 @@ export class ActivityComponent
 
 
     console.log(
-      '[TELLUS] 🚀 ActivityComponent iniciado',
+      '[TELLUS] ActivityComponent iniciado',
     );
 
     console.log(
@@ -150,6 +162,18 @@ export class ActivityComponent
       '[TELLUS] Activity ID:',
       activityId,
     );
+
+
+    if (!experienceId) {
+
+      this.error.set(
+        'No se encontró el identificador de la experiencia.',
+      );
+
+      this.loading.set(false);
+
+      return;
+    }
 
 
     if (!activityId) {
@@ -165,9 +189,9 @@ export class ActivityComponent
 
 
     await this.loadActivity(
+      experienceId,
       activityId,
     );
-
   }
 
 
@@ -176,6 +200,7 @@ export class ActivityComponent
   // ==========================================================
 
   private async loadActivity(
+    experienceId: string,
     activityId: string,
   ): Promise<void> {
 
@@ -183,48 +208,34 @@ export class ActivityComponent
 
     this.error.set('');
 
+    this.resources.set([]);
+
+    this.primaryResource.set(null);
+
 
     try {
 
       // ========================================================
-      // 1. BUSCAR PRIMERO EN EL MOCK LOCAL
-      // ========================================================
-      //
-      // Esta es la fuente principal durante la construcción
-      // de la experiencia Agua en nuestro territorio.
-      //
-      // No necesitamos Firebase para visualizar la ruta
-      // pedagógica.
+      // 1. REGISTRO CENTRAL DE EXPERIENCIAS
       // ========================================================
 
       console.log(
-        '[TELLUS] 🔎 Buscando actividad en MOCK:',
+        '[TELLUS] Buscando actividad en EXPERIENCE_REGISTRY:',
         activityId,
       );
 
-
       const localActivity =
-        AGUA_TERRITORIO_ACTIVITIES.find(
-          activity =>
-            activity.id === activityId,
+        getActivityById(
+          experienceId,
+          activityId,
         );
 
-
-      // ========================================================
-      // ACTIVIDAD ENCONTRADA
-      // ========================================================
 
       if (localActivity) {
 
         console.log(
-          '[TELLUS] ✅ Actividad encontrada en MOCK:',
+          '[TELLUS] Actividad encontrada en EXPERIENCE_REGISTRY:',
           localActivity,
-        );
-
-
-        console.log(
-          '[TELLUS] 📚 Resource IDs:',
-          localActivity.resourceIds ?? [],
         );
 
 
@@ -232,10 +243,6 @@ export class ActivityComponent
           localActivity,
         );
 
-
-        // ------------------------------------------------------
-        // CARGAR RECURSOS
-        // ------------------------------------------------------
 
         this.loadResources(
           localActivity,
@@ -249,20 +256,15 @@ export class ActivityComponent
 
 
       // ========================================================
-      // 2. RESPALDO FIRESTORE
-      // ========================================================
-      //
-      // Solo llegamos aquí si la actividad no está definida
-      // en el catálogo local.
+      // 2. FIRESTORE COMO RESPALDO
       // ========================================================
 
       console.warn(
-        '[TELLUS] ⚠️ Actividad no encontrada en MOCK.',
-        activityId,
-      );
-
-      console.log(
-        '[TELLUS] ☁️ Intentando buscar en Firestore...',
+        '[TELLUS] Actividad no encontrada en EXPERIENCE_REGISTRY:',
+        {
+          experienceId,
+          activityId,
+        },
       );
 
 
@@ -284,8 +286,38 @@ export class ActivityComponent
       }
 
 
+      // ========================================================
+      // VALIDACIÓN DE EXPERIENCIA
+      //
+      // Evita cargar una actividad que pertenezca a otra
+      // experiencia cuando venga desde Firestore.
+      // ========================================================
+
+      if (
+        firestoreActivity.experienceId
+        &&
+        firestoreActivity.experienceId
+          !== experienceId
+      ) {
+
+        console.warn(
+          '[TELLUS] La actividad pertenece a otra experiencia:',
+          firestoreActivity,
+        );
+
+
+        this.error.set(
+          'La actividad no pertenece a esta experiencia.',
+        );
+
+        this.loading.set(false);
+
+        return;
+      }
+
+
       console.log(
-        '[TELLUS] ☁️ Actividad encontrada en Firestore:',
+        '[TELLUS] Actividad encontrada en Firestore:',
         firestoreActivity,
       );
 
@@ -304,30 +336,35 @@ export class ActivityComponent
 
     } catch (error) {
 
-      // ========================================================
-      // ERROR
-      // ========================================================
-
       console.error(
-        '[TELLUS] ❌ Error cargando actividad:',
+        '[TELLUS] Error cargando actividad:',
         error,
       );
 
 
       this.error.set(
-        'No fue posible cargar la actividad.',
+        'No fue posible cargar esta actividad.',
       );
 
 
       this.loading.set(false);
-
     }
-
   }
 
 
   // ==========================================================
-  // CARGAR RECURSOS DE LA ACTIVIDAD
+  // CARGAR RECURSOS
+  //
+  // NOTA:
+  // Esta parte todavía conserva el resolvedor de Agua.
+  //
+  // Es intencional.
+  //
+  // Primero estamos comprobando que el motor de actividades
+  // funcione independientemente de Agua.
+  //
+  // El siguiente paso será reemplazar esta dependencia por
+  // un resolver genérico de recursos.
   // ==========================================================
 
   private loadResources(
@@ -339,33 +376,26 @@ export class ActivityComponent
 
 
     console.log(
-      '[TELLUS] 📚 IDs de recursos:',
+      '[TELLUS] Resource IDs:',
       resourceIds,
     );
 
-
-    // ----------------------------------------------------------
-    // SIN RECURSOS
-    // ----------------------------------------------------------
 
     if (
       resourceIds.length === 0
     ) {
 
-      console.warn(
-        '[TELLUS] ⚠️ Esta actividad no tiene resourceIds.',
+      console.log(
+        '[TELLUS] La actividad no tiene recursos asociados.',
       );
 
-
       this.resources.set([]);
+
+      this.primaryResource.set(null);
 
       return;
     }
 
-
-    // ----------------------------------------------------------
-    // BUSCAR CADA RECURSO
-    // ----------------------------------------------------------
 
     const loadedResources =
       resourceIds
@@ -381,15 +411,21 @@ export class ActivityComponent
             if (!resource) {
 
               console.warn(
-                '[TELLUS] ⚠️ Recurso no encontrado:',
+                '[TELLUS] Recurso no encontrado:',
                 resourceId,
               );
 
+              return null;
             }
 
 
-            return resource;
+            console.log(
+              '[TELLUS] Recurso encontrado:',
+              resource,
+            );
 
+
+            return resource;
           },
         )
         .filter(
@@ -404,31 +440,114 @@ export class ActivityComponent
         );
 
 
-    // ----------------------------------------------------------
-    // GUARDAR RECURSOS
-    // ----------------------------------------------------------
-
     this.resources.set(
       loadedResources,
     );
 
 
+    // ========================================================
+    // RECURSO PRINCIPAL
+    //
+    // El primero de la lista es el recurso protagonista.
+    // ========================================================
+
+    const mainResource =
+      loadedResources[0] ?? null;
+
+
+    this.primaryResource.set(
+      mainResource,
+    );
+
+
     console.log(
-      '[TELLUS] ✅ Recursos cargados:',
+      '[TELLUS] Recursos cargados:',
       loadedResources,
     );
 
 
     console.log(
-      '[TELLUS] 📊 Total recursos:',
+      '[TELLUS] Total recursos:',
       loadedResources.length,
     );
 
+
+    console.log(
+      '[TELLUS] Recurso principal:',
+      mainResource,
+    );
   }
 
 
   // ==========================================================
-  // IDENTIFICAR TIPO DE RECURSO
+  // CAMBIO DE RESPUESTA
+  // ==========================================================
+
+  onResponseChange(
+    event: Event,
+  ): void {
+
+    const textarea =
+      event.target as HTMLTextAreaElement;
+
+
+    this.response.set(
+      textarea.value,
+    );
+
+
+    this.saved.set(false);
+  }
+
+
+  // ==========================================================
+  // GUARDAR BORRADOR
+  // ==========================================================
+
+  saveDraft(): void {
+
+    this.saved.set(true);
+
+    console.log(
+      '[TELLUS] Borrador guardado:',
+      this.response(),
+    );
+  }
+
+
+  // ==========================================================
+  // CONTINUAR
+  // ==========================================================
+
+  continue(): void {
+
+    console.log(
+      '[TELLUS] Continuar actividad:',
+      this.activityId(),
+    );
+
+
+    this.saveDraft();
+  }
+
+
+  // ==========================================================
+  // VOLVER AL MOMENTO
+  // ==========================================================
+
+  backToMoment(): void {
+
+    this.router.navigate([
+      '/experiencia',
+      this.experienceId(),
+      'momento',
+      this.activity()?.momentId ?? '',
+    ]);
+  }
+
+
+  // ==========================================================
+  // TIPOS DE RECURSO
   // ==========================================================
 
   isImage(
@@ -436,16 +555,20 @@ export class ActivityComponent
   ): boolean {
 
     return (
-      resource.type === 'image' ||
-      resource.type === 'infographic'
+      resource.type === 'image'
     );
-
   }
 
 
-  // ==========================================================
-  // VIDEO
-  // ==========================================================
+  isInfographic(
+    resource: AguaResource,
+  ): boolean {
+
+    return (
+      resource.type === 'infographic'
+    );
+  }
+
 
   isVideo(
     resource: AguaResource,
@@ -454,46 +577,18 @@ export class ActivityComponent
     return (
       resource.type === 'video'
     );
-
   }
 
 
-  // ==========================================================
-  // RECURSO EXTERNO
-  // ==========================================================
-
-  isExternal(
+  isMap(
     resource: AguaResource,
   ): boolean {
 
     return (
-      resource.type === 'link' ||
-      resource.type === 'map' ||
-      resource.type === 'data'
+      resource.type === 'map'
     );
-
   }
 
-
-  // ==========================================================
-  // DOCUMENTO
-  // ==========================================================
-
-  isDocument(
-    resource: AguaResource,
-  ): boolean {
-
-    return (
-      resource.type === 'document' ||
-      resource.type === 'worked-example'
-    );
-
-  }
-
-
-  // ==========================================================
-  // SIMULADOR
-  // ==========================================================
 
   isSimulation(
     resource: AguaResource,
@@ -502,71 +597,121 @@ export class ActivityComponent
     return (
       resource.type === 'simulation'
     );
-
   }
 
 
-  // ==========================================================
-  // RECURSO PUBLICADO
-  // ==========================================================
-
-  isPublished(
+  isLink(
     resource: AguaResource,
   ): boolean {
 
     return (
-      resource.published !== false
+      resource.type === 'link'
     );
-
   }
 
 
   // ==========================================================
-  // RECURSO OFFLINE
+  // RECURSO VISUAL
   // ==========================================================
 
-  isOfflineAvailable(
-    resource: AguaResource,
-  ): boolean {
+  hasResource(): boolean {
 
     return (
-      resource.offlineAvailable === true
+      this.primaryResource() !== null
     );
-
   }
 
 
   // ==========================================================
-  // VOLVER AL MOMENTO
+  // URL SEGURA DEL RECURSO
   // ==========================================================
 
-  back(): void {
+  getResourceUrl(
+    resource: AguaResource,
+  ): string {
 
-    const currentActivity =
-      this.activity();
-
-
-    const momentId =
-      currentActivity?.momentId;
+    return resource.url ?? '';
+  }
 
 
-    if (!momentId) {
+  // ==========================================================
+  // TÍTULO DE ACTIVIDAD
+  // ==========================================================
 
-      this.router.navigate([
-        '/mi-aula',
-      ]);
+  getActivityTitle(): string {
 
-      return;
+    return (
+      this.activity()?.title ??
+      'Actividad Tellus'
+    );
+  }
+
+
+  // ==========================================================
+  // DESCRIPCIÓN
+  // ==========================================================
+
+  getActivityDescription(): string {
+
+    return (
+      this.activity()?.description ??
+      ''
+    );
+  }
+
+
+  // ==========================================================
+  // DURACIÓN
+  // ==========================================================
+
+  getDuration(): number {
+
+    return (
+      this.activity()?.estimatedDurationMinutes ??
+      10
+    );
+  }
+
+
+  // ==========================================================
+  // TIPO VISIBLE
+  // ==========================================================
+
+  getResourceTypeLabel(
+    resource: AguaResource,
+  ): string {
+
+    switch (resource.type) {
+
+      case 'infographic':
+        return 'INFOGRAFÍA';
+
+      case 'image':
+        return 'IMAGEN';
+
+      case 'video':
+        return 'VIDEO';
+
+      case 'map':
+        return 'MAPA';
+
+      case 'data':
+        return 'DATOS';
+
+      case 'document':
+        return 'DOCUMENTO';
+
+      case 'simulation':
+        return 'SIMULADOR';
+
+      case 'worked-example':
+        return 'EJEMPLO';
+
+      case 'link':
+        return 'RECURSO EXTERNO';
+
+      default:
+        return 'RECURSO';
     }
-
-
-    this.router.navigate([
-      '/experiencia',
-      this.experienceId(),
-      'momento',
-      momentId,
-    ]);
-
   }
-
 }
