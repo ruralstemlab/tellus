@@ -1367,6 +1367,481 @@ export class MomentComponent
 
 
   // ============================================================
+  // ROAD TO GLORY — RECEPTOR DE postMessage
+  // ============================================================
+
+  readonly roadToGloryReady =
+    signal<boolean>(false);
+
+  readonly roadToGloryResult =
+    signal<any | null>(null);
+
+  readonly roadToGloryProgress =
+    signal<any | null>(null);
+
+  /**
+   * Handler que se ejecuta cuando el simulador envía un mensaje.
+   * Debe ser una propiedad para poder removerlo correctamente.
+   */
+  private readonly onSimulatorMessage =
+    (event: MessageEvent): void => {
+
+      const data =
+        event.data as any;
+
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        data.source !== 'rural-steam-lab'
+      ) {
+        return;
+      }
+
+      console.log(
+        '[Tellus] Mensaje del simulador:',
+        data
+      );
+
+      // El simulador avisó que está listo
+      if (
+        data.type ===
+        'tellus:road-to-glory:ready'
+      ) {
+
+        this.roadToGloryReady.set(true);
+
+        this.simulatorLoaded.set(true);
+
+        return;
+      }
+
+      // Progreso (puntos / goles en tiempo real)
+      if (
+        data.type ===
+        'tellus:road-to-glory:progress'
+      ) {
+
+        this.roadToGloryProgress.set(data);
+
+        return;
+      }
+
+      // Resultado final de la evaluación ICFES
+      if (
+        data.type ===
+        'tellus:road-to-glory:result'
+      ) {
+
+        this.roadToGloryResult.set(data);
+
+        console.log(
+          '[Tellus] Nota del simulador:',
+          data.score
+        );
+
+        console.log(
+          '[Tellus] Estudiante:',
+          data.studentName
+        );
+
+        console.log(
+          '[Tellus] Respuestas:',
+          data.answers
+        );
+
+        return;
+      }
+    };
+
+
+  // ============================================================
+  // CONSTRUCCIÓN — MOMENTO 5
+  // ============================================================
+
+  readonly constructionExample =
+    computed<any | null>(() => {
+
+      const activity =
+        this.currentActivities().find(
+          (a: Activity) =>
+            a.id ===
+            'act-construccion-ejemplo-resuelto'
+        );
+
+      if (!activity) {
+        return null;
+      }
+
+      const config =
+        activity.config as any;
+
+      const settings =
+        config?.settings ?? {};
+
+      return {
+
+        title:
+          activity.title,
+
+        description:
+          activity.description,
+
+        imageUrl:
+          settings.imageUrl ?? '',
+
+        imageAlt:
+          settings.imageAlt ?? '',
+
+      };
+    });
+
+  readonly challengeSolvedCount =
+    signal<number>(0);
+
+  readonly challengeQuestionIndex =
+    signal<number>(0);
+
+  readonly selectedChallengeOption =
+    signal<number | null>(null);
+
+  readonly challengeSubmitted =
+    signal<boolean>(false);
+
+  readonly challengeCorrect =
+    signal<boolean>(false);
+
+  readonly challengeFeedback =
+    signal<string>('');
+
+  readonly challengeImage =
+    computed<string>(() => {
+
+      const activity =
+        this.currentActivities().find(
+          (a: Activity) =>
+            a.id ===
+            'act-construccion-desafio'
+        );
+
+      const config =
+        activity?.config as any;
+
+      return (
+        config?.settings?.imageUrl
+        ??
+        ''
+      );
+    });
+
+  readonly challengeQuestions =
+    computed<any[]>(() => {
+
+      const activity =
+        this.currentActivities().find(
+          (a: Activity) =>
+            a.id ===
+            'act-construccion-desafio'
+        );
+
+      if (!activity) {
+        return [];
+      }
+
+      const content =
+        activity.content;
+
+      if (
+        !content ||
+        content.type !== 'questionnaire'
+      ) {
+        return [];
+      }
+
+      const questions =
+        content.data?.questions;
+
+      return (
+        Array.isArray(questions)
+        ?
+        questions
+        :
+        []
+      );
+    });
+
+  readonly challengeTotal =
+    computed<number>(() => {
+
+      return this.challengeQuestions().length;
+    });
+
+  readonly currentChallengeQuestion =
+    computed<any | null>(() => {
+
+      return (
+        this.challengeQuestions()[
+          this.challengeQuestionIndex()
+        ]
+        ??
+        null
+      );
+    });
+
+  readonly challengeProgress =
+    computed<number>(() => {
+
+      return this.challengeSolvedCount();
+    });
+
+  readonly challengeProgressPercent =
+    computed<number>(() => {
+
+      const total =
+        this.challengeTotal();
+
+      if (total <= 0) {
+        return 0;
+      }
+
+      return Math.round(
+        (
+          this.challengeSolvedCount() /
+          total
+        ) *
+        100
+      );
+    });
+
+  readonly challengeCompleted =
+    computed<boolean>(() => {
+
+      const total =
+        this.challengeTotal();
+
+      return (
+        total > 0
+        &&
+        this.challengeSolvedCount() >= total
+      );
+    });
+
+  readonly isConstructionMoment =
+    computed<boolean>(() => {
+
+      return (
+        this.currentOrder() === 5
+        &&
+        !!this.constructionExample()
+        &&
+        this.challengeTotal() > 0
+      );
+    });
+
+  getOptionLetter(
+    index: number
+  ): string {
+
+    return String.fromCharCode(
+      65 + index
+    );
+  }
+
+  selectChallengeOption(
+    index: number
+  ): void {
+
+    if (
+      this.challengeSubmitted()
+    ) {
+      return;
+    }
+
+    this.selectedChallengeOption.set(
+      index
+    );
+  }
+
+  submitChallengeAnswer(): void {
+
+    const question =
+      this.currentChallengeQuestion();
+
+    const selected =
+      this.selectedChallengeOption();
+
+    if (
+      !question
+      ||
+      selected === null
+      ||
+      this.challengeSubmitted()
+    ) {
+      return;
+    }
+
+    const isCorrect =
+      selected ===
+      question.correctIndex;
+
+    this.challengeSubmitted.set(
+      true
+    );
+
+    this.challengeCorrect.set(
+      isCorrect
+    );
+
+    if (isCorrect) {
+
+      this.challengeFeedback.set(
+        question.feedback?.correct
+        ??
+        '¡Correcto! Has aplicado bien el modelo.'
+      );
+
+      this.challengeSolvedCount.update(
+        value => {
+
+          const total =
+            this.challengeTotal();
+
+          return Math.min(
+            total,
+            value + 1
+          );
+        }
+      );
+
+      return;
+    }
+
+    this.challengeFeedback.set(
+      question.feedback?.incorrect
+      ??
+      'Todavía no. Revisa los datos y vuelve a intentarlo.'
+    );
+  }
+
+  retryChallenge(): void {
+
+    this.selectedChallengeOption.set(
+      null
+    );
+
+    this.challengeSubmitted.set(
+      false
+    );
+
+    this.challengeCorrect.set(
+      false
+    );
+
+    this.challengeFeedback.set(
+      ''
+    );
+  }
+
+  nextChallengeQuestion(): void {
+
+    const nextIndex =
+      this.challengeQuestionIndex() + 1;
+
+    if (
+      nextIndex >=
+      this.challengeTotal()
+    ) {
+      return;
+    }
+
+    this.challengeQuestionIndex.set(
+      nextIndex
+    );
+
+    this.selectedChallengeOption.set(
+      null
+    );
+
+    this.challengeSubmitted.set(
+      false
+    );
+
+    this.challengeCorrect.set(
+      false
+    );
+
+    this.challengeFeedback.set(
+      ''
+    );
+  }
+
+  resetChallenge(): void {
+
+    this.challengeSolvedCount.set(
+      0
+    );
+
+    this.challengeQuestionIndex.set(
+      0
+    );
+
+    this.selectedChallengeOption.set(
+      null
+    );
+
+    this.challengeSubmitted.set(
+      false
+    );
+
+    this.challengeCorrect.set(
+      false
+    );
+
+    this.challengeFeedback.set(
+      ''
+    );
+  }
+
+
+  // ============================================================
+  // LIGHTBOX — MOMENTO 5
+  // ============================================================
+
+  readonly lightboxImage =
+    signal<string>('');
+
+  readonly lightboxAlt =
+    signal<string>('');
+
+  readonly lightboxOpen =
+    signal<boolean>(false);
+
+  openLightbox(
+    url: string,
+    alt: string
+  ): void {
+
+    if (!url) {
+      return;
+    }
+
+    this.lightboxImage.set(url);
+    this.lightboxAlt.set(alt);
+    this.lightboxOpen.set(true);
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLightbox(): void {
+
+    this.lightboxOpen.set(false);
+    this.lightboxImage.set('');
+    this.lightboxAlt.set('');
+
+    document.body.style.overflow = '';
+  }
+
+
+  // ============================================================
   // PUEDE CONTINUAR
   // ============================================================
 
@@ -1401,6 +1876,14 @@ export class MomentComponent
     // Momento 4: el simulador debe estar cargado.
     if (current.order === 4) {
       return this.simulatorLoaded();
+    }
+
+    // Momento 5: los 5 problemas deben estar resueltos.
+    if (
+      current.order === 5 &&
+      this.challengeTotal() > 0
+    ) {
+      return this.challengeCompleted();
     }
 
     // Los momentos que no requieren entrega pueden continuar.
@@ -1652,6 +2135,13 @@ export class MomentComponent
 
   ngOnInit(): void {
 
+    // 🆕 Escuchar mensajes del simulador Road to Glory
+    window.addEventListener(
+      'message',
+      this.onSimulatorMessage,
+      false
+    );
+
     this.route.paramMap
       .pipe(
         takeUntil(
@@ -1687,14 +2177,30 @@ export class MomentComponent
 
           this.resetPrediction();
 
-          // Resetear el estado del simulador al cambiar de momento
           this.simulatorLoaded.set(false);
+
+          this.roadToGloryReady.set(false);
+
+          this.roadToGloryResult.set(null);
+
+          this.roadToGloryProgress.set(null);
+
+          this.resetChallenge();
+
+          this.closeLightbox();
         }
       );
   }
 
 
   ngOnDestroy(): void {
+
+    // 🆕 Remover el listener al salir
+    window.removeEventListener(
+      'message',
+      this.onSimulatorMessage,
+      false
+    );
 
     this.destroy$.next();
 

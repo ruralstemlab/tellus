@@ -90,18 +90,48 @@ export interface QuestionnaireActivityContent {
   questions: QuestionnaireQuestion[];
 }
 
+// ============================================================
+// RESPUESTA DE CUESTIONARIO
+// ============================================================
+
+export interface QuestionnaireFeedback {
+  correct?: string;
+  incorrect?: string;
+}
+
 export interface QuestionnaireQuestion {
   id: string;
+
   type:
     | 'multiple_choice'
     | 'true_false'
     | 'short_answer'
     | 'long_answer'
     | 'numeric';
+
   text: string;
+
   options?: string[];
+
   points?: number;
+
   hint?: string;
+
+  /**
+   * Índice de la opción correcta
+   * (solo para preguntas tipo multiple_choice).
+   *
+   * Ejemplo:
+   *   0 = primera opción
+   *   1 = segunda opción
+   */
+  correctIndex?: number;
+
+  /**
+   * Retroalimentación mostrada al estudiante
+   * según su respuesta.
+   */
+  feedback?: QuestionnaireFeedback;
 }
 
 export interface PreinformeActivityContent {

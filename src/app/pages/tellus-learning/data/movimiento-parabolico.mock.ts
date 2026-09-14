@@ -1,33 +1,13 @@
-import { Experience } from '../models/experience.model';
-import { Moment } from '../models/moment.model';
-import { Activity } from '../models/activity.model';
-
-/**
- * ============================================================
- * TELLUS LEARNING
- * EXPERIENCIA: MOVIMIENTO PARABÓLICO
- * ============================================================
- *
- * CICLO DE APRENDIZAJE
- *
- * 1. Motivación
- * 2. Exploración
- * 3. Predicción
- * 4. Experimentación
- * 5. Construcción
- * 6. Análisis y evaluación
- * 7. Reflexión
- *
- * El mismo MomentComponent sirve para todas las experiencias.
- *
- * La imagen del momento se define aquí, NO en moment.html.
- * ============================================================
- */
+import {
+  Activity,
+  Experience,
+  Moment,
+} from '../models';
 
 
-/* ============================================================
- * EXPERIENCIA
- * ============================================================ */
+// ============================================================
+// EXPERIENCIA
+// ============================================================
 
 export const MOVIMIENTO_PARABOLICO_EXPERIENCE: Experience = {
 
@@ -39,7 +19,7 @@ export const MOVIMIENTO_PARABOLICO_EXPERIENCE: Experience = {
     'Investiga, experimenta y comprende el movimiento de los objetos en el aire.',
 
   description:
-    'Una experiencia de aprendizaje en la que el estudiante observa, explora, predice, experimenta y construye explicaciones sobre el movimiento parabólico.',
+    'Experiencia de aprendizaje para comprender el movimiento parabólico mediante observación, exploración, predicción, experimentación, construcción, análisis y reflexión.',
 
   subject: 'Física',
 
@@ -48,60 +28,53 @@ export const MOVIMIENTO_PARABOLICO_EXPERIENCE: Experience = {
   curriculumArea: 'Mecánica',
 
   purpose:
-    'Comprender el movimiento parabólico mediante la relación entre observación, predicción, experimentación, modelación y análisis de datos.',
+    'Comprender el movimiento parabólico mediante la relación entre velocidad inicial, ángulo, gravedad, tiempo, altura y alcance.',
 
   challenge:
-    '¿Puedes explicar y predecir cómo cambia la trayectoria de un objeto lanzado al aire?',
+    '¿Puedes explicar y predecir la trayectoria de un objeto lanzado al aire?',
 
   learningObjectives: [
 
     {
       id: 'obj-01',
-
       description:
         'Reconocer las características principales del movimiento parabólico.',
     },
 
     {
       id: 'obj-02',
-
       description:
-        'Explorar la relación entre ángulo, velocidad, tiempo y alcance.',
+        'Explorar la relación entre velocidad inicial, ángulo y trayectoria.',
     },
 
     {
       id: 'obj-03',
-
       description:
         'Formular predicciones e hipótesis sobre el movimiento de un proyectil.',
     },
 
     {
       id: 'obj-04',
-
       description:
-        'Obtener y registrar datos mediante experimentación física y simulación.',
+        'Obtener y registrar datos mediante experimentación y simulación.',
     },
 
     {
       id: 'obj-05',
-
       description:
         'Construir un modelo explicativo del movimiento parabólico.',
     },
 
     {
       id: 'obj-06',
-
       description:
-        'Analizar datos experimentales y compararlos con modelos y predicciones.',
+        'Analizar y comparar resultados experimentales y teóricos.',
     },
 
     {
       id: 'obj-07',
-
       description:
-        'Reflexionar sobre el aprendizaje y relacionarlo con nuevas situaciones.',
+        'Reflexionar sobre el aprendizaje y formular nuevas preguntas.',
     },
 
   ],
@@ -121,20 +94,11 @@ export const MOVIMIENTO_PARABOLICO_EXPERIENCE: Experience = {
 
   estimatedDurationMinutes: 180,
 
-
-  /*
-   * Imagen principal de la experiencia.
-   *
-   * La misma ilustración puede utilizarse inicialmente
-   * como miniatura y portada.
-   */
-
   thumbnailUrl:
     '/assets/tellus-learning/movimiento-parabolico/momento-01-movimiento-parabolico.png',
 
   coverUrl:
     '/assets/tellus-learning/movimiento-parabolico/momento-01-movimiento-parabolico.png',
-
 
   status: 'published',
 
@@ -148,15 +112,15 @@ export const MOVIMIENTO_PARABOLICO_EXPERIENCE: Experience = {
 };
 
 
-/* ============================================================
- * MOMENTOS
- * ============================================================ */
+// ============================================================
+// MOMENTOS
+// ============================================================
 
 export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
-  /* ==========================================================
-   * MOMENTO 1 — MOTIVACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 1 — MOTIVACIÓN
+  // ==========================================================
 
   {
     id: 'moment-motivacion',
@@ -166,29 +130,17 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 1,
 
-    title:
-      '¿Hasta dónde puede llegar un lanzamiento?',
+    title: 'Motivación',
 
-    subtitle:
-      'Una trayectoria comienza con una pregunta',
+    subtitle: 'Despierta tu curiosidad',
 
     description:
-      'Observa el movimiento de un objeto lanzado al aire y descubre cómo el ángulo, la velocidad y la gravedad pueden cambiar su trayectoria.',
+      'Observa el fenómeno y conecta el movimiento parabólico con situaciones de la vida cotidiana.',
 
     type: 'motivacion',
 
-
-    /*
-     * IMAGEN DEL MOMENTO 1
-     *
-     * Archivo:
-     * public/assets/tellus-learning/movimiento-parabolico/
-     * momento-01-movimiento-parabolico.png
-     */
-
     image:
       '/assets/tellus-learning/movimiento-parabolico/momento-01-movimiento-parabolico.png',
-
 
     objectiveIds: [
       'obj-01',
@@ -210,9 +162,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 2 — EXPLORACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 2 — EXPLORACIÓN
+  // ==========================================================
 
   {
     id: 'moment-exploracion',
@@ -222,24 +174,14 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 2,
 
-    title:
-      'Exploración',
+    title: 'Exploración',
 
-    subtitle:
-      'Experimenta libremente',
+    subtitle: 'Experimenta libremente',
 
     description:
-      'Explora cómo cambian las trayectorias al modificar diferentes variables.',
+      'Explora cómo cambia una trayectoria cuando modificas diferentes variables.',
 
     type: 'exploracion',
-
-    /*
-     * IMAGEN DEL MOMENTO 2
-     *
-     * Archivo:
-     * public/assets/tellus-learning/movimiento-parabolico/
-     * momento-02-movimiento-parabolico.png
-     */
 
     image:
       '/assets/tellus-learning/movimiento-parabolico/momento-02-movimiento-parabolico.png',
@@ -264,9 +206,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 3 — PREDICCIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 3 — PREDICCIÓN
+  // ==========================================================
 
   {
     id: 'moment-prediccion',
@@ -276,24 +218,14 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 3,
 
-    title:
-      'Predicción',
+    title: 'Predicción',
 
-    subtitle:
-      'Formula una hipótesis',
+    subtitle: 'Formula una hipótesis',
 
     description:
-      'Antes de experimentar, formula una predicción y explica qué esperas que ocurra.',
+      'Antes de realizar el experimento, formula una hipótesis y predice qué ocurrirá.',
 
     type: 'prediccion',
-
-    /*
-     * IMAGEN DEL MOMENTO 3
-     *
-     * Archivo:
-     * public/assets/tellus-learning/movimiento-parabolico/
-     * momento-03-movimiento-parabolico.png
-     */
 
     image:
       '/assets/tellus-learning/movimiento-parabolico/momento-03-movimiento-parabolico.png',
@@ -318,9 +250,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 4 — EXPERIMENTACIÓN (CORREGIDO)
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 4 — EXPERIMENTACIÓN
+  // ==========================================================
 
   {
     id: 'moment-experimentacion',
@@ -330,24 +262,14 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 4,
 
-    title:
-      'Experimentación',
+    title: 'Experimentación',
 
-    subtitle:
-      'Pon a prueba tus ideas',
+    subtitle: 'Pon a prueba tus ideas',
 
     description:
-      'Realiza experimentos físicos y utiliza herramientas digitales para contrastar tus predicciones.',
+      'Realiza el laboratorio y utiliza Road to Glory para contrastar tus predicciones.',
 
     type: 'experimentacion',
-
-    /*
-     * IMAGEN DEL MOMENTO 4
-     *
-     * Archivo:
-     * public/assets/tellus-learning/movimiento-parabolico/
-     * momento-04-movimiento-parabolico.png
-     */
 
     image:
       '/assets/tellus-learning/movimiento-parabolico/momento-04-movimiento-parabolico.png',
@@ -373,9 +295,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 5 — CONSTRUCCIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 5 — CONSTRUCCIÓN
+  // ==========================================================
 
   {
     id: 'moment-construccion',
@@ -385,26 +307,28 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 5,
 
-    title:
-      'Construcción',
+    title: 'Construcción',
 
-    subtitle:
-      'Construye el modelo',
+    subtitle: 'Construye el modelo',
 
     description:
-      'Organiza tus ideas y construye una explicación del movimiento observado.',
+      'Analiza un ejemplo resuelto y posteriormente enfrenta nuevos problemas contextualizados para aplicar el modelo del movimiento parabólico.',
 
     type: 'construccion',
+
+    image:
+      '/assets/tellus-learning/movimiento-parabolico/momento-05-movimiento-parabolico.png',
 
     objectiveIds: [
       'obj-05',
     ],
 
     activityIds: [
-      'act-construccion-modelo',
+      'act-construccion-ejemplo-resuelto',
+      'act-construccion-desafio',
     ],
 
-    estimatedDurationMinutes: 25,
+    estimatedDurationMinutes: 35,
 
     isOptional: false,
 
@@ -416,9 +340,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 6 — ANÁLISIS Y EVALUACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 6 — ANÁLISIS Y EVALUACIÓN
+  // ==========================================================
 
   {
     id: 'moment-analisis-evaluacion',
@@ -428,14 +352,12 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 6,
 
-    title:
-      'Análisis y evaluación',
+    title: 'Análisis y evaluación',
 
-    subtitle:
-      'Compara y comprende',
+    subtitle: 'Compara y comprende',
 
     description:
-      'Analiza los datos obtenidos, compara tus resultados y evalúa tus explicaciones.',
+      'Compara tus predicciones con los resultados obtenidos y analiza las diferencias.',
 
     type: 'analisis_evaluacion',
 
@@ -459,9 +381,9 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
   },
 
 
-  /* ==========================================================
-   * MOMENTO 7 — REFLEXIÓN
-   * ========================================================== */
+  // ==========================================================
+  // MOMENTO 7 — REFLEXIÓN
+  // ==========================================================
 
   {
     id: 'moment-reflexion',
@@ -471,14 +393,12 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 
     order: 7,
 
-    title:
-      'Reflexión',
+    title: 'Reflexión',
 
-    subtitle:
-      'Cierra el ciclo',
+    subtitle: 'Cierra el ciclo',
 
     description:
-      'Reflexiona sobre lo aprendido, contrasta tus ideas iniciales y conecta el conocimiento con nuevas situaciones.',
+      'Reflexiona sobre lo aprendido y relaciona el conocimiento construido con nuevas situaciones.',
 
     type: 'reflexion',
 
@@ -504,15 +424,15 @@ export const MOVIMIENTO_PARABOLICO_MOMENTS: Moment[] = [
 ];
 
 
-/* ============================================================
- * ACTIVIDADES
- * ============================================================ */
+// ============================================================
+// ACTIVIDADES
+// ============================================================
 
 export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
-  /* ==========================================================
-   * 1. MOTIVACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 1. MOTIVACIÓN
+  // ==========================================================
 
   {
     id: 'act-motivacion-video',
@@ -529,7 +449,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Observa el fenómeno',
 
     description:
-      'Observa el recurso inicial y responde qué crees que determina la trayectoria de un objeto lanzado al aire.',
+      'Observa el fenómeno del movimiento parabólico y responde las preguntas iniciales.',
 
     type: 'questionnaire',
 
@@ -572,7 +492,8 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
             points: 0,
 
             hint:
-              'Piensa en la velocidad, el ángulo, la gravedad y otras variables que puedan influir.',
+              'Piensa en la velocidad, el ángulo y la gravedad.',
+
           },
 
         ],
@@ -593,9 +514,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 2. EXPLORACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 2. EXPLORACIÓN
+  // ==========================================================
 
   {
     id: 'act-exploracion-simulador',
@@ -612,7 +533,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Explora la trayectoria',
 
     description:
-      'Experimenta libremente con las variables del movimiento y observa cómo cambia la trayectoria.',
+      'Experimenta con las variables del movimiento parabólico y observa cómo cambia la trayectoria.',
 
     type: 'simulation',
 
@@ -637,108 +558,17 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
       settings: {
 
-        allowFreeExploration: true,
+        allowAngleChange: true,
 
-        explorationGame: {
-          id: 'mission-02-factores-trayectoria',
+        allowVelocityChange: true,
 
-          title:
-            '¿Qué puede cambiar la trayectoria?',
+        showTrajectory: true,
 
-          instructions:
-            'Clasifica cada factor según el efecto que puede tener sobre la trayectoria de un proyectil.',
+        showDistance: true,
 
-          targetScore: 100,
+        showTime: true,
 
-          pointsPerCorrectAnswer: 12.5,
-
-          factors: [
-            {
-              id: 'factor-velocidad',
-              label: 'Velocidad inicial',
-              icon: '⚡',
-            },
-            {
-              id: 'factor-angulo',
-              label: 'Ángulo de lanzamiento',
-              icon: '📐',
-            },
-            {
-              id: 'factor-fuerza',
-              label: 'Fuerza del lanzamiento',
-              icon: '💥',
-            },
-            {
-              id: 'factor-masa',
-              label: 'Masa del objeto',
-              icon: '⚖️',
-            },
-            {
-              id: 'factor-forma',
-              label: 'Forma del objeto',
-              icon: '🔵',
-            },
-            {
-              id: 'factor-tamano',
-              label: 'Tamaño del objeto',
-              icon: '📦',
-            },
-            {
-              id: 'factor-material',
-              label: 'Material',
-              icon: '🧱',
-            },
-            {
-              id: 'factor-color',
-              label: 'Color',
-              icon: '🎨',
-            },
-          ],
-
-          zones: [
-            {
-              id: 'zone-mas-alto',
-              label: 'Puede hacerlo más alto',
-            },
-            {
-              id: 'zone-mas-lejos',
-              label: 'Puede hacerlo llegar más lejos',
-            },
-            {
-              id: 'zone-ambas',
-              label: 'Puede afectar ambas',
-            },
-            {
-              id: 'zone-depende',
-              label: 'Depende de las condiciones',
-            },
-            {
-              id: 'zone-no-directo',
-              label: 'No tiene efecto directo',
-            },
-          ],
-
-          answers: {
-            'factor-velocidad': 'zone-ambas',
-            'factor-angulo': 'zone-depende',
-            'factor-fuerza': 'zone-ambas',
-            'factor-masa': 'zone-no-directo',
-            'factor-forma': 'zone-depende',
-            'factor-tamano': 'zone-depende',
-            'factor-material': 'zone-no-directo',
-            'factor-color': 'zone-no-directo',
-          },
-
-          completion: {
-            title: '¡Misión 2 completada!',
-
-            message:
-              'Excelente. Has identificado qué variables pueden modificar la trayectoria y cuáles no tienen un efecto directo.',
-
-            nextMessage:
-              'Ahora estás listo para formular una predicción sobre el movimiento.',
-          },
-        },
+        showMaxHeight: true,
 
       },
 
@@ -788,9 +618,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 3. PREDICCIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 3. PREDICCIÓN
+  // ==========================================================
 
   {
     id: 'act-prediccion-preinforme',
@@ -807,7 +637,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Formula tu predicción',
 
     description:
-      'Antes de realizar el experimento, registra qué crees que ocurrirá.',
+      'Registra tu hipótesis antes de realizar el experimento.',
 
     type: 'preinforme',
 
@@ -827,102 +657,6 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
       allowsMultipleAttempts: false,
 
-      settings: {
-
-        predictionChallenge: {
-
-          id:
-            'mission-03-prediccion-trayectoria',
-
-          title:
-            '¿Qué ocurrirá con la trayectoria?',
-
-          instructions:
-            'Usa lo que observaste durante la exploración para elegir la predicción que mejor explica el comportamiento del proyectil.',
-
-          question:
-            'Si aumentamos la velocidad inicial de un lanzamiento y mantenemos el ángulo y las demás condiciones, ¿qué esperamos que ocurra con la trayectoria?',
-
-          options: [
-
-            {
-              id: 'option-a',
-
-              letter: 'A',
-
-              title:
-                'Llegará más lejos',
-
-              text:
-                'El proyectil puede alcanzar un mayor alcance horizontal.',
-            },
-
-            {
-              id: 'option-b',
-
-              letter: 'B',
-
-              title:
-                'La trayectoria será igual',
-
-              text:
-                'La velocidad inicial no modifica el movimiento del proyectil.',
-            },
-
-            {
-              id: 'option-c',
-
-              letter: 'C',
-
-              title:
-                'Solo cambiará la altura',
-
-              text:
-                'La velocidad inicial modifica únicamente la altura máxima y no el alcance.',
-            },
-
-            {
-              id: 'option-d',
-
-              letter: 'D',
-
-              title:
-                'La gravedad desaparecerá',
-
-              text:
-                'Al aumentar la velocidad inicial deja de actuar la gravedad sobre el proyectil.',
-            },
-
-          ],
-
-          correctAnswer:
-            'option-a',
-
-          feedback: {
-
-            correct:
-              'Correcto. Si aumentamos la velocidad inicial y mantenemos las demás condiciones, el proyectil puede alcanzar un mayor alcance horizontal.',
-
-            incorrect:
-              'Todavía no. Vuelve a pensar en lo que observaste durante la exploración: ¿qué sucede con el alcance cuando aumenta la velocidad inicial?',
-          },
-
-          completion: {
-
-            title:
-              '¡Predicción completada!',
-
-            message:
-              'Has formulado una predicción y la has relacionado con el comportamiento observado durante la exploración.',
-
-            nextMessage:
-              'Ahora estás listo para poner tu predicción a prueba durante la experimentación.',
-          },
-
-        },
-
-      },
-
     },
 
     content: {
@@ -939,60 +673,69 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
           {
             id: 'hypothesis',
 
-            label: 'Hipótesis',
+            label:
+              'Hipótesis',
 
-            type: 'text',
+            type:
+              'text',
 
             placeholder:
               'Escribe qué crees que ocurrirá y por qué.',
 
-            required: true,
+            required:
+              true,
 
-            hint:
-              'Relaciona tus ideas con las variables del movimiento.',
           },
 
           {
             id: 'predictedDistance',
 
-            label: 'Distancia prevista',
+            label:
+              'Distancia prevista',
 
-            type: 'number',
+            type:
+              'number',
 
-            unit: 'm',
+            unit:
+              'm',
 
-            required: true,
+            required:
+              true,
 
-            hint:
-              'Escribe la distancia que esperas obtener.',
           },
 
           {
             id: 'predictedTime',
 
-            label: 'Tiempo previsto',
+            label:
+              'Tiempo previsto',
 
-            type: 'number',
+            type:
+              'number',
 
-            unit: 's',
+            unit:
+              's',
 
-            required: true,
+            required:
+              true,
 
-            hint:
-              'Escribe el tiempo de vuelo que esperas obtener.',
           },
 
           {
             id: 'factors',
 
-            label: 'Factores que podrían influir',
+            label:
+              'Factores que podrían influir',
 
-            type: 'text',
+            type:
+              'text',
 
             placeholder:
               'Ejemplo: ángulo, velocidad inicial, gravedad...',
 
-            required: true,
+            required:
+              true,
+
           },
 
         ],
@@ -1013,9 +756,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 4. LABORATORIO FÍSICO
-   * ========================================================== */
+  // ==========================================================
+  // 4. EXPERIMENTACIÓN — LABORATORIO
+  // ==========================================================
 
   {
     id: 'act-experimentacion-laboratorio',
@@ -1063,7 +806,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       data: {
 
         instructions:
-          'Realiza varios lanzamientos manteniendo controladas las condiciones del experimento. Registra cuidadosamente cada ensayo.',
+          'Realiza varios lanzamientos y registra cuidadosamente los datos de cada ensayo.',
 
         trialsConfig: {
 
@@ -1078,65 +821,82 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
         fields: [
 
           {
-            id: 'ball',
+            id: 'object',
 
-            label: 'Objeto utilizado',
+            label:
+              'Objeto utilizado',
 
-            type: 'text',
+            type:
+              'text',
 
-            required: true,
+            required:
+              true,
 
-            hint:
-              'Identifica el objeto utilizado en el lanzamiento.',
           },
 
           {
             id: 'distance',
 
-            label: 'Distancia',
+            label:
+              'Distancia',
 
-            type: 'number',
+            type:
+              'number',
 
-            unit: 'm',
+            unit:
+              'm',
 
-            required: true,
+            required:
+              true,
+
           },
 
           {
             id: 'time',
 
-            label: 'Tiempo',
+            label:
+              'Tiempo',
 
-            type: 'number',
+            type:
+              'number',
 
-            unit: 's',
+            unit:
+              's',
 
-            required: true,
+            required:
+              true,
+
           },
 
           {
             id: 'angle',
 
-            label: 'Ángulo',
+            label:
+              'Ángulo',
 
-            type: 'number',
+            type:
+              'number',
 
-            unit: '°',
+            unit:
+              '°',
 
-            required: true,
+            required:
+              true,
+
           },
 
           {
             id: 'observations',
 
-            label: 'Observaciones',
+            label:
+              'Observaciones',
 
-            type: 'text_observation',
+            type:
+              'text_observation',
 
-            required: false,
+            required:
+              false,
 
-            hint:
-              'Registra cualquier situación relevante durante el ensayo.',
           },
 
         ],
@@ -1157,9 +917,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 5. ROAD TO GLORY
-   * ========================================================== */
+  // ==========================================================
+  // 5. EXPERIMENTACIÓN — ROAD TO GLORY
+  // ==========================================================
 
   {
     id: 'act-experimentacion-road-to-glory',
@@ -1176,7 +936,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Road to Glory',
 
     description:
-      'Experimenta virtualmente con el lanzamiento de proyectiles y compara los resultados con el laboratorio físico.',
+      'Experimenta virtualmente con diferentes condiciones de lanzamiento.',
 
     type: 'simulation',
 
@@ -1206,8 +966,6 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
         saveResults: true,
 
-        compareWithPhysicalLab: true,
-
       },
 
     },
@@ -1222,7 +980,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
           'road-to-glory',
 
         instructions:
-          'Utiliza Road to Glory para experimentar con diferentes condiciones de lanzamiento. Observa los resultados y compáralos con tus datos experimentales.',
+          'Utiliza Road to Glory para experimentar con diferentes condiciones de lanzamiento y compara los resultados con el laboratorio físico.',
 
         config: {
 
@@ -1256,12 +1014,12 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 6. CONSTRUCCIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 6. CONSTRUCCIÓN — EJEMPLO RESUELTO
+  // ==========================================================
 
   {
-    id: 'act-construccion-modelo',
+    id: 'act-construccion-ejemplo-resuelto',
 
     experienceId:
       MOVIMIENTO_PARABOLICO_EXPERIENCE.id,
@@ -1272,10 +1030,10 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
     order: 1,
 
     title:
-      'Construye tu modelo',
+      'Ejemplo resuelto: el cohete de agua',
 
     description:
-      'Explica con tus propias palabras cómo se comporta el movimiento parabólico.',
+      'Observa y analiza paso a paso la solución de un problema de movimiento parabólico.',
 
     type: 'questionnaire',
 
@@ -1287,15 +1045,26 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
     config: {
 
-      requiresSubmission: true,
+      requiresSubmission: false,
 
       requiredForCompletion: true,
 
       graded: false,
 
-      allowsMultipleAttempts: true,
+      allowsMultipleAttempts: false,
 
-      maxAttempts: 2,
+      settings: {
+
+        activityKind:
+          'worked_example',
+
+        imageUrl:
+          '/assets/tellus-learning/movimiento-parabolico/momento-05-movimiento-parabolico-ejercicios-resuelto-2.png',
+
+        imageAlt:
+          'Ejemplo resuelto del cohete de agua.',
+
+      },
 
     },
 
@@ -1308,17 +1077,39 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
         questions: [
 
           {
-            id: 'q-construccion-01',
+            id: 'q-construccion-ejemplo-01',
+
+            type: 'short_answer',
+
+            text:
+              '¿Cuál es la velocidad inicial utilizada en el ejemplo del cohete de agua?',
+
+            points: 0,
+
+          },
+
+          {
+            id: 'q-construccion-ejemplo-02',
+
+            type: 'short_answer',
+
+            text:
+              '¿Qué magnitudes se calculan en el ejemplo?',
+
+            points: 0,
+
+          },
+
+          {
+            id: 'q-construccion-ejemplo-03',
 
             type: 'long_answer',
 
             text:
-              'Construye una explicación del movimiento parabólico utilizando lo observado en la exploración y en el laboratorio.',
+              'Explica con tus palabras cómo se relacionan el tiempo de vuelo, la altura máxima y el alcance horizontal.',
 
             points: 0,
 
-            hint:
-              'Relaciona el movimiento horizontal y vertical con la trayectoria observada.',
           },
 
         ],
@@ -1327,7 +1118,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
     },
 
-    estimatedDurationMinutes: 25,
+    estimatedDurationMinutes: 15,
 
     isOptional: false,
 
@@ -1339,9 +1130,253 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 7. ANÁLISIS Y EVALUACIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 7. CONSTRUCCIÓN — DESAFÍO
+  // ==========================================================
+
+  {
+    id: 'act-construccion-desafio',
+
+    experienceId:
+      MOVIMIENTO_PARABOLICO_EXPERIENCE.id,
+
+    momentId:
+      'moment-construccion',
+
+    order: 2,
+
+    title:
+      'Tu turno de resolver: desafío',
+
+    description:
+      'Resuelve cinco situaciones contextualizadas aplicando el modelo del movimiento parabólico.',
+
+    type: 'questionnaire',
+
+    objectiveIds: [
+      'obj-05',
+      'obj-06',
+    ],
+
+    resourceIds: [],
+
+    config: {
+
+      requiresSubmission: true,
+
+      requiredForCompletion: true,
+
+      graded: true,
+
+      autoEvaluate: true,
+
+      maxScore: 100,
+
+      allowsMultipleAttempts: true,
+
+      maxAttempts: 5,
+
+      settings: {
+
+        activityKind:
+          'contextual_challenge',
+
+        imageUrl:
+          '/assets/tellus-learning/movimiento-parabolico/momento-05-movimiento-parabolico-ejericicos-propuestos.png',
+
+        imageAlt:
+          'Desafío de cinco problemas de movimiento parabólico.',
+
+        totalProblems: 5,
+
+      },
+
+    },
+
+    content: {
+
+      type: 'questionnaire',
+
+      data: {
+
+        questions: [
+
+          {
+            id: 'q-desafio-01',
+
+            type: 'multiple_choice',
+
+            text:
+              'Béisbol: un jugador golpea una pelota con una velocidad inicial de 25 m/s formando un ángulo de 40° con la horizontal. ¿Cuál es aproximadamente la altura máxima que alcanza la pelota?',
+
+            options: [
+              '13,2 m',
+              '16,4 m',
+              '20,1 m',
+              '25,6 m',
+            ],
+
+            correctIndex: 0,
+
+            points: 20,
+
+            feedback: {
+
+              correct:
+                'Correcto. La altura máxima se obtiene con h = (v₀·senθ)² / 2g ≈ (25·sen40°)² / 19,6 ≈ 13,2 m.',
+
+              incorrect:
+                'Todavía no. Recuerda usar únicamente la componente vertical de la velocidad: h = (v₀·senθ)² / 2g.',
+
+            },
+
+          },
+
+          {
+            id: 'q-desafio-02',
+
+            type: 'multiple_choice',
+
+            text:
+              'Baloncesto: un jugador lanza el balón desde una altura de 2,0 m con una velocidad de 8 m/s y un ángulo de 50°. La canasta está a 4,5 m de distancia horizontal y tiene una altura de 3,05 m. ¿El balón pasa por la canasta según el modelo ideal?',
+
+            options: [
+              'Sí, pasa por la canasta.',
+              'No, pasa por encima.',
+              'No, pasa por debajo.',
+              'No se puede determinar con la información dada.',
+            ],
+
+            correctIndex: 1,
+
+            points: 20,
+
+            feedback: {
+
+              correct:
+                'Correcto. Al calcular la altura del balón cuando x = 4,5 m se obtiene aproximadamente 3,61 m, que es mayor que la altura de la canasta (3,05 m). Por eso pasa por encima.',
+
+              incorrect:
+                'Todavía no. Calcula primero el tiempo cuando x = 4,5 m con la componente horizontal y luego evalúa la altura con la componente vertical.',
+
+            },
+
+          },
+
+          {
+            id: 'q-desafio-03',
+
+            type: 'multiple_choice',
+
+            text:
+              'Fútbol: un jugador realiza un pase con velocidad inicial de 18 m/s y un ángulo de 35°. ¿Cuál es aproximadamente el alcance horizontal del balón si se lanza y cae al mismo nivel?',
+
+            options: [
+              '22,5 m',
+              '31,7 m',
+              '38,6 m',
+              '46,2 m',
+            ],
+
+            correctIndex: 1,
+
+            points: 20,
+
+            feedback: {
+
+              correct:
+                'Correcto. El alcance horizontal se obtiene con R = v₀²·sen(2θ) / g ≈ 18²·sen70° / 9,8 ≈ 31,1 m ≈ 31,7 m.',
+
+              incorrect:
+                'Todavía no. Recuerda que el alcance usa el ángulo doble: R = v₀²·sen(2θ) / g.',
+
+            },
+
+          },
+
+          {
+            id: 'q-desafio-04',
+
+            type: 'multiple_choice',
+
+            text:
+              'Cohete de agua: se lanza desde el suelo con una velocidad inicial de 22 m/s formando un ángulo de 60°. ¿Cuál es aproximadamente el tiempo total de vuelo?',
+
+            options: [
+              '1,94 s',
+              '2,83 s',
+              '3,88 s',
+              '4,50 s',
+            ],
+
+            correctIndex: 2,
+
+            points: 20,
+
+            feedback: {
+
+              correct:
+                'Correcto. El tiempo de vuelo se obtiene con t = 2·v₀·senθ / g ≈ 2·22·sen60° / 9,8 ≈ 3,88 s.',
+
+              incorrect:
+                'Todavía no. El tiempo total de vuelo es el doble del tiempo que tarda en alcanzar la altura máxima: t = 2·v₀·senθ / g.',
+
+            },
+
+          },
+
+          {
+            id: 'q-desafio-05',
+
+            type: 'multiple_choice',
+
+            text:
+              'Voleibol: un jugador envía el balón con una velocidad inicial de 15 m/s y un ángulo de 30°. La red tiene una altura de 2,43 m y está a 9 m del punto de lanzamiento. ¿El balón logra pasar por encima de la red según el modelo ideal?',
+
+            options: [
+              'Sí, pasa por encima.',
+              'No, golpea la red.',
+              'No, pasa por debajo.',
+              'Se necesita mayor velocidad inicial.',
+            ],
+
+            correctIndex: 0,
+
+            points: 20,
+
+            feedback: {
+
+              correct:
+                'Correcto. Al calcular la altura del balón cuando x = 9 m se obtiene aproximadamente 2,85 m, que es mayor que la altura de la red (2,43 m). Por eso pasa por encima.',
+
+              incorrect:
+                'Todavía no. Calcula el tiempo cuando x = 9 m y evalúa la altura del balón en ese instante.',
+
+            },
+
+          },
+
+        ],
+
+      },
+
+    },
+
+    estimatedDurationMinutes: 20,
+
+    isOptional: false,
+
+    published: true,
+
+    createdAt: null,
+
+    updatedAt: null,
+  },
+
+
+  // ==========================================================
+  // 8. ANÁLISIS Y EVALUACIÓN
+  // ==========================================================
 
   {
     id: 'act-analisis-datos',
@@ -1358,7 +1393,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Analiza tus resultados',
 
     description:
-      'Compara tus datos experimentales con tus predicciones y con los resultados de la simulación.',
+      'Compara tus predicciones, resultados experimentales y resultados de simulación.',
 
     type: 'data_analysis',
 
@@ -1376,6 +1411,8 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
       graded: true,
 
+      autoEvaluate: false,
+
       maxScore: 100,
 
       allowsMultipleAttempts: true,
@@ -1391,52 +1428,68 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       data: {
 
         instructions:
-          'Analiza los resultados obtenidos y determina qué tan cercanos fueron a tus predicciones.',
+          'Analiza los resultados obtenidos y compara tus predicciones con la evidencia.',
 
         questions: [
 
           {
-            id: 'q-analisis-01',
+            id:
+              'q-analisis-01',
 
-            type: 'long_answer',
+            type:
+              'long_answer',
 
             text:
               '¿Qué diferencias encuentras entre tus predicciones y los resultados experimentales?',
 
-            points: 25,
+            points:
+              25,
+
           },
 
           {
-            id: 'q-analisis-02',
+            id:
+              'q-analisis-02',
 
-            type: 'long_answer',
+            type:
+              'long_answer',
 
             text:
               '¿Qué relación observaste entre el ángulo de lanzamiento y el alcance horizontal?',
 
-            points: 25,
+            points:
+              25,
+
           },
 
           {
-            id: 'q-analisis-03',
+            id:
+              'q-analisis-03',
 
-            type: 'long_answer',
+            type:
+              'long_answer',
 
             text:
               '¿Qué factores pueden explicar las diferencias entre el experimento físico y la simulación?',
 
-            points: 25,
+            points:
+              25,
+
           },
 
           {
-            id: 'q-analisis-04',
+            id:
+              'q-analisis-04',
 
-            type: 'long_answer',
+            type:
+              'long_answer',
 
             text:
               '¿Qué evidencia respalda actualmente tu explicación del movimiento parabólico?',
 
-            points: 25,
+            points:
+              25,
+
           },
 
         ],
@@ -1467,9 +1520,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
   },
 
 
-  /* ==========================================================
-   * 8. REFLEXIÓN
-   * ========================================================== */
+  // ==========================================================
+  // 9. REFLEXIÓN
+  // ==========================================================
 
   {
     id: 'act-reflexion-final',
@@ -1486,7 +1539,7 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       'Cierra el ciclo',
 
     description:
-      'Compara lo que pensabas al comienzo con lo que ahora comprendes.',
+      'Compara tus ideas iniciales con lo que ahora comprendes.',
 
     type: 'reflection',
 
@@ -1517,42 +1570,53 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       data: {
 
         instructions:
-          'Mira hacia atrás en todo el ciclo de aprendizaje y explica qué cambió en tu forma de comprender el fenómeno.',
+          'Reflexiona sobre todo el proceso de aprendizaje.',
 
         questions: [
 
           {
-            id: 'q-reflexion-01',
+            id:
+              'q-reflexion-01',
 
             text:
               '¿Qué pensabas inicialmente sobre el movimiento parabólico y qué comprendes ahora?',
 
-            required: true,
+            required:
+              true,
+
           },
 
           {
-            id: 'q-reflexion-02',
+            id:
+              'q-reflexion-02',
 
             text:
-              '¿Qué descubrimiento o resultado cambió más tu explicación?',
+              '¿Qué resultado cambió más tu forma de explicar el fenómeno?',
 
-            required: true,
+            required:
+              true,
+
           },
 
           {
-            id: 'q-reflexion-03',
+            id:
+              'q-reflexion-03',
 
             text:
               '¿Qué nueva pregunta te gustaría investigar después de esta experiencia?',
 
-            required: true,
+            required:
+              true,
+
           },
 
         ],
 
-        minWords: 30,
+        minWords:
+          30,
 
-        maxWords: 300,
+        maxWords:
+          300,
 
       },
 
@@ -1572,9 +1636,9 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 ];
 
 
-/* ============================================================
- * MOCK COMPLETO
- * ============================================================ */
+// ============================================================
+// MOCK CENTRAL
+// ============================================================
 
 export const MOVIMIENTO_PARABOLICO_MOCK = {
 

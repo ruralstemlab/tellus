@@ -16,110 +16,54 @@
       class="glass-nav"
       (click)="backToClassroom()"
     >
-
-      <span class="glass-nav-icon">
-        ←
-      </span>
-
+      <span class="glass-nav-icon">←</span>
       <span class="glass-nav-copy">
         <small>TELLUS LEARNING</small>
         <strong>Mi Aula</strong>
       </span>
-
     </button>
 
 
     <div class="journey-progress">
 
       <div class="journey-progress-head">
-
         <div>
-          <span>
-            RUTA DE APRENDIZAJE
-          </span>
-
-          <strong>
-            {{ progressLabel() }}
-          </strong>
+          <span>RUTA DE APRENDIZAJE</span>
+          <strong>{{ progressLabel() }}</strong>
         </div>
-
-        <b>
-          {{ progressPercentage() }}%
-        </b>
-
+        <b>{{ progressPercentage() }}%</b>
       </div>
 
-
       <div class="journey-line">
-
         <span
           class="journey-line-fill"
           [style.width.%]="progressPercentage()"
         ></span>
-
       </div>
 
-
       <div class="journey-dots">
-
         <button
-          *ngFor="
-            let moment of moments();
-            trackBy: trackByMomentId
-          "
-
+          *ngFor="let moment of moments(); trackBy: trackByMomentId"
           type="button"
-
           class="journey-dot"
-
-          [class.current]="
-            isCurrent(moment)
-          "
-
-          [class.completed]="
-            isCompleted(moment)
-          "
-
-          [class.locked]="
-            isLocked(moment)
-          "
-
-          [disabled]="
-            isLocked(moment)
-          "
-
-          [attr.title]="
-            moment.order + '. ' + moment.title
-          "
-
-          (click)="
-            goToMoment(moment.id)
-          "
+          [class.current]="isCurrent(moment)"
+          [class.completed]="isCompleted(moment)"
+          [class.locked]="isLocked(moment)"
+          [disabled]="isLocked(moment)"
+          [attr.title]="moment.order + '. ' + moment.title"
+          (click)="goToMoment(moment.id)"
         >
-
-          <span class="journey-dot-number">
-            {{ moment.order }}
-          </span>
-
-          <span class="journey-dot-title">
-            {{ moment.title }}
-          </span>
-
+          <span class="journey-dot-number">{{ moment.order }}</span>
+          <span class="journey-dot-title">{{ moment.title }}</span>
         </button>
-
       </div>
 
     </div>
 
 
     <div class="moment-status">
-
       <span class="status-pulse"></span>
-
-      <span>
-        MOMENTO {{ currentOrder() }}
-      </span>
-
+      <span>MOMENTO {{ currentOrder() }}</span>
     </div>
 
   </section>
@@ -132,7 +76,6 @@
   <section class="moment-hero">
 
     <div class="hero-particles" aria-hidden="true">
-
       <span class="particle particle-01"></span>
       <span class="particle particle-02"></span>
       <span class="particle particle-03"></span>
@@ -141,445 +84,193 @@
       <span class="particle particle-06"></span>
       <span class="particle particle-07"></span>
       <span class="particle particle-08"></span>
-
       <span class="hero-trajectory hero-trajectory-01"></span>
       <span class="hero-trajectory hero-trajectory-02"></span>
-
     </div>
 
-
     <div class="hero-content">
-
       <span class="hero-kicker">
-        MISIÓN {{ currentOrder() }}
-        ·
-        {{ experienceThemeLabel() }}
+        MISIÓN {{ currentOrder() }} · {{ experienceThemeLabel() }}
       </span>
 
-
       <div class="hero-subject">
-
-        <span class="subject-mark">
-          {{ experienceIcon() }}
-        </span>
-
-        <span>
-          {{ getSubject() }}
-        </span>
-
+        <span class="subject-mark">{{ experienceIcon() }}</span>
+        <span>{{ getSubject() }}</span>
       </div>
 
-
-      <h1>
-        {{ currentMomentTitle() }}
-      </h1>
-
+      <h1>{{ currentMomentTitle() }}</h1>
 
       <div class="hero-accent-line"></div>
 
+      <h2>{{ currentMomentSubtitle() }}</h2>
 
-      <h2>
-        {{ currentMomentSubtitle() }}
-      </h2>
-
-
-      <p class="hero-description">
-        {{ currentMomentDescription() }}
-      </p>
-
+      <p class="hero-description">{{ currentMomentDescription() }}</p>
 
       <div class="hero-meta">
-
-        <span class="meta-chip">
-          <b>TIEMPO</b>
-          {{ getDuration() }} min
+        <span class="meta-chip"><b>TIEMPO</b> {{ getDuration() }} min</span>
+        <span class="meta-chip"><b>CAMPO</b> {{ getSubject() }}</span>
+        <span class="meta-chip" *ngIf="getGradeLevel()">
+          <b>NIVEL</b> {{ getGradeLevel() }}
         </span>
-
-        <span class="meta-chip">
-          <b>CAMPO</b>
-          {{ getSubject() }}
-        </span>
-
-        <span
-          class="meta-chip"
-          *ngIf="getGradeLevel()"
-        >
-          <b>NIVEL</b>
-          {{ getGradeLevel() }}
-        </span>
-
       </div>
-
     </div>
 
-
-    <!-- VISUAL PRINCIPAL -->
-
     <div class="hero-visual">
-
       <div class="hero-visual-glow"></div>
-
       <div class="hero-image-shell">
-
         <div class="image-topline">
-
-          <span>
-            TELLUS LAB
-          </span>
-
-          <span>
-            {{ currentOrder() }} / {{ totalMoments() }}
-          </span>
-
+          <span>TELLUS LAB</span>
+          <span>{{ currentOrder() }} / {{ totalMoments() }}</span>
         </div>
 
-
-        <ng-container
-          *ngIf="
-            currentMomentImage();
-            else defaultVisual
-          "
-        >
-
+        <ng-container *ngIf="currentMomentImage(); else defaultVisual">
           <img
             [src]="currentMomentImage()"
             [alt]="currentMomentTitle()"
             class="hero-image"
           />
-
         </ng-container>
 
-
         <ng-template #defaultVisual>
-
           <div class="hero-image-fallback">
-
-            <span>
-              {{ experienceIcon() }}
-            </span>
-
-            <strong>
-              {{ experienceThemeLabel() }}
-            </strong>
-
+            <span>{{ experienceIcon() }}</span>
+            <strong>{{ experienceThemeLabel() }}</strong>
           </div>
-
         </ng-template>
 
-
         <div class="image-bottomline">
-
-          <span>
-            OBSERVA
-          </span>
-
-          <span>
-            EXPLORA
-          </span>
-
-          <span>
-            COMPRENDE
-          </span>
-
+          <span>OBSERVA</span>
+          <span>EXPLORA</span>
+          <span>COMPRENDE</span>
         </div>
-
       </div>
-
     </div>
 
   </section>
 
 
   <!-- ========================================================
-       APERTURA PEDAGÓGICA
+       MOMENTO 1
   ========================================================= -->
 
   <ng-container *ngIf="currentOrder() === 1">
 
   <section class="learning-opening">
-
-    <div class="opening-number">
-      01
-    </div>
-
-
+    <div class="opening-number">01</div>
     <div class="opening-content">
-
-      <span class="section-kicker">
-        PUNTO DE PARTIDA
-      </span>
-
-      <h2>
-        Primero observa.
-      </h2>
-
+      <span class="section-kicker">PUNTO DE PARTIDA</span>
+      <h2>Primero observa.</h2>
       <p>
         Antes de calcular, queremos que mires el fenómeno,
         encuentres patrones y construyas una primera explicación.
       </p>
-
     </div>
-
-
     <div class="opening-side">
-
       <span class="opening-side-line"></span>
-
-      <span>
-        APRENDER COMIENZA CON UNA PREGUNTA
-      </span>
-
+      <span>APRENDER COMIENZA CON UNA PREGUNTA</span>
     </div>
-
   </section>
 
-
-  <!-- ========================================================
-       OBSERVACIÓN
-  ========================================================= -->
 
   <section class="observation-section">
 
     <div class="observation-text">
+      <span class="section-kicker">OBSERVACIÓN</span>
 
-      <span class="section-kicker">
-        OBSERVACIÓN
-      </span>
-
-
-      <h2>
-        Un lanzamiento puede cambiar
-        mucho más de lo que parece.
-      </h2>
-
+      <h2>Un lanzamiento puede cambiar mucho más de lo que parece.</h2>
 
       <p class="observation-lead">
-
         Piensa en algo que ya conoces:
-        lanzar una pelota, una piedra o cualquier
-        objeto al aire.
-
-        Sin usar todavía ecuaciones,
-        observa qué puede cambiar su trayectoria.
-
+        lanzar una pelota, una piedra o cualquier objeto al aire.
+        Sin usar todavía ecuaciones, observa qué puede cambiar su trayectoria.
       </p>
 
-
       <div class="question-block">
-
-        <span class="question-index">
-          01
-        </span>
-
+        <span class="question-index">01</span>
         <div>
-
-          <span class="question-tag">
-            OBSERVA
-          </span>
-
-          <p>
-            ¿Lanzarla con mayor fuerza siempre hará
-            que llegue más lejos?
-          </p>
-
+          <span class="question-tag">OBSERVA</span>
+          <p>¿Lanzarla con mayor fuerza siempre hará que llegue más lejos?</p>
         </div>
-
       </div>
 
-
-      <div
-        class="question-block question-block-secondary"
-      >
-
-        <span class="question-index">
-          02
-        </span>
-
+      <div class="question-block question-block-secondary">
+        <span class="question-index">02</span>
         <div>
-
-          <span class="question-tag">
-            IMAGINA
-          </span>
-
-          <p>
-            ¿Qué podría ocurrir si modificamos
-            el ángulo con el que sale?
-          </p>
-
+          <span class="question-tag">IMAGINA</span>
+          <p>¿Qué podría ocurrir si modificamos el ángulo con el que sale?</p>
         </div>
-
       </div>
-
 
       <div class="observation-note">
-
-        <span class="note-mark">
-          ·
-        </span>
-
+        <span class="note-mark">·</span>
         <p>
           Aquí no buscamos todavía una respuesta correcta.
-          Queremos conocer tu manera de pensar antes
-          de comenzar a experimentar.
+          Queremos conocer tu manera de pensar antes de comenzar a experimentar.
         </p>
-
       </div>
-
     </div>
 
-
     <div class="observation-visual">
-
       <div class="visual-grid"></div>
-
       <div class="observation-image-frame">
-
         <div class="visual-aura"></div>
-
-
-        <div class="floating-label floating-label-one">
-          ÁNGULO
-        </div>
-
-        <div class="floating-label floating-label-two">
-          VELOCIDAD
-        </div>
-
-        <div class="floating-label floating-label-three">
-          TRAYECTORIA
-        </div>
-
-
+        <div class="floating-label floating-label-one">ÁNGULO</div>
+        <div class="floating-label floating-label-two">VELOCIDAD</div>
+        <div class="floating-label floating-label-three">TRAYECTORIA</div>
         <span class="launch-point"></span>
-
         <span class="trajectory trajectory-01"></span>
         <span class="trajectory trajectory-02"></span>
         <span class="trajectory trajectory-03"></span>
-
-
         <span class="trajectory-point point-01"></span>
         <span class="trajectory-point point-02"></span>
         <span class="trajectory-point point-03"></span>
         <span class="trajectory-point point-04"></span>
-
       </div>
-
     </div>
 
   </section>
 
 
-  <!-- ========================================================
-       RESPUESTA
-  ========================================================= -->
-
   <section class="response-section">
 
     <div class="response-header">
-
-      <span class="section-kicker">
-        TU PRIMERA EXPLICACIÓN
-      </span>
-
-      <h2>
-        Ahora cuéntanos qué piensas.
-      </h2>
-
+      <span class="section-kicker">TU PRIMERA EXPLICACIÓN</span>
+      <h2>Ahora cuéntanos qué piensas.</h2>
       <p>
         Esta explicación será tu punto de partida.
-        Más adelante podrás contrastarla con tus
-        experimentos, datos y resultados.
+        Más adelante podrás contrastarla con tus experimentos, datos y resultados.
       </p>
-
     </div>
 
-
-    <ng-container
-      *ngIf="
-        primaryActivity() as activity;
-        else noActivity
-      "
-    >
+    <ng-container *ngIf="primaryActivity() as activity; else noActivity">
 
       <article class="response-card">
 
         <div class="response-card-top">
-
           <div class="activity-identification">
-
-            <div class="activity-code">
-              {{ getActivityIcon(activity.type) }}
-            </div>
-
+            <div class="activity-code">{{ getActivityIcon(activity.type) }}</div>
             <div>
-
-              <span>
-                ACTIVIDAD {{ activity.order }}
-              </span>
-
-              <strong>
-                {{ activity.title }}
-              </strong>
-
+              <span>ACTIVIDAD {{ activity.order }}</span>
+              <strong>{{ activity.title }}</strong>
             </div>
-
           </div>
-
-
           <span class="response-time">
-            {{ activity.estimatedDurationMinutes ?? 15 }}
-            min
+            {{ activity.estimatedDurationMinutes ?? 15 }} min
           </span>
-
         </div>
-
 
         <div class="response-question">
-
-          <span
-            class="response-quote"
-            aria-hidden="true"
-          >
-            “
-          </span>
-
-          <p>
-            {{ primaryQuestion() }}
-          </p>
-
+          <span class="response-quote" aria-hidden="true">“</span>
+          <p>{{ primaryQuestion() }}</p>
         </div>
 
-
-        <div
-          class="response-guidance"
-          *ngIf="primaryHint()"
-        >
-
-          <span>
-            PISTA
-          </span>
-
-          <p>
-            {{ primaryHint() }}
-          </p>
-
+        <div class="response-guidance" *ngIf="primaryHint()">
+          <span>PISTA</span>
+          <p>{{ primaryHint() }}</p>
         </div>
 
-
-        <div
-          class="response-editor"
-          *ngIf="
-            activity.config?.requiresSubmission
-          "
-        >
-
-          <label
-            for="moment-response"
-          >
-            ESCRIBE CON TUS PROPIAS PALABRAS
-          </label>
-
-
+        <div class="response-editor" *ngIf="activity.config?.requiresSubmission">
+          <label for="moment-response">ESCRIBE CON TUS PROPIAS PALABRAS</label>
           <textarea
             id="moment-response"
             class="response-field"
@@ -588,112 +279,60 @@
             placeholder="Escribe aquí lo que piensas..."
             (input)="onResponseChange($event)"
           ></textarea>
-
-
           <div class="response-footer">
-
-            <span
-              class="response-status"
-              *ngIf="saved()"
-            >
-              ✓ Borrador guardado
-            </span>
-
-
-            <span class="response-counter">
-              {{ response().length }} caracteres
-            </span>
-
+            <span class="response-status" *ngIf="saved()">✓ Borrador guardado</span>
+            <span class="response-counter">{{ response().length }} caracteres</span>
           </div>
-
         </div>
 
-
         <div class="response-action">
-
-          <p>
-            No necesitas una fórmula todavía.
-            Queremos conocer tu explicación inicial.
-          </p>
-
-
+          <p>No necesitas una fórmula todavía. Queremos conocer tu explicación inicial.</p>
           <div class="response-actions">
-
             <button
               type="button"
               class="secondary-action"
               (click)="focusResponse()"
-              *ngIf="
-                activity.config?.requiresSubmission
-              "
+              *ngIf="activity.config?.requiresSubmission"
             >
               Escribir mi explicación
             </button>
-
-
             <button
               type="button"
               class="secondary-action"
               (click)="saveDraft()"
-              *ngIf="
-                activity.config?.requiresSubmission
-                && response().trim()
-              "
+              *ngIf="activity.config?.requiresSubmission && response().trim()"
             >
               Guardar borrador
             </button>
-
-
             <button
               type="button"
               class="primary-glass-action"
               [disabled]="!canContinue()"
               (click)="continue()"
             >
-
-              <span>
-                {{
-                  nextMoment()
-                    ? 'Continuar'
-                    : 'Finalizar'
-                }}
-              </span>
-
-              <strong>
-                →
-              </strong>
-
+              <span>{{ nextMoment() ? 'Continuar' : 'Finalizar' }}</span>
+              <strong>→</strong>
             </button>
-
           </div>
-
         </div>
 
       </article>
 
     </ng-container>
 
-
     <ng-template #noActivity>
-
       <div class="response-empty">
-
-        Este momento todavía no tiene
-        una actividad configurada.
-
+        Este momento todavía no tiene una actividad configurada.
       </div>
-
     </ng-template>
 
-
   </section>
-
 
   </ng-container>
 
 
   <!-- ========================================================
-       JUEGO DE EXPLORACIÓN — MOMENTO 2
+       MOMENTO 2
   ========================================================= -->
 
   <section
@@ -704,38 +343,23 @@
     <div class="exploration-game-header">
       <div class="exploration-game-title">
         <span class="game-eyebrow">MISIÓN 2 · EXPLORACIÓN</span>
-
         <h2>{{ game.title }}</h2>
-
         <p>{{ game.instructions }}</p>
       </div>
     </div>
 
-
-    <!-- PUNTAJE INDEPENDIENTE -->
-
     <div class="exploration-score-card">
-
       <div class="exploration-score-copy">
         <span>PUNTAJE DE EXPLORACIÓN</span>
-
         <div class="exploration-score-value">
           <strong>{{ explorationScore() | number:'1.0-1' }}</strong>
           <small>/ {{ game.targetScore }}</small>
         </div>
       </div>
-
-      <div
-        class="exploration-score-track"
-        aria-label="Progreso de la misión"
-      >
+      <div class="exploration-score-track" aria-label="Progreso de la misión">
         <span [style.width.%]="explorationScore()"></span>
       </div>
-
     </div>
-
-
-    <!-- RETROALIMENTACIÓN -->
 
     <div
       class="exploration-feedback"
@@ -745,51 +369,28 @@
       <span class="exploration-feedback-mark">
         {{ explorationCompleted() ? '✓' : 'i' }}
       </span>
-
       <p>{{ explorationFeedback() }}</p>
     </div>
 
-
-    <!-- INSTRUCCIÓN -->
-
-    <div
-      class="exploration-instruction"
-      *ngIf="!explorationCompleted()"
-    >
+    <div class="exploration-instruction" *ngIf="!explorationCompleted()">
       <span>01</span>
-
       <div>
         <strong>Selecciona un factor</strong>
-
-        <p>
-          Tócalo o arrástralo hasta la zona que consideres correcta.
-        </p>
+        <p>Tócalo o arrástralo hasta la zona que consideres correcta.</p>
       </div>
-
-      <small>
-        {{ availableFactors().length }} pendientes
-      </small>
+      <small>{{ availableFactors().length }} pendientes</small>
     </div>
 
-
-    <!-- FACTORES -->
-
-    <div
-      class="exploration-factors"
-      *ngIf="!explorationCompleted()"
-    >
-
+    <div class="exploration-factors" *ngIf="!explorationCompleted()">
       <div class="exploration-factors-head">
         <div>
           <span>FACTORES</span>
           <small>Selecciona o arrastra</small>
         </div>
-
         <b>{{ availableFactors().length }}</b>
       </div>
 
       <div class="factor-grid">
-
         <button
           type="button"
           class="factor-card"
@@ -800,58 +401,28 @@
           (click)="selectFactor(factor.id)"
           (dragstart)="dragFactor($event, factor.id)"
         >
-          <span class="factor-icon">
-            {{ factor.icon }}
-          </span>
-
-          <span class="factor-label">
-            {{ factor.label }}
-          </span>
-
-          <span class="factor-drag">
-            ⠿
-          </span>
-
+          <span class="factor-icon">{{ factor.icon }}</span>
+          <span class="factor-label">{{ factor.label }}</span>
+          <span class="factor-drag">⠿</span>
           <small>
-            {{
-              selectedFactorId() === factor.id
-                ? 'SELECCIONADO'
-                : 'TOCA O ARRASTRA'
-            }}
+            {{ selectedFactorId() === factor.id ? 'SELECCIONADO' : 'TOCA O ARRASTRA' }}
           </small>
         </button>
-
       </div>
     </div>
 
-
-    <!-- ZONAS -->
-
-    <div
-      class="exploration-zones"
-      *ngIf="!explorationCompleted()"
-    >
-
+    <div class="exploration-zones" *ngIf="!explorationCompleted()">
       <div class="exploration-zones-head">
-
         <div>
           <span>CLASIFICA EL FACTOR</span>
-
           <small>
-            {{
-              selectedFactorId()
-                ? 'Ahora elige una zona'
-                : 'Selecciona primero un factor'
-            }}
+            {{ selectedFactorId() ? 'Ahora elige una zona' : 'Selecciona primero un factor' }}
           </small>
         </div>
-
         <b>02</b>
       </div>
 
-
       <div class="zone-grid">
-
         <button
           type="button"
           class="exploration-zone"
@@ -859,134 +430,68 @@
           [class.zone-active]="!!selectedFactorId()"
           (dragover)="allowDrop($event)"
           (drop)="dropFactor($event, zone.id)"
-          (click)="
-            selectedFactorId()
-              && placeFactor(
-                selectedFactorId()!,
-                zone.id
-              )
-          "
+          (click)="selectedFactorId() && placeFactor(selectedFactorId()!, zone.id)"
         >
-
           <span class="zone-number">
             {{
-              zone.id === 'zone-mas-alto'
-                ? '↑'
-                : zone.id === 'zone-mas-lejos'
-                  ? '→'
-                  : zone.id === 'zone-ambas'
-                    ? '◎'
-                    : zone.id === 'zone-depende'
-                      ? '?'
-                      : '×'
+              zone.id === 'zone-mas-alto' ? '↑'
+                : zone.id === 'zone-mas-lejos' ? '→'
+                : zone.id === 'zone-ambas' ? '◎'
+                : zone.id === 'zone-depende' ? '?'
+                : '×'
             }}
           </span>
 
-          <strong class="zone-label">
-            {{ zone.label }}
-          </strong>
+          <strong class="zone-label">{{ zone.label }}</strong>
 
           <small>
-            {{
-              selectedFactorId()
-                ? 'SOLTAR AQUÍ'
-                : 'SELECCIONA UN FACTOR'
-            }}
+            {{ selectedFactorId() ? 'SOLTAR AQUÍ' : 'SELECCIONA UN FACTOR' }}
           </small>
 
-
-          <!-- FACTORES CORRECTAMENTE COLOCADOS DENTRO DE LA ZONA -->
-
-          <div
-            class="zone-items"
-            *ngIf="placedFactorEntries().length > 0"
-          >
-
+          <div class="zone-items" *ngIf="placedFactorEntries().length > 0">
             <span
               class="placed-factor-chip"
               *ngFor="let entry of placedFactorEntries()"
               [hidden]="entry.zoneId !== zone.id"
             >
               <b>{{ entry.factor?.icon }}</b>
-
               <span>{{ entry.factor?.label }}</span>
-
               <i>✓</i>
             </span>
-
           </div>
-
         </button>
-
       </div>
     </div>
 
-
-    <!-- COMPLETADO -->
-
-    <div
-      class="exploration-completion"
-      *ngIf="explorationCompleted()"
-    >
-
+    <div class="exploration-completion" *ngIf="explorationCompleted()">
       <div class="completion-mark">✓</div>
-
-      <span class="section-kicker">
-        MISIÓN COMPLETADA
-      </span>
-
-      <h3>
-        {{ game.completion?.title || '¡Misión 2 completada!' }}
-      </h3>
-
-      <p>
-        {{ game.completion?.message }}
-      </p>
-
-      <strong>
-        {{ explorationScore() | number:'1.0-1' }} / {{ game.targetScore }}
-      </strong>
-
-      <small>
-        {{ game.completion?.nextMessage }}
-      </small>
-
+      <span class="section-kicker">MISIÓN COMPLETADA</span>
+      <h3>{{ game.completion?.title || '¡Misión 2 completada!' }}</h3>
+      <p>{{ game.completion?.message }}</p>
+      <strong>{{ explorationScore() | number:'1.0-1' }} / {{ game.targetScore }}</strong>
+      <small>{{ game.completion?.nextMessage }}</small>
     </div>
 
-
-    <!-- ACCIONES -->
-
     <div class="exploration-game-actions">
-
-      <button
-        type="button"
-        class="secondary-action"
-        (click)="resetExplorationGame()"
-      >
+      <button type="button" class="secondary-action" (click)="resetExplorationGame()">
         Reiniciar misión
       </button>
-
       <button
         type="button"
         class="primary-glass-action"
         [disabled]="!canContinue()"
         (click)="continue()"
       >
-        <span>
-          {{ nextMoment() ? 'Continuar' : 'Finalizar' }}
-        </span>
-
+        <span>{{ nextMoment() ? 'Continuar' : 'Finalizar' }}</span>
         <strong>→</strong>
       </button>
-
     </div>
 
   </section>
 
 
-
   <!-- ========================================================
-       MOMENTO 3 — PREDICCIÓN
+       MOMENTO 3
   ========================================================= -->
 
   <ng-container *ngIf="isPredictionMoment()">
@@ -994,54 +499,26 @@
 
       <section class="prediction-section">
 
-        <!-- CABECERA PEDAGÓGICA -->
         <div class="prediction-intro">
-
-          <div class="prediction-intro-index">
-            03
-          </div>
-
+          <div class="prediction-intro-index">03</div>
           <div class="prediction-intro-content">
-            <span class="section-kicker">
-              MOMENTO 3 · PREDICCIÓN
-            </span>
-
-            <h2>
-              Antes de experimentar, atrévete a predecir.
-            </h2>
-
+            <span class="section-kicker">MOMENTO 3 · PREDICCIÓN</span>
+            <h2>Antes de experimentar, atrévete a predecir.</h2>
             <p>
               Ya exploraste el fenómeno. Ahora utiliza lo que observaste
-              para anticipar qué podría ocurrir. No buscamos memorizar una
-              fórmula: buscamos que construyas una explicación que después
-              puedas contrastar con los datos.
+              para anticipar qué podría ocurrir.
             </p>
           </div>
-
-          <div class="prediction-intro-mark" aria-hidden="true">
-            ?
-          </div>
-
+          <div class="prediction-intro-mark" aria-hidden="true">?</div>
         </div>
 
-
-        <!-- LO QUE DEBES COMPRENDER -->
         <article class="prediction-learning-card">
-
           <div class="prediction-card-heading">
             <div>
-              <span class="section-kicker">
-                ANTES DE DECIDIR
-              </span>
-
-              <h3>
-                Lo que debes comprender
-              </h3>
+              <span class="section-kicker">ANTES DE DECIDIR</span>
+              <h3>Lo que debes comprender</h3>
             </div>
-
-            <span class="prediction-card-number">
-              01
-            </span>
+            <span class="prediction-card-number">01</span>
           </div>
 
           <p class="prediction-lead">
@@ -1051,77 +528,45 @@
           </p>
 
           <div class="prediction-concepts">
-
             <article class="prediction-concept">
               <span class="prediction-concept-icon">↗</span>
               <div>
                 <strong>Velocidad inicial</strong>
-                <p>
-                  Determina cómo comienza el movimiento y puede cambiar
-                  el alcance y la altura alcanzada.
-                </p>
+                <p>Determina cómo comienza el movimiento y puede cambiar el alcance y la altura alcanzada.</p>
               </div>
             </article>
-
             <article class="prediction-concept">
               <span class="prediction-concept-icon">∠</span>
               <div>
                 <strong>Ángulo de lanzamiento</strong>
-                <p>
-                  Cambia la dirección inicial y modifica la forma de la
-                  trayectoria y el alcance horizontal.
-                </p>
+                <p>Cambia la dirección inicial y modifica la forma de la trayectoria y el alcance horizontal.</p>
               </div>
             </article>
-
             <article class="prediction-concept">
               <span class="prediction-concept-icon">g</span>
               <div>
                 <strong>Gravedad</strong>
-                <p>
-                  Hace que el movimiento vertical cambie continuamente
-                  durante el vuelo.
-                </p>
+                <p>Hace que el movimiento vertical cambie continuamente durante el vuelo.</p>
               </div>
             </article>
-
             <article class="prediction-concept">
               <span class="prediction-concept-icon">⌁</span>
               <div>
                 <strong>Trayectoria</strong>
-                <p>
-                  Es el resultado observable del movimiento del objeto
-                  mientras avanza y cae.
-                </p>
+                <p>Es el resultado observable del movimiento del objeto mientras avanza y cae.</p>
               </div>
             </article>
-
           </div>
-
         </article>
 
-
-        <!-- INFOGRAFÍA 1 -->
         <article class="prediction-resource-card">
-
           <div class="prediction-resource-header">
             <div>
-              <span class="section-kicker">
-                MAPA VISUAL
-              </span>
-
-              <h3>
-                Relaciona las variables con la trayectoria
-              </h3>
-
-              <p>
-                Observa el esquema y busca relaciones antes de responder.
-              </p>
+              <span class="section-kicker">MAPA VISUAL</span>
+              <h3>Relaciona las variables con la trayectoria</h3>
+              <p>Observa el esquema y busca relaciones antes de responder.</p>
             </div>
-
-            <span class="prediction-resource-code">
-              RECURSO 01
-            </span>
+            <span class="prediction-resource-code">RECURSO 01</span>
           </div>
 
           <div class="prediction-resource-image">
@@ -1131,45 +576,27 @@
               loading="lazy"
             />
           </div>
-
         </article>
 
-
-        <!-- EJEMPLO RESUELTO / INFOGRAFÍA 2 -->
         <article class="prediction-example-card">
-
           <div class="prediction-example-header">
             <div>
-              <span class="section-kicker">
-                EJEMPLO
-              </span>
-
-              <h3>
-                Observa una predicción razonada
-              </h3>
+              <span class="section-kicker">EJEMPLO</span>
+              <h3>Observa una predicción razonada</h3>
             </div>
-
-            <span class="prediction-card-number">
-              02
-            </span>
+            <span class="prediction-card-number">02</span>
           </div>
 
           <div class="prediction-example-copy-top">
-            <span class="prediction-example-label">
-              PIENSA COMO INVESTIGADOR
-            </span>
-
+            <span class="prediction-example-label">PIENSA COMO INVESTIGADOR</span>
             <p>
               Una buena predicción no es simplemente elegir una respuesta.
               Debe apoyarse en una relación que después pueda comprobarse
               mediante la experimentación.
             </p>
-
             <div class="prediction-example-rule">
               <span>→</span>
-              <strong>
-                Predicción → experimento → datos → explicación
-              </strong>
+              <strong>Predicción → experimento → datos → explicación</strong>
             </div>
           </div>
 
@@ -1180,39 +607,21 @@
               loading="lazy"
             />
           </div>
-
         </article>
 
-
-        <!-- VIDEO -->
         <article class="prediction-video-card">
-
           <div class="prediction-video-copy">
-
-            <span class="section-kicker">
-              OBSERVA Y PIENSA
-            </span>
-
-            <h3>
-              Una explicación antes de tu predicción
-            </h3>
-
-            <p>
-              Mira el recurso y presta atención a las relaciones entre
-              velocidad, ángulo, altura y alcance.
-            </p>
-
+            <span class="section-kicker">OBSERVA Y PIENSA</span>
+            <h3>Una explicación antes de tu predicción</h3>
+            <p>Mira el recurso y presta atención a las relaciones entre velocidad, ángulo, altura y alcance.</p>
             <div class="prediction-video-note">
               <span>01</span>
               <p>
                 Mientras observas, intenta responder:
-                <strong>¿qué variable cambiarías primero para modificar
-                la trayectoria?</strong>
+                <strong>¿qué variable cambiarías primero para modificar la trayectoria?</strong>
               </p>
             </div>
-
           </div>
-
           <div class="prediction-video-frame">
             <iframe
               src="https://www.youtube.com/embed/SAa4i9UTm24"
@@ -1222,247 +631,132 @@
               allowfullscreen
             ></iframe>
           </div>
-
         </article>
 
-
-        <!-- DESAFÍO ABCD -->
         <article class="prediction-challenge-card">
 
           <div class="prediction-challenge-header">
-
             <div>
-              <span class="section-kicker">
-                DESAFÍO DE PREDICCIÓN
-              </span>
-
+              <span class="section-kicker">DESAFÍO DE PREDICCIÓN</span>
               <h3>
                 {{ challenge.title || '¿Cuál predicción explica mejor el fenómeno?' }}
               </h3>
-
-              <p *ngIf="challenge.instructions">
-                {{ challenge.instructions }}
-              </p>
+              <p *ngIf="challenge.instructions">{{ challenge.instructions }}</p>
             </div>
-
             <div class="prediction-attempts">
               <span>INTENTOS</span>
               <strong>{{ predictionAttempts() }}</strong>
             </div>
-
           </div>
-
 
           <div class="prediction-question">
-
-            <span class="prediction-question-index">
-              03
-            </span>
-
+            <span class="prediction-question-index">03</span>
             <p>
-              {{
-                challenge.question ||
-                'Si mantenemos las demás condiciones y modificamos una variable del lanzamiento, ¿qué predicción es más razonable?'
-              }}
+              {{ challenge.question || 'Si mantenemos las demás condiciones y modificamos una variable del lanzamiento, ¿qué predicción es más razonable?' }}
             </p>
-
           </div>
 
-
           <div class="prediction-options">
-
             <button
               type="button"
               class="prediction-option"
               *ngFor="let option of challenge.options"
               [class.selected]="selectedPredictionOption() === option.id"
-              [class.correct]="
-                predictionSubmitted()
-                && predictionCorrect()
-                && selectedPredictionOption() === option.id
-              "
-              [class.incorrect]="
-                predictionSubmitted()
-                && !predictionCorrect()
-                && selectedPredictionOption() === option.id
-              "
+              [class.correct]="predictionSubmitted() && predictionCorrect() && selectedPredictionOption() === option.id"
+              [class.incorrect]="predictionSubmitted() && !predictionCorrect() && selectedPredictionOption() === option.id"
               [disabled]="predictionSubmitted()"
               (click)="selectPredictionOption(option.id)"
             >
-
-              <span class="prediction-option-letter">
-                {{ option.letter || option.id }}
-              </span>
-
+              <span class="prediction-option-letter">{{ option.letter || option.id }}</span>
               <span class="prediction-option-copy">
-                <strong>
-                  {{ option.title || option.label }}
-                </strong>
-
+                <strong>{{ option.title || option.label }}</strong>
                 <small *ngIf="option.text || option.description">
                   {{ option.text || option.description }}
                 </small>
               </span>
-
               <span class="prediction-option-state">
-                <ng-container
-                  *ngIf="
-                    predictionSubmitted()
-                    && selectedPredictionOption() === option.id
-                  "
-                >
+                <ng-container *ngIf="predictionSubmitted() && selectedPredictionOption() === option.id">
                   {{ predictionCorrect() ? '✓' : '×' }}
                 </ng-container>
               </span>
-
             </button>
-
           </div>
 
-
-          <!-- RETROALIMENTACIÓN -->
           <div
             class="prediction-feedback"
             *ngIf="predictionFeedback()"
             [class.success]="predictionCorrect()"
-            [class.error]="
-              predictionSubmitted() && !predictionCorrect()
-            "
+            [class.error]="predictionSubmitted() && !predictionCorrect()"
           >
-
             <span class="prediction-feedback-mark">
               {{ predictionCorrect() ? '✓' : 'i' }}
             </span>
-
             <div>
               <strong>
-                {{
-                  predictionCorrect()
-                    ? 'Predicción correcta'
-                    : 'Todavía puedes revisarla'
-                }}
+                {{ predictionCorrect() ? 'Predicción correcta' : 'Todavía puedes revisarla' }}
               </strong>
-
-              <p>
-                {{ predictionFeedback() }}
-              </p>
+              <p>{{ predictionFeedback() }}</p>
             </div>
-
           </div>
 
-
-          <!-- ACCIONES DEL DESAFÍO -->
           <div class="prediction-actions">
-
             <button
               type="button"
               class="secondary-action"
-              *ngIf="
-                predictionSubmitted()
-                && !predictionCorrect()
-              "
+              *ngIf="predictionSubmitted() && !predictionCorrect()"
               (click)="retryPrediction()"
             >
               Intentar nuevamente
             </button>
-
             <button
               type="button"
               class="secondary-action"
-              *ngIf="
-                predictionSubmitted()
-                && predictionCorrect()
-              "
+              *ngIf="predictionSubmitted() && predictionCorrect()"
               (click)="resetPrediction()"
             >
               Volver a revisar
             </button>
-
             <button
               type="button"
               class="primary-glass-action"
               [disabled]="!canSubmitPrediction()"
               (click)="submitPrediction()"
             >
-              <span>
-                Comprobar predicción
-              </span>
-
-              <strong>
-                →
-              </strong>
+              <span>Comprobar predicción</span>
+              <strong>→</strong>
             </button>
-
           </div>
 
-
-          <!-- COMPLETADO -->
-          <div
-            class="prediction-completion"
-            *ngIf="predictionCorrect()"
-          >
-
-            <div class="prediction-completion-mark">
-              ✓
-            </div>
-
+          <div class="prediction-completion" *ngIf="predictionCorrect()">
+            <div class="prediction-completion-mark">✓</div>
             <div>
-              <span class="section-kicker">
-                MOMENTO 3 COMPLETADO
-              </span>
-
-              <h4>
-                {{ challenge.completion?.title || '¡Predicción completada!' }}
-              </h4>
-
+              <span class="section-kicker">MOMENTO 3 COMPLETADO</span>
+              <h4>{{ challenge.completion?.title || '¡Predicción completada!' }}</h4>
               <p>
-                {{
-                  challenge.completion?.message ||
-                  'Has construido una predicción que ahora podrás contrastar con la experimentación.'
-                }}
+                {{ challenge.completion?.message || 'Has construido una predicción que ahora podrás contrastar con la experimentación.' }}
               </p>
-
               <small *ngIf="challenge.completion?.nextMessage">
                 {{ challenge.completion.nextMessage }}
               </small>
             </div>
-
           </div>
 
         </article>
 
-
-        <!-- PUENTE HACIA EXPERIMENTACIÓN -->
         <section class="prediction-transition">
-
           <div class="prediction-transition-line"></div>
-
           <div>
-            <span class="section-kicker">
-              SIGUIENTE PASO
-            </span>
-
-            <h3>
-              Ahora pon tu predicción a prueba.
-            </h3>
-
+            <span class="section-kicker">SIGUIENTE PASO</span>
+            <h3>Ahora pon tu predicción a prueba.</h3>
             <p>
-              Una hipótesis adquiere fuerza cuando puede contrastarse
-              con evidencia. En el siguiente momento experimentarás,
-              medirás y compararás tus resultados.
+              Una hipótesis adquiere fuerza cuando puede contrastarse con evidencia.
+              En el siguiente momento experimentarás, medirás y compararás tus resultados.
             </p>
           </div>
-
-          <div class="prediction-transition-arrow">
-            →
-          </div>
-
+          <div class="prediction-transition-arrow">→</div>
         </section>
 
-
-        <!-- NAVEGACIÓN ESPECÍFICA DEL MOMENTO -->
         <div class="prediction-navigation">
-
           <button
             type="button"
             class="secondary-action"
@@ -1471,22 +765,15 @@
           >
             ← Volver a exploración
           </button>
-
           <button
             type="button"
             class="primary-glass-action"
             [disabled]="!canContinue()"
             (click)="continue()"
           >
-            <span>
-              {{ nextMoment() ? 'Continuar a experimentación' : 'Finalizar' }}
-            </span>
-
-            <strong>
-              →
-            </strong>
+            <span>{{ nextMoment() ? 'Continuar a experimentación' : 'Finalizar' }}</span>
+            <strong>→</strong>
           </button>
-
         </div>
 
       </section>
@@ -1496,14 +783,14 @@
 
 
   <!-- ========================================================
-       MOMENTO 4 — EXPERIMENTACIÓN (CORREGIDO Y LIMPIO)
+       MOMENTO 4
   ========================================================= -->
 
   <ng-container *ngIf="currentOrder() === 4">
     <section class="experiment-section">
 
-      <!-- SIMULADOR ROAD TO GLORY -->
       <article class="experiment-simulator-card">
+
         <div class="experiment-simulator-header">
           <div>
             <span class="section-kicker">🏆 ROAD TO GLORY</span>
@@ -1544,9 +831,208 @@
             <strong>→</strong>
           </a>
         </div>
+
       </article>
 
     </section>
+  </ng-container>
+
+
+  <!-- ========================================================
+       MOMENTO 5 — CONSTRUCCIÓN
+  ========================================================= -->
+
+  <ng-container *ngIf="isConstructionMoment()">
+
+    <section class="construction-section">
+
+      <!-- EJEMPLO RESUELTO -->
+
+      <article
+        class="construction-example-card"
+        *ngIf="constructionExample() as example"
+      >
+
+        <div class="construction-example-header">
+          <div>
+            <span class="section-kicker">📘 EJEMPLO RESUELTO · COHETE DE AGUA</span>
+            <h3>{{ example.title }}</h3>
+            <p>
+              Observa cómo se resuelve paso a paso el problema.
+              Este ejemplo te servirá como guía para enfrentar
+              los cinco desafíos que vienen después.
+            </p>
+          </div>
+          <span class="construction-example-badge">SOLO LECTURA</span>
+        </div>
+
+        <div class="construction-example-image">
+          <img
+            [src]="example.imageUrl"
+            [alt]="example.imageAlt"
+            loading="lazy"
+            (click)="openLightbox(example.imageUrl, example.imageAlt)"
+          />
+        </div>
+
+        <div class="construction-example-footer">
+          <span class="construction-example-hint">
+            💡 Aprende el procedimiento: identificar datos, aplicar
+            las ecuaciones del movimiento parabólico y obtener
+            los resultados. Haz clic en la imagen para ampliarla.
+          </span>
+        </div>
+
+      </article>
+
+
+      <!-- DESAFÍO -->
+
+      <article class="construction-challenge-card">
+
+        <div class="construction-challenge-header">
+          <div>
+            <span class="section-kicker">🎯 TU TURNO · 5 PROBLEMAS</span>
+            <h3>Demuestra lo que puedes resolver</h3>
+            <p>
+              Lee cada situación con calma, identifica los datos
+              y aplica el modelo del movimiento parabólico.
+              Si fallas, puedes intentarlo nuevamente.
+            </p>
+          </div>
+          <div class="construction-progress">
+            <span>{{ challengeProgress() }} / {{ challengeTotal() }}</span>
+            <div class="construction-progress-track">
+              <span [style.width.%]="challengeProgressPercent()"></span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="construction-challenge-image">
+          <img
+            [src]="challengeImage()"
+            alt="Problemas propuestos de movimiento parabólico"
+            loading="lazy"
+            (click)="openLightbox(challengeImage(), 'Problemas propuestos de movimiento parabólico')"
+          />
+        </div>
+
+
+        <div
+          class="construction-challenge-completion"
+          *ngIf="challengeCompleted()"
+        >
+          <div class="completion-mark">✓</div>
+          <span class="section-kicker">CONSTRUCCIÓN COMPLETADA</span>
+          <h3>¡Resolviste las cinco situaciones!</h3>
+          <p>
+            Has aplicado el modelo del movimiento parabólico
+            a distintos contextos. Ahora estás listo para
+            analizar tus resultados en el siguiente momento.
+          </p>
+          <div class="construction-progress-final">
+            <span
+              *ngFor="let i of [1,2,3,4,5]; let idx = index"
+              class="progress-check"
+              [class.done]="idx < challengeSolvedCount()"
+            >
+              ✓
+            </span>
+          </div>
+        </div>
+
+
+        <ng-container
+          *ngIf="!challengeCompleted() && currentChallengeQuestion() as question"
+        >
+
+          <div class="construction-question-header">
+            <div class="construction-question-number">
+              {{ challengeSolvedCount() + 1 }} / {{ challengeTotal() }}
+            </div>
+            <span class="construction-question-label">
+              PROBLEMA {{ challengeSolvedCount() + 1 }}
+            </span>
+          </div>
+
+          <div class="construction-question">
+
+            <p class="construction-question-text">{{ question.text }}</p>
+
+            <div class="construction-options">
+              <button
+                type="button"
+                class="construction-option"
+                *ngFor="let option of question.options; let i = index"
+                [class.selected]="selectedChallengeOption() === i"
+                [class.correct]="challengeSubmitted() && challengeCorrect() && selectedChallengeOption() === i"
+                [class.incorrect]="challengeSubmitted() && !challengeCorrect() && selectedChallengeOption() === i"
+                [disabled]="challengeSubmitted()"
+                (click)="selectChallengeOption(i)"
+              >
+                <span class="construction-option-letter">{{ getOptionLetter(i) }}</span>
+                <span class="construction-option-text">{{ option }}</span>
+                <span class="construction-option-state">
+                  <ng-container *ngIf="challengeSubmitted() && selectedChallengeOption() === i">
+                    {{ challengeCorrect() ? '✓' : '×' }}
+                  </ng-container>
+                </span>
+              </button>
+            </div>
+
+            <div
+              class="construction-feedback"
+              *ngIf="challengeFeedback()"
+              [class.success]="challengeSubmitted() && challengeCorrect()"
+              [class.error]="challengeSubmitted() && !challengeCorrect()"
+            >
+              <span class="construction-feedback-mark">
+                {{ challengeCorrect() ? '✓' : 'i' }}
+              </span>
+              <p>{{ challengeFeedback() }}</p>
+            </div>
+
+            <div class="construction-actions">
+              <button
+                type="button"
+                class="primary-glass-action"
+                *ngIf="!challengeSubmitted()"
+                [disabled]="selectedChallengeOption() === null"
+                (click)="submitChallengeAnswer()"
+              >
+                <span>Comprobar respuesta</span>
+                <strong>→</strong>
+              </button>
+
+              <button
+                type="button"
+                class="secondary-action"
+                *ngIf="challengeSubmitted() && !challengeCorrect()"
+                (click)="retryChallenge()"
+              >
+                Intentar nuevamente
+              </button>
+
+              <button
+                type="button"
+                class="primary-glass-action"
+                *ngIf="challengeSubmitted() && challengeCorrect()"
+                (click)="nextChallengeQuestion()"
+              >
+                <span>Siguiente problema</span>
+                <strong>→</strong>
+              </button>
+            </div>
+
+          </div>
+
+        </ng-container>
+
+      </article>
+
+    </section>
+
   </ng-container>
 
 
@@ -1556,43 +1042,17 @@
 
   <section class="moment-closing">
 
-    <div class="closing-mark">
-      {{ currentOrder() }}
-    </div>
-
+    <div class="closing-mark">{{ currentOrder() }}</div>
 
     <div class="closing-content">
-
-      <span class="section-kicker">
-        SIGUE EXPLORANDO
-      </span>
-
-      <h2>
-        La curiosidad cambia la trayectoria.
-      </h2>
-
-      <p>
-        Cada momento agrega una nueva pieza
-        a tu explicación del fenómeno.
-      </p>
-
+      <span class="section-kicker">SIGUE EXPLORANDO</span>
+      <h2>La curiosidad cambia la trayectoria.</h2>
+      <p>Cada momento agrega una nueva pieza a tu explicación del fenómeno.</p>
     </div>
 
-
     <div class="closing-next">
-
-      <span>
-        DESPUÉS
-      </span>
-
-      <strong>
-        {{
-          nextMoment()?.title
-          ??
-          'Experiencia completada'
-        }}
-      </strong>
-
+      <span>DESPUÉS</span>
+      <strong>{{ nextMoment()?.title ?? 'Experiencia completada' }}</strong>
     </div>
 
   </section>
@@ -1607,94 +1067,69 @@
     <button
       type="button"
       class="glass-navigation-button"
-
       [disabled]="!previousMoment()"
-
-      (click)="
-        previousMoment()
-        &&
-        goToMoment(
-          previousMoment()!.id
-        )
-      "
+      (click)="previousMoment() && goToMoment(previousMoment()!.id)"
     >
-
-      <span class="glass-button-icon">
-        ←
-      </span>
-
+      <span class="glass-button-icon">←</span>
       <span class="glass-button-content">
-
-        <small>
-          ANTERIOR
-        </small>
-
-        <strong>
-          {{
-            previousMoment()?.title
-            ??
-            'Inicio'
-          }}
-        </strong>
-
+        <small>ANTERIOR</small>
+        <strong>{{ previousMoment()?.title ?? 'Inicio' }}</strong>
       </span>
-
     </button>
 
-
     <div class="glass-navigation-progress">
-
-      <span>
-        {{ progressLabel() }}
-      </span>
-
+      <span>{{ progressLabel() }}</span>
       <div class="glass-progress-track">
-
-        <span
-          [style.width.%]="
-            progressPercentage()
-          "
-        ></span>
-
+        <span [style.width.%]="progressPercentage()"></span>
       </div>
-
     </div>
-
 
     <button
       type="button"
       class="glass-navigation-button glass-navigation-next"
       (click)="continue()"
     >
-
       <span class="glass-button-content">
-
-        <small>
-          {{
-            nextMoment()
-              ? 'SIGUIENTE'
-              : 'FINALIZAR'
-          }}
-        </small>
-
-        <strong>
-          {{
-            nextMoment()?.title
-            ??
-            'Volver a Mi Aula'
-          }}
-        </strong>
-
+        <small>{{ nextMoment() ? 'SIGUIENTE' : 'FINALIZAR' }}</small>
+        <strong>{{ nextMoment()?.title ?? 'Volver a Mi Aula' }}</strong>
       </span>
-
-
-      <span class="glass-button-icon">
-        →
-      </span>
-
+      <span class="glass-button-icon">→</span>
     </button>
 
   </section>
+
+
+  <!-- ========================================================
+       LIGHTBOX
+  ========================================================= -->
+
+  <div
+    class="lightbox-overlay"
+    *ngIf="lightboxOpen()"
+    (click)="closeLightbox()"
+    role="dialog"
+    aria-modal="true"
+  >
+    <button
+      type="button"
+      class="lightbox-close"
+      (click)="closeLightbox()"
+      aria-label="Cerrar"
+    >
+      ✕
+    </button>
+
+    <img
+      class="lightbox-image"
+      [src]="lightboxImage()"
+      [alt]="lightboxAlt()"
+      (click)="$event.stopPropagation()"
+    />
+
+    <span class="lightbox-hint">
+      Clic fuera de la imagen o en ✕ para cerrar
+    </span>
+  </div>
 
 </main>
 
