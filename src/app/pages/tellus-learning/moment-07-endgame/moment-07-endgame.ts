@@ -125,7 +125,6 @@ export class Moment07Endgame
 
 
   // ============================================================
-  // ============================================================
   // COORDENADAS DEL RADAR
   // ============================================================
 
@@ -211,6 +210,7 @@ export class Moment07Endgame
   }
 
 
+  // ============================================================
   // ESTADÍSTICAS
   // ============================================================
 
@@ -468,180 +468,203 @@ export class Moment07Endgame
 
   private buildEndgame(): void {
 
-    const m1 =
-      this.learningState
-        .getMoment<any>('m1')
-        ?? {};
+    try {
 
-    const m2 =
-      this.learningState
-        .getMoment<any>('m2')
-        ?? {};
+      const m1 =
+        this.learningState
+          .getMoment<any>('m1')
+          ?? {};
 
-    const m3 =
-      this.learningState
-        .getMoment<any>('m3')
-        ?? {};
+      const m2 =
+        this.learningState
+          .getMoment<any>('m2')
+          ?? {};
 
-    const m4 =
-      this.learningState
-        .getMoment<any>('m4')
-        ?? {};
+      const m3 =
+        this.learningState
+          .getMoment<any>('m3')
+          ?? {};
 
-    const m5 =
-      this.learningState
-        .getMoment<any>('m5')
-        ?? {};
+      const m4 =
+        this.learningState
+          .getMoment<any>('m4')
+          ?? {};
 
-    const m6 =
-      this.learningState
-        .getMoment<any>('m6')
-        ?? {};
-    // ==========================================================
-    // PERSONAJE
-    // ==========================================================
+      const m5 =
+        this.learningState
+          .getMoment<any>('m5')
+          ?? {};
 
-    const variant =
-      m6.heroVariant ??
-      'alumno';
-
-    this.heroVariant.set(
-      variant === 'alumna'
-        ? 'alumna'
-        : 'alumno'
-    );
+      const m6 =
+        this.learningState
+          .getMoment<any>('m6')
+          ?? {};
 
 
-    // ==========================================================
-    // ACTIVIDADES
-    // ==========================================================
+      // ========================================================
+      // PERSONAJE
+      // ========================================================
 
-    const activities =
-      this.countActivities(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
+      const variant =
+        m6.heroVariant ??
+        'alumno';
+
+      this.heroVariant.set(
+        variant === 'alumna'
+          ? 'alumna'
+          : 'alumno'
       );
 
-    this.totalActivities.set(
-      activities
-    );
 
+      // ========================================================
+      // ACTIVIDADES
+      // ========================================================
 
-    // ==========================================================
-    // EVIDENCIAS
-    // ==========================================================
+      const activities =
+        this.countActivities(
+          m1,
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        );
 
-    const evidence =
-      this.countEvidence(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
+      this.totalActivities.set(
+        activities
       );
 
-    this.totalEvidence.set(
-      evidence
-    );
 
+      // ========================================================
+      // EVIDENCIAS
+      // ========================================================
 
-    // ==========================================================
-    // INTENTOS
-    // ==========================================================
+      const evidence =
+        this.countEvidence(
+          m1,
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        );
 
-    const attempts =
-      this.countAttempts(
-        m3,
-        m4,
-        m5,
-        m6
+      this.totalEvidence.set(
+        evidence
       );
 
-    this.totalAttempts.set(
-      attempts
-    );
 
+      // ========================================================
+      // INTENTOS
+      // ========================================================
 
-    // ==========================================================
-    // MISIONES
-    // ==========================================================
+      const attempts =
+        this.countAttempts(
+          m3,
+          m4,
+          m5,
+          m6
+        );
 
-    const missions =
-      this.countMissions(
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
+      this.totalAttempts.set(
+        attempts
       );
 
-    this.completedMissions.set(
-      missions
-    );
+
+      // ========================================================
+      // MISIONES
+      // ========================================================
+
+      const missions =
+        this.countMissions(
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        );
+
+      this.completedMissions.set(
+        missions
+      );
 
 
-    // ==========================================================
-    // MOMENTOS
-    // ==========================================================
+      // ========================================================
+      // MOMENTOS
+      // ========================================================
 
-    this.moments.set(
-      this.buildMoments(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
-      )
-    );
-
-
-    // ==========================================================
-    // RADAR
-    // ==========================================================
-
-    this.radar.set(
-      this.buildRadar(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
-      )
-    );
+      this.moments.set(
+        this.buildMoments(
+          m1,
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        )
+      );
 
 
-    // ==========================================================
-    // LOGROS
-    // ==========================================================
+      // ========================================================
+      // RADAR
+      // ========================================================
 
-    this.achievements.set(
-      this.buildAchievements(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6
-      )
-    );
+      this.radar.set(
+        this.buildRadar(
+          m1,
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        )
+      );
 
 
-    // ==========================================================
-    // PUNTUACIÓN
-    // ==========================================================
+      // ========================================================
+      // LOGROS
+      // ========================================================
 
-    this.finalScore.set(
-      this.calculateFinalScore(
-        this.radar()
-      )
-    );
+      this.achievements.set(
+        this.buildAchievements(
+          m1,
+          m2,
+          m3,
+          m4,
+          m5,
+          m6
+        )
+      );
+
+
+      // ========================================================
+      // PUNTUACIÓN
+      // ========================================================
+
+      this.finalScore.set(
+        this.calculateFinalScore(
+          this.radar()
+        )
+      );
+
+    } catch (error) {
+
+      console.error(
+        '[Tellus Endgame] Error construyendo el resumen:',
+        error
+      );
+
+      // Valores por defecto para no romper la vista
+      this.radar.set([]);
+      this.moments.set([]);
+      this.achievements.set([]);
+      this.finalScore.set(0);
+      this.totalActivities.set(0);
+      this.totalEvidence.set(0);
+      this.totalAttempts.set(0);
+      this.completedMissions.set(0);
+
+    }
 
   }
 

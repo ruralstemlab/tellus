@@ -2194,7 +2194,7 @@ export class MomentComponent implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // MISIÓN — ESTADO MEJORADO
+  // MISIÓN — ESTADO
   // ============================================================
 
   readonly analysisMissionCompleted =
@@ -3564,9 +3564,34 @@ export class MomentComponent implements OnInit, OnDestroy {
           // ----------------------------------------------------
           // MISIÓN M6
           // ----------------------------------------------------
+          // Restauramos las respuestas previas (act7_*) para
+          // que el usuario las vea al volver. NO marcamos la
+          // misión como completada automáticamente: siempre
+          // arranca interactiva y el usuario decide si la rehace.
+
+          if (
+            m6?.act7_velocity ||
+            m6?.act7_angle ||
+            m6?.act7_gravity ||
+            m6?.act7_height
+          ) {
+
+            const currentResponses =
+              (this.analysisResponses() as any) || {};
+
+            this.analysisResponses.set({
+              ...currentResponses,
+              act7_velocity: m6.act7_velocity ?? '',
+              act7_angle:    m6.act7_angle    ?? '',
+              act7_gravity:  m6.act7_gravity  ?? '',
+              act7_height:   m6.act7_height   ?? '',
+            } as AnalysisResponses);
+
+          }
+
 
           this.analysisMissionCompleted.set(
-            !!m6?.act7_completed
+            false
           );
 
 

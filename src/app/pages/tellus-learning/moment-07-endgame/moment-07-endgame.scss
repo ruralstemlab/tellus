@@ -59,133 +59,196 @@
 }
 
 
-.hero-copy {
-  position: relative;
-  z-index: 3;
-  padding: 70px 0 70px 7vw;
-  max-width: 650px;
+/* ============================================================
+   HERO — COPIA DE TEXTO
+============================================================ */
+
+.endgame-hero .hero-copy {
+  position: absolute;
+  left: clamp(42px, 6vw, 95px);
+  top: 50%;
+  width: min(520px, 48%);
+  max-width: 520px;
+  transform: translateY(-50%);
+  z-index: 5;
+
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  text-align: left;
 }
 
 
-.endgame-kicker,
-.card-kicker,
-.section-heading > span,
-.final-kicker {
-  display: block;
+.endgame-hero .endgame-kicker {
+  margin-bottom: 14px;
 
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .2em;
+  font-size: clamp(9px, .8vw, 12px);
+  font-weight: 900;
+  letter-spacing: .22em;
+  line-height: 1.2;
 
-  color: #8affb7;
+  text-transform: uppercase;
+
+  color: #c9ffd4;
+
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, .55);
 }
 
 
-.hero-copy h1 {
-  margin: 18px 0 0;
+.endgame-hero .hero-copy h1 {
+  max-width: 100%;
+  margin: 0;
 
-  font-size: clamp(
-    58px,
-    7vw,
-    105px
-  );
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
-  line-height: .9;
+  font-size: clamp(3.4rem, 5.2vw, 5.8rem);
+
+  font-weight: 700;
+
+  line-height: .88;
   letter-spacing: -.055em;
 
   background:
     linear-gradient(
       135deg,
-      #ffffff,
+      #ffffff 0%,
       #b9ffd5 50%,
-      #72ff9f
+      #72ff9f 100%
     );
 
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  text-shadow:
+    0 4px 24px rgba(0, 0, 0, .55),
+    0 1px 2px rgba(0, 0, 0, .7);
+
+  filter:
+    drop-shadow(0 4px 18px rgba(0, 0, 0, .55));
 }
 
 
-.hero-copy h2 {
-  margin: 18px 0;
+.endgame-hero .hero-copy h2 {
+  max-width: 430px;
 
-  font-size: clamp(
-    24px,
-    3vw,
-    42px
-  );
+  margin:
+    22px 0 16px;
 
-  letter-spacing: .03em;
-  color: #f3c96b;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(1.25rem, 2vw, 2rem);
+
+  font-weight: 600;
+
+  line-height: 1.08;
+  letter-spacing: .02em;
+
+  color: #f4cf72;
+
+  text-shadow:
+    0 3px 15px rgba(0, 0, 0, .75);
 }
 
 
-.hero-message {
-  max-width: 520px;
+.endgame-hero .hero-message {
+  max-width: 470px;
+  margin: 0;
 
-  font-size: 19px;
-  line-height: 1.7;
+  color: rgba(255, 255, 255, .94);
 
-  color: rgba(238, 253, 247, .88);
+  font-size: clamp(12px, 1.15vw, 16px);
+  line-height: 1.55;
+
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, .75);
 }
 
 
-.hero-effort {
-  max-width: 500px;
-
-  margin-top: 22px;
-
-  font-size: 16px;
-  line-height: 1.7;
-
-  color: #9df7bc;
+.endgame-hero .hero-message strong {
+  display: inline;
+  color: #b9ffc7;
 }
 
 
-.hero-brand {
+.endgame-hero .hero-effort {
+  max-width: 430px;
+
+  margin:
+    15px 0 0;
+
+  color: rgba(220, 255, 228, .86);
+
+  font-size: clamp(11px, .95vw, 14px);
+  line-height: 1.55;
+
+  text-shadow:
+    0 2px 9px rgba(0, 0, 0, .8);
+}
+
+
+.endgame-hero .hero-brand {
+  margin-top: 20px;
+
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  margin-top: 35px;
+  gap: 9px;
 }
 
 
-.hero-brand span {
-  font-size: 30px;
+.endgame-hero .hero-brand span {
+  font-size: 24px;
 }
 
 
-.hero-brand small {
-  font-size: 10px;
-  letter-spacing: .2em;
-  color: #8ba99c;
+.endgame-hero .hero-brand small {
+  color: rgba(220, 255, 228, .68);
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .18em;
 }
 
 
-.hero-character {
+/* ============================================================
+   HERO — PERSONAJE
+============================================================ */
+
+.endgame-hero .hero-character {
   position: absolute;
   inset: 0;
 
+  z-index: 1;
+
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   justify-content: center;
+
+  padding-left: 22%;
 
   pointer-events: none;
 }
 
 
-.hero-character img {
-  width: min(
-    850px,
-    62vw
-  );
-
+.endgame-hero .hero-character img {
+  width: min(880px, 62vw);
   max-height: 720px;
 
   object-fit: contain;
   object-position: center bottom;
+
+  display: block;
 
   filter:
     drop-shadow(
@@ -195,13 +258,46 @@
 }
 
 
-.hero-completion {
-  position: relative;
-  z-index: 4;
+/* ============================================================
+   HERO — GRADIENTE DE LEGIBILIDAD
+============================================================ */
 
-  justify-self: end;
+.endgame-hero::after {
+  content: "";
 
-  margin-right: 5vw;
+  position: absolute;
+  inset: 0;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2, 14, 9, .94) 0%,
+      rgba(2, 14, 9, .86) 20%,
+      rgba(2, 14, 9, .68) 38%,
+      rgba(2, 14, 9, .38) 55%,
+      rgba(2, 14, 9, .10) 74%,
+      transparent 90%
+    );
+}
+
+
+/* ============================================================
+   HERO — COMPLETION
+============================================================ */
+
+.endgame-hero .hero-completion {
+  position: absolute;
+
+  right: clamp(24px, 4vw, 65px);
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  z-index: 6;
 
   display: flex;
   flex-direction: column;
@@ -211,20 +307,28 @@
 }
 
 
-.hero-completion strong {
+.endgame-hero .hero-completion strong {
   font-size: 58px;
   line-height: 1;
 
   color: #82ffac;
+
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, .6);
 }
 
 
-.hero-completion span {
+.endgame-hero .hero-completion span {
   margin-top: 8px;
 
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .14em;
+
+  color: rgba(255, 255, 255, .92);
+
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, .75);
 }
 
 
@@ -239,7 +343,7 @@
   border-radius: 999px;
 
   background:
-    rgba(255, 255, 255, .08);
+    rgba(255, 255, 255, .12);
 }
 
 
@@ -258,9 +362,12 @@
 }
 
 
-.hero-completion small {
+.endgame-hero .hero-completion small {
   margin-top: 8px;
-  color: #7e9d91;
+  color: rgba(200, 235, 215, .75);
+
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, .7);
 }
 
 
@@ -1201,425 +1308,15 @@
 
 
 /* ============================================================
-   RESPONSIVE
+   TABLET
 ============================================================ */
 
-@media (max-width: 1100px) {
+@media (max-width: 1050px) {
 
   .endgame-hero {
     grid-template-columns: 1fr;
     min-height: 720px;
   }
-
-
-  .hero-copy {
-    padding:
-      55px 30px
-      30px;
-
-    max-width: 700px;
-  }
-
-
-  .hero-character {
-    opacity: .55;
-  }
-
-
-  .hero-completion {
-    position: absolute;
-
-    right: 25px;
-    bottom: 35px;
-
-    margin: 0;
-  }
-
-
-  .result-dashboard {
-    grid-template-columns: 1fr;
-  }
-
-
-  .achievement-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-
-  .statistics-grid {
-    grid-template-columns:
-      repeat(3, 1fr);
-  }
-
-}
-
-
-@media (max-width: 700px) {
-
-  .result-dashboard,
-  .journey-endgame,
-  .achievements-section,
-  .statistics-section {
-    width: min(
-      100% - 24px,
-      1450px
-    );
-  }
-
-
-  .hero-copy h1 {
-    font-size: 54px;
-  }
-
-
-  .hero-character {
-    opacity: .35;
-  }
-
-
-  .radar-layout {
-    grid-template-columns: 1fr;
-  }
-
-
-  .radar-chart {
-    display: flex;
-    justify-content: center;
-  }
-
-
-  .journey-track {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-
-  .journey-track::before {
-    display: none;
-  }
-
-
-  .achievement-grid {
-    grid-template-columns: 1fr;
-  }
-
-
-  .statistics-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-
-  .final-stats {
-    gap: 30px;
-  }
-
-
-  .final-actions {
-    width: 100%;
-
-    flex-direction: column;
-  }
-
-
-  .primary-endgame-button,
-  .secondary-endgame-button {
-    justify-content: center;
-  }
-
-}
-
-
-@media (max-width: 430px) {
-
-  .statistics-grid {
-    grid-template-columns: 1fr;
-  }
-
-
-  .hero-completion {
-    right: 15px;
-    bottom: 20px;
-  }
-
-
-  .hero-completion strong {
-    font-size: 42px;
-  }
-
-}
-// ============================================================
-// ENDGAME — AJUSTE HERO
-// ============================================================
-
-.endgame-hero {
-  position: relative;
-  overflow: hidden;
-}
-
-
-// ------------------------------------------------------------
-// CONTENIDO TEXTUAL
-// ------------------------------------------------------------
-
-.endgame-hero .hero-copy {
-  position: absolute;
-
-  left: clamp(42px, 6vw, 95px);
-  top: 50%;
-
-  width: min(520px, 48%);
-  max-width: 520px;
-
-  transform: translateY(-50%);
-
-  z-index: 5;
-
-  padding: 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-
-  text-align: left;
-}
-
-
-// ------------------------------------------------------------
-// KICKER
-// ------------------------------------------------------------
-
-.endgame-hero .endgame-kicker {
-  margin-bottom: 14px;
-
-  font-size: clamp(9px, .8vw, 12px);
-  font-weight: 900;
-  letter-spacing: .22em;
-  line-height: 1.2;
-
-  text-transform: uppercase;
-
-  color: #c9ffd4;
-
-  text-shadow:
-    0 2px 12px rgba(0, 0, 0, .45);
-}
-
-
-// ------------------------------------------------------------
-// TÍTULO PRINCIPAL
-// ------------------------------------------------------------
-
-.endgame-hero .hero-copy h1 {
-  max-width: 100%;
-
-  margin: 0;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: clamp(3.4rem, 5.2vw, 5.8rem);
-
-  font-weight: 700;
-
-  line-height: .88;
-
-  letter-spacing: -.055em;
-
-  color: #f4fff6;
-
-  text-shadow:
-    0 4px 24px rgba(0, 0, 0, .55),
-    0 1px 2px rgba(0, 0, 0, .7);
-}
-
-
-// ------------------------------------------------------------
-// TÍTULO DE LA EXPERIENCIA
-// ------------------------------------------------------------
-
-.endgame-hero .hero-copy h2 {
-  max-width: 430px;
-
-  margin:
-    22px 0 16px;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: clamp(1.25rem, 2vw, 2rem);
-
-  font-weight: 600;
-
-  line-height: 1.08;
-
-  letter-spacing: .02em;
-
-  color: #f4cf72;
-
-  text-shadow:
-    0 3px 15px rgba(0, 0, 0, .65);
-}
-
-
-// ------------------------------------------------------------
-// MENSAJE PRINCIPAL
-// ------------------------------------------------------------
-
-.endgame-hero .hero-message {
-  max-width: 470px;
-
-  margin: 0;
-
-  color: rgba(255, 255, 255, .94);
-
-  font-size: clamp(12px, 1.15vw, 16px);
-
-  line-height: 1.55;
-
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, .7);
-}
-
-
-.endgame-hero .hero-message strong {
-  display: inline;
-  color: #b9ffc7;
-}
-
-
-// ------------------------------------------------------------
-// MENSAJE DE ESFUERZO
-// ------------------------------------------------------------
-
-.endgame-hero .hero-effort {
-  max-width: 430px;
-
-  margin:
-    15px 0 0;
-
-  color: rgba(220, 255, 228, .82);
-
-  font-size: clamp(11px, .95vw, 14px);
-
-  line-height: 1.55;
-
-  text-shadow:
-    0 2px 9px rgba(0, 0, 0, .75);
-}
-
-
-// ------------------------------------------------------------
-// MARCA
-// ------------------------------------------------------------
-
-.endgame-hero .hero-brand {
-  margin-top: 20px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 9px;
-}
-
-
-.endgame-hero .hero-brand span {
-  font-size: 24px;
-}
-
-
-.endgame-hero .hero-brand small {
-  color: rgba(220, 255, 228, .62);
-
-  font-size: 8px;
-
-  font-weight: 700;
-
-  letter-spacing: .18em;
-}
-
-
-// ------------------------------------------------------------
-// PERSONAJE
-// ------------------------------------------------------------
-
-.endgame-hero .hero-character {
-  position: absolute;
-
-  inset: 0;
-
-  z-index: 1;
-
-  pointer-events: none;
-}
-
-
-.endgame-hero .hero-character img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  object-position: center center;
-
-  display: block;
-}
-
-
-// ------------------------------------------------------------
-// DEGRADADO PARA LEGIBILIDAD
-// ------------------------------------------------------------
-
-.endgame-hero::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  z-index: 2;
-
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(2, 18, 12, .72) 0%,
-      rgba(2, 18, 12, .48) 30%,
-      rgba(2, 18, 12, .12) 55%,
-      transparent 76%
-    );
-}
-
-
-// ------------------------------------------------------------
-// COMPLETION — SOBRE EL HERO
-// ------------------------------------------------------------
-
-.endgame-hero .hero-completion {
-  position: absolute;
-
-  right: clamp(24px, 4vw, 65px);
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  z-index: 6;
-}
-
-
-// ============================================================
-// TABLET
-// ============================================================
-
-@media (max-width: 1050px) {
 
   .endgame-hero .hero-copy {
     left: 42px;
@@ -1633,12 +1330,27 @@
   .endgame-hero .hero-completion {
     right: 25px;
   }
+
+  .result-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .achievement-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .statistics-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
 }
 
 
-// ============================================================
-// MOBILE
-// ============================================================
+/* ============================================================
+   MOBILE
+============================================================ */
 
 @media (max-width: 760px) {
 
@@ -1650,9 +1362,15 @@
     inset: auto 0 0;
 
     height: 62%;
+
+    padding-left: 0;
+
+    align-items: flex-end;
   }
 
   .endgame-hero .hero-character img {
+    width: 100%;
+    height: 100%;
     object-position: center top;
   }
 
@@ -1660,9 +1378,10 @@
     background:
       linear-gradient(
         180deg,
-        rgba(2, 18, 12, .82) 0%,
-        rgba(2, 18, 12, .55) 42%,
-        rgba(2, 18, 12, .12) 72%,
+        rgba(2, 14, 9, .92) 0%,
+        rgba(2, 14, 9, .68) 34%,
+        rgba(2, 14, 9, .28) 62%,
+        rgba(2, 14, 9, .05) 84%,
         transparent 100%
       );
   }
@@ -1703,4 +1422,83 @@
 
     transform: none;
   }
+
+  .result-dashboard,
+  .journey-endgame,
+  .achievements-section,
+  .statistics-section {
+    width: min(
+      100% - 24px,
+      1450px
+    );
+  }
+
+  .hero-copy h1 {
+    font-size: 54px;
+  }
+
+  .radar-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-chart {
+    display: flex;
+    justify-content: center;
+  }
+
+  .journey-track {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .journey-track::before {
+    display: none;
+  }
+
+  .achievement-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .final-stats {
+    gap: 30px;
+  }
+
+  .final-actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+  .primary-endgame-button,
+  .secondary-endgame-button {
+    justify-content: center;
+  }
+
+}
+
+
+/* ============================================================
+   MOBILE PEQUEÑO
+============================================================ */
+
+@media (max-width: 430px) {
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .endgame-hero .hero-completion {
+    right: 15px;
+    bottom: 20px;
+  }
+
+  .endgame-hero .hero-completion strong {
+    font-size: 42px;
+  }
+
 }

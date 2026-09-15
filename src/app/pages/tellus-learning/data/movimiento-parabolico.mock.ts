@@ -570,6 +570,109 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
 
         showMaxHeight: true,
 
+        // ⬇️ NUEVO — juego de clasificación del Momento 2
+        explorationGame: {
+
+          title: 'Clasifica los factores',
+
+          instructions:
+            'Selecciona cada factor y arrástralo (o tócalo) hacia la zona donde creas que influye sobre la trayectoria. Recibirás 20 puntos por cada clasificación correcta.',
+
+          targetScore: 100,
+
+          pointsPerCorrectAnswer: 20,
+
+          factors: [
+
+            {
+              id: 'factor-velocidad',
+              icon: '🚀',
+              label: 'Velocidad inicial',
+            },
+
+            {
+              id: 'factor-angulo',
+              icon: '📐',
+              label: 'Ángulo de lanzamiento',
+            },
+
+            {
+              id: 'factor-gravedad',
+              icon: '🌍',
+              label: 'Gravedad',
+            },
+
+            {
+              id: 'factor-altura',
+              icon: '⬆️',
+              label: 'Altura inicial',
+            },
+
+            {
+              id: 'factor-masa',
+              icon: '⚖️',
+              label: 'Masa del objeto',
+            },
+
+          ],
+
+          zones: [
+
+            {
+              id: 'zone-mas-alto',
+              label: 'Sube más alto',
+            },
+
+            {
+              id: 'zone-mas-lejos',
+              label: 'Llega más lejos',
+            },
+
+            {
+              id: 'zone-ambas',
+              label: 'Afecta altura y alcance',
+            },
+
+            {
+              id: 'zone-depende',
+              label: 'Depende de la situación',
+            },
+
+            {
+              id: 'zone-no-afecta',
+              label: 'No afecta la trayectoria',
+            },
+
+          ],
+
+          answers: {
+
+            'factor-velocidad': 'zone-ambas',
+
+            'factor-angulo': 'zone-depende',
+
+            'factor-gravedad': 'zone-ambas',
+
+            'factor-altura': 'zone-ambas',
+
+            'factor-masa': 'zone-no-afecta',
+
+          },
+
+          completion: {
+
+            title: '¡Exploración completada!',
+
+            message:
+              'Has identificado cómo cada factor influye en la trayectoria del proyectil.',
+
+            nextMessage:
+              'Ahora que exploraste los factores, estás listo para hacer una predicción.',
+
+          },
+
+        },
+
       },
 
     },
@@ -656,6 +759,83 @@ export const MOVIMIENTO_PARABOLICO_ACTIVITIES: Activity[] = [
       graded: false,
 
       allowsMultipleAttempts: false,
+
+      // ⬇️ NUEVO — desafío de predicción del Momento 3
+      settings: {
+
+        predictionChallenge: {
+
+          title: '¿Cuál predicción es más razonable?',
+
+          instructions:
+            'Analiza la situación y elige la opción que mejor describa lo que ocurrirá.',
+
+          question:
+            'Si aumentamos la velocidad inicial de un proyectil manteniendo el mismo ángulo de lanzamiento, ¿qué ocurrirá con su trayectoria?',
+
+          correctAnswer: 'option-b',
+
+          options: [
+
+            {
+              id: 'option-a',
+              letter: 'A',
+              title: 'Solo cambiará la altura',
+              text:
+                'El proyectil alcanzará mayor altura pero llegará al mismo punto.',
+            },
+
+            {
+              id: 'option-b',
+              letter: 'B',
+              title: 'Llegará más lejos y más alto',
+              text:
+                'Aumentarán el alcance y la altura máxima porque hay más energía inicial.',
+            },
+
+            {
+              id: 'option-c',
+              letter: 'C',
+              title: 'La trayectoria no cambiará',
+              text:
+                'La velocidad inicial no influye en la forma de la trayectoria.',
+            },
+
+            {
+              id: 'option-d',
+              letter: 'D',
+              title: 'La gravedad dejará de actuar',
+              text:
+                'Al aumentar la velocidad, el proyectil escapa del efecto de la gravedad.',
+            },
+
+          ],
+
+          feedback: {
+
+            correct:
+              '¡Excelente! A mayor velocidad inicial, mayor energía, mayor altura y mayor alcance. La gravedad sigue actuando igual.',
+
+            incorrect:
+              'Piensa de nuevo. La velocidad inicial determina la energía con la que parte el proyectil. ¿Qué pasa si partes con más energía?',
+
+          },
+
+          completion: {
+
+            title: '¡Predicción completada!',
+
+            message:
+              'Has construido una predicción razonada que podrás contrastar con la experimentación.',
+
+            nextMessage:
+              'En el siguiente momento pondrás a prueba tu hipótesis con datos reales y simulados.',
+
+          },
+
+        },
+
+      },
 
     },
 
