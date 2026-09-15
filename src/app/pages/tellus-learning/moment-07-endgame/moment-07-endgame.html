@@ -1,0 +1,659 @@
+<section class="endgame">
+
+  <!-- ========================================================
+       HERO
+  ========================================================= -->
+
+  <section class="endgame-hero">
+
+    <div class="endgame-stars"></div>
+
+    <div class="hero-background-glow"></div>
+
+    <div class="hero-copy">
+
+      <span class="endgame-kicker">
+        ✦ EXPERIENCIA COMPLETADA
+      </span>
+
+      <h1>
+        ¡LO LOGRASTE!
+      </h1>
+
+      <h2>
+        MOVIMIENTO PARABÓLICO
+      </h2>
+
+      <p class="hero-message">
+        Predijiste. Experimentaste. Construiste.
+        Simulaste. Analizaste.
+        <strong>Y llegaste hasta el final.</strong>
+      </p>
+
+      <p class="hero-effort">
+        No llegaste hasta aquí por suerte.
+        Llegaste porque lo intentaste,
+        te equivocaste, volviste a intentar
+        y aprendiste.
+      </p>
+
+      <div class="hero-brand">
+        <span>🌱</span>
+        <small>
+          RURAL STEAM LAB · TELLUS LEARNING
+        </small>
+      </div>
+
+    </div>
+
+
+    <div class="hero-character">
+
+      <img
+        [src]="heroImage()"
+        [alt]="
+          heroVariant() === 'alumna'
+            ? 'Estudiante celebrando su logro'
+            : 'Estudiante celebrando su logro'
+        "
+      >
+
+    </div>
+
+
+    <div class="hero-completion">
+
+      <strong>
+        {{ completionPercentage() }}%
+      </strong>
+
+      <span>
+        RECORRIDO COMPLETADO
+      </span>
+
+      <div class="completion-track">
+        <span
+          [style.width.%]="completionPercentage()"
+        ></span>
+      </div>
+
+      <small>
+        7 / 7 momentos
+      </small>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       MÚSICA
+  ========================================================= -->
+
+  <button
+    type="button"
+    class="music-control"
+    (click)="toggleMusic()"
+    [class.active]="musicEnabled()"
+  >
+
+    <span>
+      {{ musicEnabled() ? '🔊' : '🎵' }}
+    </span>
+
+    <small>
+      {{ musicEnabled()
+        ? 'Celebración activa'
+        : 'Música épica'
+      }}
+    </small>
+
+  </button>
+
+
+  <!-- ========================================================
+       RESULTADO PRINCIPAL
+  ========================================================= -->
+
+  <section class="result-dashboard">
+
+    <div class="result-card score-card">
+
+      <span class="card-kicker">
+        TU RESULTADO FINAL
+      </span>
+
+      <div class="score-ring">
+
+        <div class="score-ring-inner">
+
+          <strong>
+            {{ finalScore() }}
+          </strong>
+
+          <small>
+            / 100
+          </small>
+
+        </div>
+
+      </div>
+
+      <span class="score-label">
+        PUNTUACIÓN DE EXPERIENCIA
+      </span>
+
+      <div class="rank-badge">
+        🏆 {{ rank() }}
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         RADAR
+    ====================================================== -->
+
+    <div class="result-card radar-card">
+
+      <div class="card-heading">
+
+        <div>
+
+          <span class="card-kicker">
+            TU RADAR DE APRENDIZAJE
+          </span>
+
+          <h3>
+            Así evolucionaste
+          </h3>
+
+        </div>
+
+        <span class="radar-icon">
+          ◈
+        </span>
+
+      </div>
+
+
+      <div class="radar-layout">
+
+        <div class="radar-chart">
+
+          <svg
+            viewBox="0 0 100 100"
+            role="img"
+            aria-label="Radar de aprendizaje"
+          >
+
+            <polygon
+              points="50,13 82.0,31.5 82.0,68.5 50,87 18.0,68.5 18.0,31.5"
+              class="radar-grid radar-grid-outer"
+            />
+
+            <polygon
+              points="50,25 71.0,37.5 71.0,62.5 50,75 29.0,62.5 29.0,37.5"
+              class="radar-grid"
+            />
+
+            <polygon
+              points="50,37 60.0,43.0 60.0,57.0 50,63 40.0,57.0 40.0,43.0"
+              class="radar-grid"
+            />
+
+            <polyline
+              [attr.points]="radarPoints()"
+              class="radar-value"
+            />
+
+            <ng-container
+              *ngFor="
+                let metric of radar();
+                let i = index
+              "
+            >
+
+              <circle
+                [attr.cx]="radarPointX(metric, i)"
+                [attr.cy]="radarPointY(metric, i)"
+                r="1.8"
+                class="radar-point"
+              />
+
+            </ng-container>
+
+          </svg>
+
+        </div>
+
+
+        <div class="radar-values">
+
+          <div
+            class="radar-value-row"
+            *ngFor="let metric of radar()"
+          >
+
+            <div>
+
+              <span>
+                {{ metric.label }}
+              </span>
+
+              <div class="mini-meter">
+
+                <span
+                  [style.width.%]="metric.value"
+                ></span>
+
+              </div>
+
+            </div>
+
+            <strong>
+              {{ metric.value }}%
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         PERFIL
+    ====================================================== -->
+
+    <div class="result-card profile-card">
+
+      <span class="card-kicker">
+        TU PERFIL
+      </span>
+
+      <div class="profile-symbol">
+        ⚛
+      </div>
+
+      <h3>
+        {{ profileTitle() }}
+      </h3>
+
+      <p>
+        Tu recorrido muestra una capacidad
+        especial para experimentar, analizar
+        resultados y relacionar variables
+        para explicar un fenómeno.
+      </p>
+
+      <em>
+        “Haces preguntas, buscas evidencias
+        y construyes conocimiento.”
+      </em>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       RECORRIDO
+  ========================================================= -->
+
+  <section class="journey-endgame">
+
+    <div class="section-heading">
+
+      <span>
+        TU RECORRIDO
+      </span>
+
+      <h2>
+        Siete momentos. Una historia.
+      </h2>
+
+    </div>
+
+
+    <div class="journey-track">
+
+      <div
+        class="journey-step"
+        *ngFor="let moment of moments()"
+      >
+
+        <div
+          class="journey-node"
+          [class.completed]="moment.completed"
+        >
+
+          {{ moment.icon }}
+
+        </div>
+
+        <strong>
+          {{ moment.order }}
+        </strong>
+
+        <span>
+          {{ moment.title }}
+        </span>
+
+        <small>
+          {{
+            moment.score !== null
+              ? moment.score + '%'
+              : 'Completado'
+          }}
+        </small>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       LOGROS
+  ======================================================== -->
+
+  <section class="achievements-section">
+
+    <div class="section-heading">
+
+      <span>
+        TUS VICTORIAS
+      </span>
+
+      <h2>
+        Hitos desbloqueados
+      </h2>
+
+    </div>
+
+
+    <div class="achievement-grid">
+
+      <article
+        class="achievement-card"
+        *ngFor="let achievement of achievements()"
+        [class.locked]="!achievement.unlocked"
+      >
+
+        <div class="achievement-icon">
+          {{ achievement.icon }}
+        </div>
+
+        <div>
+
+          <span class="achievement-status">
+            {{
+              achievement.unlocked
+                ? 'LOGRO OBTENIDO'
+                : 'AÚN NO DESBLOQUEADO'
+            }}
+          </span>
+
+          <h3>
+            {{ achievement.title }}
+          </h3>
+
+          <p>
+            {{ achievement.description }}
+          </p>
+
+        </div>
+
+        <div
+          class="achievement-check"
+          *ngIf="achievement.unlocked"
+        >
+          ✓
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       ESTADÍSTICAS
+  ======================================================== -->
+
+  <section class="statistics-section">
+
+    <div class="section-heading">
+
+      <span>
+        TU CAMPAÑA EN NÚMEROS
+      </span>
+
+      <h2>
+        Todo lo que dejaste en el camino
+      </h2>
+
+    </div>
+
+
+    <div class="statistics-grid">
+
+      <article class="stat-card">
+
+        <span class="stat-icon">
+          ◈
+        </span>
+
+        <strong>
+          {{ totalActivities() }}
+        </strong>
+
+        <span>
+          ACTIVIDADES
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-icon">
+          🧠
+        </span>
+
+        <strong>
+          {{ totalEvidence() }}
+        </strong>
+
+        <span>
+          EVIDENCIAS
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-icon">
+          ⚡
+        </span>
+
+        <strong>
+          {{ totalAttempts() }}
+        </strong>
+
+        <span>
+          INTENTOS
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-icon">
+          🎯
+        </span>
+
+        <strong>
+          {{ completedMissions() }}
+          /
+          {{ totalMissions() }}
+        </strong>
+
+        <span>
+          MISIONES
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-icon">
+          🏆
+        </span>
+
+        <strong>
+          {{ achievementCount() }}
+        </strong>
+
+        <span>
+          LOGROS
+        </span>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================
+       GRAN CIERRE
+  ======================================================== -->
+
+  <section class="endgame-final">
+
+    <div class="final-background"></div>
+
+
+    <div class="final-trophy">
+      🏆
+    </div>
+
+
+    <span class="final-kicker">
+      ¡MISIÓN COMPLETADA!
+    </span>
+
+
+    <h2>
+      MOVIMIENTO PARABÓLICO
+    </h2>
+
+
+    <p class="final-main">
+      Has demostrado que puedes observar
+      un sistema, formular una explicación,
+      ponerla a prueba, analizar evidencias
+      y comprender cómo las variables
+      se relacionan.
+    </p>
+
+
+    <p class="final-highlight">
+      Tu esfuerzo dejó evidencia.
+      <strong>
+        Y eso es verdadero aprendizaje.
+      </strong>
+    </p>
+
+
+    <div class="final-stats">
+
+      <div>
+        <strong>
+          7
+        </strong>
+        <span>
+          MOMENTOS
+        </span>
+      </div>
+
+      <div>
+        <strong>
+          {{ achievementCount() }}
+        </strong>
+        <span>
+          LOGROS
+        </span>
+      </div>
+
+      <div>
+        <strong>
+          {{ finalScore() }}
+        </strong>
+        <span>
+          PUNTOS
+        </span>
+      </div>
+
+    </div>
+
+
+    <div class="final-actions">
+
+      <button
+        type="button"
+        class="primary-endgame-button"
+        (click)="viewEvidence()"
+      >
+
+        <span>
+          📊 Ver mis evidencias
+        </span>
+
+        <strong>
+          →
+        </strong>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="secondary-endgame-button"
+        (click)="backToClassroom()"
+      >
+
+        <span>
+          🏠 Volver a Mi Aula
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <div class="final-message">
+
+      <span>
+        🌱
+      </span>
+
+      <p>
+        Aprender hoy.
+        Transformar mañana.
+      </p>
+
+    </div>
+
+  </section>
+
+</section>
