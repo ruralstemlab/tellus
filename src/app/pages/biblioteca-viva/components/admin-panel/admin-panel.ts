@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-import { ProjectService } from '../../../../core/services/project.service';
-import { Project } from '../../../../core/models/project.model';
+import { ProjectService } from '../../services/project.service';
+import { Project } from '../../models/project.model';
 import { CredentialService } from '../../../../core/services/credential.service';
 import { Credential } from '../../../../core/models/credential.model';
 import { EmailService, CredentialEmailData } from '../../../../core/services/email.service';
@@ -190,11 +190,11 @@ export class AdminPanelComponent implements OnInit {
     this.loading = true;
     this.cdr.detectChanges();
 
-    // Usar getAllProjects() del servicio central para que este panel lea
-    // la misma colección que utiliza el dashboard de Biblioteca Viva.
+    // Usar el mismo servicio local que usa el formulario de participación.
+    // Su mapProject conserva el campo edition recibido desde Firestore.
     // Los proyectos y las credenciales se consultan por separado: un fallo
     // al cargar credenciales no debe ocultar las aplicaciones.
-    this.projectService.getAllProjects().subscribe({
+    this.projectService.getProjects().subscribe({
       next: (projects) => {
         this.allProjects = projects.map(project => ({
           ...project,
@@ -427,7 +427,7 @@ export class AdminPanelComponent implements OnInit {
               next: (cred) => {
                 if (cred && this.selectedProjectForEmit) {
                   const emailData: CredentialEmailData = {
-                    toEmail: this.selectedProjectForEmit.studentEmail || 'hensonmedina2@gmail.com',
+                    toEmail: this.selectedProjectForEmit.studentEmail || '',
                     toName: this.selectedProjectForEmit.studentName || 'Estudiante',
                     projectTitle: this.selectedProjectForEmit.title || 'Proyecto',
                     credentialNumber: cred.credentialNumber || '',
@@ -438,22 +438,34 @@ export class AdminPanelComponent implements OnInit {
                     institution: this.selectedProjectForEmit.institution || 'Institución'
                   };
 
-                  if (!this.selectedProjectForEmit.studentEmail) {
-                    this.showNotification('⚠️ El proyecto no tiene email. Se usará el correo de fallback.', 'info');
+                  if (!emailData.toEmail) {
+                    // No enviar documentos a un correo alternativo o ajeno.
+                    this.showNotification(
+                      '✅ Credencial emitida. No se envió correo porque el proyecto no tiene un email de destinatario.',
+                      'info'
+                    );
+                    return;
                   }
 
                   this.emailService.sendCredentialEmail(emailData)
                     .then(success => {
                       if (success) {
-                        this.credentialService.markEmailSent(cred.id!).subscribe();
+                        this.credentialService.markEmailSent(cred.id!).subscribe({
+                          error: (err) => console.error('[AdminPanel] No se pudo registrar el envío de correo:', err)
+                        });
                         this.showNotification('✅ Credencial emitida y correo enviado.', 'success');
                       } else {
-                        this.credentialService.markEmailFailed(cred.id!, 'Error al enviar correo').subscribe();
+                        this.credentialService.markEmailFailed(cred.id!, 'El proveedor de correo no confirmó el envío').subscribe({
+                          error: (err) => console.error('[AdminPanel] No se pudo registrar el fallo de correo:', err)
+                        });
                         this.showNotification('⚠️ Credencial emitida, pero el correo no pudo enviarse.', 'error');
                       }
                     })
                     .catch(err => {
-                      this.credentialService.markEmailFailed(cred.id!, err.message).subscribe();
+                      const message = err instanceof Error ? err.message : String(err);
+                      this.credentialService.markEmailFailed(cred.id!, message).subscribe({
+                        error: (markErr) => console.error('[AdminPanel] No se pudo registrar el fallo de correo:', markErr)
+                      });
                       this.showNotification('⚠️ Credencial emitida, pero el correo falló.', 'error');
                     });
                 } else {
@@ -469,15 +481,33 @@ export class AdminPanelComponent implements OnInit {
           },
           error: (err) => {
             this.isEmitting = false;
-            this.modalError = 'Error al emitir: ' + err.message;
+            this.modalError = this.getCredentialErrorMessage(err, 'emitir');
           }
         });
       },
       error: (err) => {
         this.isEmitting = false;
-        this.modalError = 'Error al crear: ' + err.message;
+        this.modalError = this.getCredentialErrorMessage(err, 'crear');
       }
     });
+  }
+
+  /** Traduce los errores de permisos de Firebase a una instrucción útil.
+   *  La autorización real se controla en firestore.rules, no desde Angular.
+   */
+  private getCredentialErrorMessage(error: unknown, action: 'crear' | 'emitir'): string {
+    const firebaseError = error as { code?: string; message?: string } | null;
+    const code = String(firebaseError?.code || '').toLowerCase();
+    const message = String(firebaseError?.message || error || 'Error desconocido');
+
+    if (
+      code.includes('permission-denied') ||
+      /missing or insufficient permissions/i.test(message)
+    ) {
+      return `Firebase denegó el permiso para ${action} la credencial. Verifica que firestore.rules tenga una regla match /credentials/{credentialId} que permita la operación a isAdmin(), y después publica las reglas con: firebase deploy --only firestore:rules`;
+    }
+
+    return `Error al ${action} la credencial: ${message}`;
   }
 
   closeModal(): void {
@@ -522,7 +552,7 @@ export class AdminPanelComponent implements OnInit {
     const cred = this.selectedCredentialForView;
 
     const emailData: CredentialEmailData = {
-      toEmail: project.studentEmail || 'hensonmedina2@gmail.com',
+      toEmail: project.studentEmail || '',
       toName: project.studentName || 'Estudiante',
       projectTitle: project.title || 'Proyecto',
       credentialNumber: cred.credentialNumber || '',
@@ -533,8 +563,12 @@ export class AdminPanelComponent implements OnInit {
       institution: project.institution || 'Institución'
     };
 
-    if (!project.studentEmail) {
-      this.showNotification('⚠️ El proyecto no tiene email. Se usará el correo de fallback.', 'info');
+    if (!emailData.toEmail) {
+      this.showNotification(
+        'No se puede reenviar el correo: el proyecto no tiene un email de destinatario.',
+        'error'
+      );
+      return;
     }
 
     this.showNotification('📧 Reenviando correo...', 'info');
