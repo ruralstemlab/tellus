@@ -1,7 +1,9 @@
+
 import { Injectable } from '@angular/core';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   DocumentReference,
@@ -38,7 +40,6 @@ export class ProjectService {
   ): Project {
     const data = docSnap.data();
 
-    // Diagnóstico temporal: muestra en la consola los campos reales de edición.
     console.log('[TELLUS HTML 2.0]', {
       id: docSnap.id,
       status: data['status'],
@@ -49,21 +50,33 @@ export class ProjectService {
     });
 
     const toDate = (value: unknown): any => {
-      if (value instanceof Timestamp) return value.toDate();
+      if (value instanceof Timestamp) {
+        return value.toDate();
+      }
       return value;
     };
 
-    // Los campos de edición se conservan en tiempo de ejecución aunque el
-    // modelo Project compartido todavía no los declare formalmente.
     const mapped = {
       id: docSnap.id,
       title: data['title'] || '',
       description: data['description'] || '',
       category: data['category'] || '',
-      edition: data['edition'] || data['contestEdition'] || data['editionId'] || '',
-      contestEdition: data['contestEdition'] || data['edition'] || data['editionId'] || '',
+
+      edition:
+        data['edition'] ||
+        data['contestEdition'] ||
+        data['editionId'] ||
+        '',
+
+      contestEdition:
+        data['contestEdition'] ||
+        data['edition'] ||
+        data['editionId'] ||
+        '',
+
       editionId: data['editionId'] || '',
       contestEditionLabel: data['contestEditionLabel'] || '',
+
       studentName: data['studentName'] || '',
       studentEmail: data['studentEmail'] || '',
       institution: data['institution'] || '',
@@ -71,12 +84,14 @@ export class ProjectService {
       status: data['status'] || 'pending',
       htmlContent: data['htmlContent'] || '',
       storagePath: data['storagePath'] || '',
+
       rating: data['rating'] || 0,
       ratingCount: data['ratingCount'] || 0,
       featured: data['featured'] || false,
       featuredAt: toDate(data['featuredAt']),
       views: data['views'] || 0,
       votes: data['votes'] || 0,
+
       reviewedBy: data['reviewedBy'] || '',
       reviewedAt: toDate(data['reviewedAt']),
       publishedAt: toDate(data['publishedAt']),
@@ -103,7 +118,8 @@ export class ProjectService {
     >
   ): Observable<DocumentReference> {
     const now = new Date();
-    const projectWithEdition = project as typeof project & ProjectEditionFields;
+    const projectWithEdition =
+      project as typeof project & ProjectEditionFields;
 
     const data = {
       ...project,
@@ -116,23 +132,29 @@ export class ProjectService {
       views: 0,
       votes: 0,
       htmlContent: project.htmlContent || '',
+
       edition:
         projectWithEdition.edition ||
         projectWithEdition.contestEdition ||
         projectWithEdition.editionId ||
         '',
+
       contestEdition:
         projectWithEdition.contestEdition ||
         projectWithEdition.edition ||
         projectWithEdition.editionId ||
         '',
+
       editionId: projectWithEdition.editionId || '',
     };
 
     return from(addDoc(this.getCollection(), data));
   }
 
-  updateProject(id: string, data: Partial<Project>): Observable<void> {
+  updateProject(
+    id: string,
+    data: Partial<Project>
+  ): Observable<void> {
     return from(
       updateDoc(doc(db, this.collectionName, id), {
         ...data,
@@ -154,7 +176,9 @@ export class ProjectService {
       reviewedAt: new Date(),
     };
 
-    if (reviewNotes !== undefined) updateData['reviewNotes'] = reviewNotes;
+    if (reviewNotes !== undefined) {
+      updateData['reviewNotes'] = reviewNotes;
+    }
 
     if (rating !== undefined && rating > 0) {
       updateData['rating'] = rating;
@@ -163,10 +187,15 @@ export class ProjectService {
 
     if (featured !== undefined) {
       updateData['featured'] = featured;
-      if (featured) updateData['featuredAt'] = new Date();
+
+      if (featured) {
+        updateData['featuredAt'] = new Date();
+      }
     }
 
-    if (status === 'published') updateData['publishedAt'] = new Date();
+    if (status === 'published') {
+      updateData['publishedAt'] = new Date();
+    }
 
     return from(
       updateDoc(doc(db, this.collectionName, id), updateData)
@@ -175,20 +204,33 @@ export class ProjectService {
 
   getProjects(status?: string): Observable<Project[]> {
     const constraints = status
-      ? [where('status', '==', status), orderBy('uploadedAt', 'desc')]
+      ? [
+          where('status', '==', status),
+          orderBy('uploadedAt', 'desc'),
+        ]
       : [orderBy('uploadedAt', 'desc')];
 
-    const projectsQuery = query(this.getCollection(), ...constraints);
+    const projectsQuery = query(
+      this.getCollection(),
+      ...constraints
+    );
 
     return from(getDocs(projectsQuery)).pipe(
-      map(snapshot => snapshot.docs.map(docSnap => this.mapProject(docSnap)))
+      map(snapshot =>
+        snapshot.docs.map(docSnap => this.mapProject(docSnap))
+      )
     );
   }
 
   getProject(id: string): Observable<Project | undefined> {
-    return from(getDoc(doc(db, this.collectionName, id))).pipe(
+    return from(
+      getDoc(doc(db, this.collectionName, id))
+    ).pipe(
       map(docSnap => {
-        if (!docSnap.exists()) return undefined;
+        if (!docSnap.exists()) {
+          return undefined;
+        }
+
         return this.mapProject(
           docSnap as QueryDocumentSnapshot<DocumentData>
         );
@@ -203,7 +245,9 @@ export class ProjectService {
     );
 
     return from(getDocs(projectsQuery)).pipe(
-      map(snapshot => snapshot.docs.map(docSnap => this.mapProject(docSnap)))
+      map(snapshot =>
+        snapshot.docs.map(docSnap => this.mapProject(docSnap))
+      )
     );
   }
 
@@ -216,7 +260,25 @@ export class ProjectService {
     );
 
     return from(getDocs(projectsQuery)).pipe(
-      map(snapshot => snapshot.docs.map(docSnap => this.mapProject(docSnap)))
+      map(snapshot =>
+        snapshot.docs.map(docSnap => this.mapProject(docSnap))
+      )
+    );
+  }
+
+  /**
+   * Elimina un proyecto por su ID único de Firestore.
+   * La autorización efectiva depende de las reglas de Firestore.
+   */
+  deleteProject(id: string): Observable<void> {
+    if (!id?.trim()) {
+      throw new Error(
+        'El identificador del proyecto es obligatorio.'
+      );
+    }
+
+    return from(
+      deleteDoc(doc(db, this.collectionName, id))
     );
   }
 }
