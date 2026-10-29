@@ -1,12 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { combineLatest } from 'rxjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project.model';
+import { ProjectService } from '../../../../core/services/project.service';
+import { Project } from '../../../../core/models/project.model';
 import { CredentialService } from '../../../../core/services/credential.service';
 import { Credential } from '../../../../core/models/credential.model';
 import { EmailService, CredentialEmailData } from '../../../../core/services/email.service';
@@ -79,8 +78,21 @@ export class AdminPanelComponent implements OnInit {
 
   /** Normaliza el valor usado en Firestore y conserva los registros históricos sin edición como HTML 1.0. */
   getProjectEdition(project: Project): Exclude<EditionFilter, 'all'> {
-    const record = project as Project & { edition?: unknown; contestEdition?: unknown };
-    const rawValue = record.edition ?? record.contestEdition ?? '';
+    const record = project as Project & {
+      edition?: unknown;
+      contestEdition?: unknown;
+      editionId?: unknown;
+      contestEditionLabel?: unknown;
+    };
+
+    // Elegir el primer campo de edición que tenga un valor real.
+    const rawValue =
+      record.edition ||
+      record.contestEdition ||
+      record.editionId ||
+      record.contestEditionLabel ||
+      '';
+
     const normalized = String(rawValue)
       .trim()
       .toLowerCase()
@@ -88,12 +100,20 @@ export class AdminPanelComponent implements OnInit {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]/g, '');
 
-    // Acepta valores como "html-2.0", "html-2-0" o "Concurso HTML 2.0".
-    if (normalized.includes('html20') || normalized === '20' || normalized.includes('concurso20')) {
+    // Acepta "html-2-0", "html-2.0", "HTML 2.0",
+    // "Concurso HTML 2.0" y variantes equivalentes.
+    if (
+      normalized.includes('html20') ||
+      normalized.includes('html2') ||
+      normalized === '20' ||
+      normalized === '2' ||
+      normalized.includes('concurso20') ||
+      normalized.includes('convocatoria20')
+    ) {
       return 'html-2-0';
     }
 
-    // Los documentos anteriores a la separación de convocatorias no tienen edition.
+    // Los registros históricos sin edición se conservan como HTML 1.0.
     return 'html-1-0';
   }
 
@@ -170,42 +190,82 @@ export class AdminPanelComponent implements OnInit {
     this.loading = true;
     this.cdr.detectChanges();
 
-    combineLatest([
-      this.projectService.getProjects(),
-      this.credentialService.getCredentials()
-    ]).subscribe({
-      next: ([projects, credentials]) => {
-        const converted = projects.map(p => ({
-          ...p,
-          uploadedAt: this.toDate(p.uploadedAt),
-          updatedAt: this.toDate(p.updatedAt)
-        }));
-
-        this.allProjects = converted;
-
-        this.credentials = credentials;
-        this.credentialMap = new Map();
-        credentials.forEach(c => {
-          if (c.projectId) this.credentialMap.set(c.projectId, c);
-        });
+    // Usar getAllProjects() del servicio central para que este panel lea
+    // la misma colección que utiliza el dashboard de Biblioteca Viva.
+    // Los proyectos y las credenciales se consultan por separado: un fallo
+    // al cargar credenciales no debe ocultar las aplicaciones.
+    this.projectService.getAllProjects().subscribe({
+      next: (projects) => {
+        this.allProjects = projects.map(project => ({
+          ...project,
+          uploadedAt: this.toDate(project.uploadedAt),
+          updatedAt: this.toDate(project.updatedAt)
+        })) as Project[];
 
         this.applyEditionFilter();
         this.loading = false;
         this.cdr.detectChanges();
+
+        console.info('[AdminPanel] Total de proyectos cargados:', this.allProjects.length);
+        console.info('[AdminPanel] Proyectos HTML 1.0:', this.getEditionCount('html-1-0'));
+        console.info('[AdminPanel] Proyectos HTML 2.0:', this.getEditionCount('html-2-0'));
       },
       error: (err) => {
-        console.error('Error cargando datos:', err);
+        console.error('[AdminPanel] Error cargando proyectos:', err);
+        this.allProjects = [];
+        this.applyEditionFilter();
         this.loading = false;
+        this.showNotification(
+          'No se pudieron cargar las aplicaciones. Revisa la conexión y los permisos de Firebase.',
+          'error'
+        );
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.credentialService.getCredentials().subscribe({
+      next: (credentials) => {
+        this.credentials = credentials;
+        this.credentialMap = new Map<string, Credential>();
+
+        credentials.forEach(credential => {
+          if (credential.projectId) {
+            this.credentialMap.set(credential.projectId, credential);
+          }
+        });
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('[AdminPanel] Error cargando credenciales:', err);
+        this.credentials = [];
+        this.credentialMap.clear();
+        this.showNotification(
+          'Las aplicaciones se cargaron, pero no se pudieron consultar las credenciales.',
+          'info'
+        );
         this.cdr.detectChanges();
       }
     });
   }
 
-  private toDate(value: any): Date | any {
-    if (value && typeof value === 'object' && typeof value.toDate === 'function') {
+  private toDate(value: any): any {
+    if (!value) return null;
+
+    if (value instanceof Date) {
+      return value;
+    }
+
+    if (typeof value === 'object' && typeof value.toDate === 'function') {
       return value.toDate();
     }
-    return value;
+
+    if (typeof value === 'string' || typeof value === 'number') {
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    return null;
   }
 
   // ============================
