@@ -1,46 +1,45 @@
 
 export interface Project {
   id?: string;
-
-  // Edición del concurso.
-  // Se conservan ambos campos para compatibilidad histórica.
-  edition?: string;
-  contestEdition?: string;
-
   title: string;
   description: string;
   category: string;
+
+  // Edición del concurso
+  edition?: string;
+  contestEdition?: string;
+  editionId?: string;
+
+  // Datos del estudiante
   studentName: string;
   studentEmail: string;
-  grade: string;
   institution: string;
+  grade: string;
 
-  // Información del archivo HTML.
+  // Estado
+  status: 'pending' | 'approved' | 'published' | 'rejected';
+
+  // Archivo HTML
+  htmlContent: string;
   htmlFileName: string;
   htmlSize: number;
   htmlLines: number;
-  htmlContent: string;
   storagePath?: string;
 
-  // Fechas del proyecto.
+  // Calificación y participación
+  rating: number;
+  ratingCount: number;
+  featured: boolean;
+  featuredAt?: Date;
+  views: number;
+  votes: number;
+
+  // Revisión y publicación
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  publishedAt?: Date;
   uploadedAt: Date;
   updatedAt: Date;
   submittedAt?: Date;
-
-  // Estado de revisión.
-  status: 'pending' | 'approved' | 'rejected' | 'published';
   reviewNotes?: string;
-
-  // Interacción y publicación.
-  votes?: number;
-  views?: number;
-  rating?: number;
-  ratingCount?: number;
-  featured?: boolean;
-  featuredAt?: Date;
-  publishedAt?: Date;
-
-  // Información de revisión.
-  reviewedBy?: string;
-  reviewedAt?: Date;
 }
