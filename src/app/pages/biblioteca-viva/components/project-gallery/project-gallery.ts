@@ -47,6 +47,8 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
   isLoading = true;
 
   showApproved = true;
+  /** Filtro del catálogo: todas las ediciones o una edición concreta. */
+  selectedEdition = 'all';
 
   userVotes: Record<string, number> = {};
   isAuthenticated = false;
@@ -91,8 +93,10 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     this.projectService.getProjects('published').subscribe({
       next: (projects) => {
         this.allProjects = projects;
+        this.currentIndex = 0;
         this.isLoading = false;
         this.cdr.detectChanges();
+        this.updateSlider();
       },
       error: (err) => {
         console.error('Error cargando proyectos:', err);
@@ -135,7 +139,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
   }
 
   next(): void {
-    if (this.currentIndex < this.allProjects.length - 1) {
+    if (this.currentIndex < this.visibleProjects.length - 1) {
       this.currentIndex++;
       this.updateSlider();
     }
@@ -158,9 +162,136 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Devuelve los proyectos de la edición seleccionada.
+   * Los proyectos antiguos sin etiqueta se clasifican como Concurso HTML 1.0.
+   */
+  get visibleProjects(): Project[] {
+    if (this.selectedEdition === 'all') {
+      return this.allProjects;
+    }
+
+    return this.allProjects.filter(
+      project => this.getEditionKey(project) === this.selectedEdition
+    );
+  }
+
+  /** Opciones dinámicas: Todas, HTML 1.0, HTML 2.0 y futuras ediciones. */
+  get editionOptions(): Array<{ value: string; label: string }> {
+    const keys = new Set<string>(['html-1-0', 'html-2-0']);
+
+    this.allProjects.forEach(project => {
+      keys.add(this.getEditionKey(project));
+    });
+
+    const ordered = Array.from(keys).sort((a, b) => {
+      const priority: Record<string, number> = {
+        'html-1-0': 1,
+        'html-2-0': 2
+      };
+      const priorityA = priority[a] ?? 99;
+      const priorityB = priority[b] ?? 99;
+      if (priorityA !== priorityB) return priorityA - priorityB;
+      return a.localeCompare(b, 'es', { numeric: true });
+    });
+
+    return [
+      { value: 'all', label: 'Todas las ediciones' },
+      ...ordered.map(value => ({
+        value,
+        label: this.getEditionLabelFromKey(value)
+      }))
+    ];
+  }
+
+  /**
+   * Lee edition o contestEdition.
+   * Por compatibilidad, los registros antiguos sin edición se consideran HTML 1.0.
+   */
+  private getEditionKey(project: Project): string {
+    const record = project as Project & {
+      edition?: string;
+      contestEdition?: string;
+    };
+
+    const rawEdition = record.edition ?? record.contestEdition ?? '';
+    const normalized = typeof rawEdition === 'string'
+      ? rawEdition.trim().toLowerCase()
+      : '';
+
+    // Los documentos anteriores a HTML 2.0 pertenecen a la primera edición.
+    if (!normalized) return 'html-1-0';
+
+    const compact = normalized
+      .replace(/concurso/g, '')
+      .replace(/\s+/g, '')
+      .replace(/_/g, '-');
+
+    if (
+      compact === 'html-1.0' ||
+      compact === 'html-1-0' ||
+      compact === 'html1.0' ||
+      compact === 'html1-0' ||
+      compact === '1.0' ||
+      compact === '1-0'
+    ) {
+      return 'html-1-0';
+    }
+
+    if (
+      compact === 'html-2.0' ||
+      compact === 'html-2-0' ||
+      compact === 'html2.0' ||
+      compact === 'html2-0' ||
+      compact === '2.0' ||
+      compact === '2-0'
+    ) {
+      return 'html-2-0';
+    }
+
+    return compact;
+  }
+
+  getEditionLabel(project: Project): string {
+    return this.getEditionLabelFromKey(this.getEditionKey(project));
+  }
+
+  private getEditionLabelFromKey(value: string): string {
+    if (value === 'html-1-0') return 'Concurso HTML 1.0';
+    if (value === 'html-2-0') return 'Concurso HTML 2.0';
+
+    // Permite que futuras ediciones (HTML 3.0, 4.0, etc.)
+    // aparezcan automáticamente si su etiqueta está en Firestore.
+    const futureEdition = value.match(/^html-?(\d+)[.-](\d+)$/i);
+    if (futureEdition) {
+      return `Concurso HTML ${futureEdition[1]}.${futureEdition[2]}`;
+    }
+
+    return value;
+  }
+
+  /** Selecciona una edición y reinicia el carrusel. */
+  setEditionFilter(value: string): void {
+    this.selectedEdition = value || 'all';
+    this.currentIndex = 0;
+    this.updateSlider();
+    this.cdr.detectChanges();
+  }
+
+  /** Cantidad de proyectos publicados que pertenecen a cada filtro. */
+  getEditionCount(value: string): number {
+    if (value === 'all') {
+      return this.allProjects.length;
+    }
+
+    return this.allProjects.filter(
+      project => this.getEditionKey(project) === value
+    ).length;
+  }
+
   // ✅ Ranking: ordena por SCORE = rating * ratingCount (total de estrellas acumuladas)
   getRankedProjects(): Project[] {
-    return [...this.allProjects].sort((a, b) => {
+    return [...this.visibleProjects].sort((a, b) => {
       const scoreA = (a.rating || 0) * (a.ratingCount || 0);
       const scoreB = (b.rating || 0) * (b.ratingCount || 0);
       return scoreB - scoreA;
@@ -288,7 +419,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     const cardWidth = 324;
     const threshold = 50;
     if (Math.abs(delta) > threshold) {
-      if (delta < 0 && this.currentIndex < this.allProjects.length - 1) {
+      if (delta < 0 && this.currentIndex < this.visibleProjects.length - 1) {
         this.currentIndex++;
       } else if (delta > 0 && this.currentIndex > 0) {
         this.currentIndex--;
@@ -335,7 +466,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     const cardWidth = 324;
     const threshold = 50;
     if (Math.abs(delta) > threshold) {
-      if (delta < 0 && this.currentIndex < this.allProjects.length - 1) {
+      if (delta < 0 && this.currentIndex < this.visibleProjects.length - 1) {
         this.currentIndex++;
       } else if (delta > 0 && this.currentIndex > 0) {
         this.currentIndex--;
@@ -352,7 +483,7 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
     if (this.viewMode !== 'slider') return;
     const delta = event.deltaY;
     if (Math.abs(delta) > 20) {
-      if (delta > 0 && this.currentIndex < this.allProjects.length - 1) {
+      if (delta > 0 && this.currentIndex < this.visibleProjects.length - 1) {
         this.currentIndex++;
       } else if (delta < 0 && this.currentIndex > 0) {
         this.currentIndex--;

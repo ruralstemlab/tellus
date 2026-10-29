@@ -3,81 +3,101 @@
 <app-admin-dashboard *ngIf="(profile$ | async)?.role === 'admin'"></app-admin-dashboard>
 
 <!-- ==========================================================
-     HERO
+     HERO · CONCURSO HTML 2.0
 =========================================================== -->
 <section class="hero">
-
   <div class="hero-background"></div>
+
   <div class="particles" aria-hidden="true">
     <span *ngFor="let p of [].constructor(40)"></span>
   </div>
 
-  <div class="hero-container" *ngIf="stats$ | async as stats">
-
+  <div class="hero-container" *ngIf="contestStats$ | async as stats">
     <div class="hero-content">
-
       <span class="badge">
-        🏆 Convocatoria 001 · 2026
+        🟢 Convocatoria activa · Concurso HTML 2.0
       </span>
 
       <h1>
         Concurso de
         <span>Aplicaciones Web</span>
-        HTML 2026
+        HTML 2.0
       </h1>
 
       <p>
-        Diseña una aplicación web utilizando
-        <strong>HTML, CSS y JavaScript.</strong>
-        Puedes crear juegos, simuladores, aplicaciones educativas,
-        herramientas financieras, proyectos de emprendimiento,
-        sistemas administrativos o cualquier idea innovadora.
-        Los mejores proyectos harán parte de la
-        Biblioteca Viva de Tellus.
+        Participa en la edición activa de Biblioteca Viva creando una aplicación
+        web con <strong>HTML, CSS y JavaScript</strong>. Puedes desarrollar juegos,
+        simuladores, herramientas educativas u otras ideas propias. Cada envío
+        se incorpora al catálogo de Tellus sin reemplazar las aplicaciones anteriores.
       </p>
 
       <div class="buttons">
-        <button class="primary" routerLink="/biblioteca-viva/participar">🚀 Participar</button>
-        <button class="secondary" (click)="scrollToGallery()">📂 Ver proyectos</button>
-        <button class="secondary" (click)="scrollToGallery()">🎥 Tutorial desde cero</button>
+        <button class="primary" routerLink="/biblioteca-viva/participar">
+          🚀 Participar en HTML 2.0
+        </button>
+
+        <button class="secondary" (click)="scrollToGallery()">
+          📂 Ver aplicaciones
+        </button>
+
+        <button class="secondary" (click)="openResourcesModal()">
+          📘 Guías para participar
+        </button>
       </div>
 
       <div class="chips">
-        <span class="chip">🏆 Concurso 2026</span>
+        <span class="chip">🟢 Convocatoria activa · HTML 2.0</span>
         <span class="chip">💻 HTML + CSS + JavaScript</span>
-        <span class="chip">🎁 Premios</span>
+        <span class="chip">📚 Archivo de HTML 1.0</span>
         <span class="chip">🎮 Juegos • Apps • Simuladores</span>
         <span class="chip">🏫 I.E. Tierra Negra</span>
       </div>
 
-      <div class="countdown">
-        <div class="box"><h2>{{ days }}</h2><span>Días</span></div>
-        <div class="box"><h2>{{ hours }}</h2><span>Horas</span></div>
-        <div class="box"><h2>{{ minutes }}</h2><span>Minutos</span></div>
-        <div class="box"><h2>{{ seconds }}</h2><span>Segundos</span></div>
+      <div class="countdown" aria-label="Cuenta regresiva para el cierre de inscripciones">
+        <div class="box">
+          <h2>{{ days }}</h2>
+          <span>Días</span>
+        </div>
+        <div class="box">
+          <h2>{{ hours }}</h2>
+          <span>Horas</span>
+        </div>
+        <div class="box">
+          <h2>{{ minutes }}</h2>
+          <span>Minutos</span>
+        </div>
+        <div class="box">
+          <h2>{{ seconds }}</h2>
+          <span>Segundos</span>
+        </div>
       </div>
 
+      <p class="countdown-caption">
+        Cierre de inscripciones: 1 de noviembre de 2026 ·
+        Premiación: 6 de noviembre de 2026
+      </p>
     </div>
 
+    <!-- PANEL DE CONTROL · HTML 2.0 -->
     <div class="hero-image">
-
       <div class="dashboard-glass">
-
         <div class="dashboard-header">
           <div class="dots">
-            <span class="red"></span><span class="yellow"></span><span class="green"></span>
+            <span class="red"></span>
+            <span class="yellow"></span>
+            <span class="green"></span>
           </div>
-          <h4>📊 Panel de control · Biblioteca Viva</h4>
+
+          <h4>📊 Panel de control · Concurso HTML 2.0</h4>
           <span class="live">● En vivo</span>
         </div>
 
         <div class="dashboard-grid">
-
           <div class="stat-card">
             <span class="icon">📁</span>
             <div class="info">
               <h3>{{ stats.projects || 0 }}</h3>
-              <p>Proyectos</p>
+              <p>Proyectos publicados · HTML 2.0</p>
             </div>
           </div>
 
@@ -85,7 +105,7 @@
             <span class="icon">👥</span>
             <div class="info">
               <h3>{{ stats.developers || 0 }}</h3>
-              <p>Developers</p>
+              <p>Developers · HTML 2.0</p>
             </div>
           </div>
 
@@ -93,7 +113,7 @@
             <span class="icon">🏫</span>
             <div class="info">
               <h3>{{ stats.institutions || 0 }}</h3>
-              <p>Instituciones</p>
+              <p>Instituciones · HTML 2.0</p>
             </div>
           </div>
 
@@ -101,70 +121,101 @@
             <span class="icon">⭐</span>
             <div class="info">
               <h3>{{ stats.votes || 0 }}</h3>
-              <p>Votos</p>
+              <p>Votos · HTML 2.0</p>
             </div>
           </div>
 
+          <!-- ACTIVIDAD RECIENTE -->
           <div class="chart-card">
             <h4>Actividad reciente</h4>
+
             <div class="mini-chart">
-              <span *ngFor="let p of stats.latestProjects || []" 
-                    [style.height]="p.ratingCount ? (p.ratingCount * 10 + 20) + '%' : '20%'"
-                    [title]="p.title + ' - ' + (p.ratingCount || 0) + ' votos'">
+              <span
+                *ngFor="let p of stats.latestProjects || []"
+                [style.height]="p.ratingCount ? (p.ratingCount * 10 + 20) + '%' : '20%'"
+                [title]="p.title + ' - ' + (p.ratingCount || 0) + ' votos'">
               </span>
             </div>
           </div>
 
+          <!-- PROYECTO DESTACADO -->
           <div class="top-card" *ngIf="stats.featured as featured">
             <h4>🏆 Proyecto destacado</h4>
             <p>“{{ featured.title }}”</p>
-            <div class="meta">👤 {{ featured.studentName }} · {{ featured.institution }}</div>
-            <div class="badge-premium">⭐ {{ (featured.rating || 0).toFixed(1) }} ({{ featured.ratingCount || 0 }} votos)</div>
+
+            <div class="meta">
+              👤 {{ featured.studentName }} · {{ featured.institution }}
+            </div>
+
+            <div class="badge-premium">
+              ⭐ {{ (featured.rating || 0).toFixed(1) }}
+              ({{ featured.ratingCount || 0 }} votos)
+            </div>
           </div>
 
+          <!-- ESTADO INICIAL SIN PROYECTOS -->
+          <div class="top-card" *ngIf="!stats.featured">
+            <h4>🌱 Concurso HTML 2.0 comienza aquí</h4>
+            <p>Aún no hay proyectos publicados en esta edición.</p>
+
+            <div class="meta">
+              Las aplicaciones aprobadas aparecerán aquí y en la galería.
+            </div>
+          </div>
+
+          <!-- ÚLTIMAS PUBLICACIONES -->
           <div class="activity-card">
-            <h4>⚡ Últimas publicaciones</h4>
+            <h4>⚡ Últimas publicaciones · HTML 2.0</h4>
+
             <ul>
               <li *ngFor="let p of stats.latestProjects || []">
                 <span>{{ p.title }}</span>
-                <span class="time">{{ (p.publishedAt || p.uploadedAt) | date:'dd/MM/yyyy' }}</span>
+
+                <span class="time">
+                  {{ (p.publishedAt || p.uploadedAt) | date:'dd/MM/yyyy' }}
+                </span>
               </li>
+
               <li *ngIf="(stats.latestProjects?.length || 0) === 0">
                 <span style="color: #666;">No hay publicaciones recientes</span>
               </li>
             </ul>
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
-
 </section>
 
 <!-- ==========================================================
-     ESTADÍSTICAS INFERIORES
+     RESUMEN · HTML 2.0
 =========================================================== -->
-<section class="stats-section" *ngIf="stats$ | async as stats">
+<section class="stats-section" *ngIf="contestStats$ | async as stats">
+  <div class="section-header">
+    <span class="label">📊 HTML 2.0</span>
+    <h2>Concurso HTML 2.0 en cifras</h2>
+    <p>Este resumen cuenta solo aplicaciones publicadas de la edición vigente.</p>
+  </div>
+
   <div class="stats-grid">
     <div class="stat-item">
       <h2>{{ stats.projects || 0 }}</h2>
-      <p>Proyectos</p>
+      <p>Proyectos publicados</p>
     </div>
+
     <div class="stat-item">
       <h2>{{ stats.institutions || 0 }}</h2>
-      <p>Instituciones</p>
+      <p>Instituciones participantes</p>
     </div>
+
     <div class="stat-item">
       <h2>{{ stats.developers || 0 }}</h2>
       <p>Developers</p>
     </div>
+
     <div class="stat-item">
       <h2>{{ stats.votes || 0 }}</h2>
-      <p>Votos</p>
+      <p>Votos registrados</p>
     </div>
   </div>
 </section>
@@ -173,7 +224,6 @@
      QUÉ PUEDES CONSTRUIR
 =========================================================== -->
 <section class="build-section">
-
   <div class="section-header">
     <span class="label">✨ Tu imaginación</span>
     <h2>¿Qué puedes construir?</h2>
@@ -187,14 +237,12 @@
       <p>{{ item.desc }}</p>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
      APRENDE DESDE CERO
 =========================================================== -->
 <section class="learn-section">
-
   <div class="section-header">
     <span class="label">📘 Aprende desde cero</span>
     <h2>Conviértete en Developer</h2>
@@ -205,20 +253,20 @@
     <div class="learn-card" *ngFor="let tech of technologies">
       <div class="icon">{{ tech.icon }}</div>
       <h3>{{ tech.name }}</h3>
+
       <div class="progress-bar">
         <div class="progress" [style.width]="tech.progress + '%'"></div>
       </div>
+
       <span class="level">{{ tech.level }}</span>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
      CÓMO PARTICIPAR
 =========================================================== -->
-<section class="steps-section">
-
+<section class="steps-section" id="steps">
   <div class="section-header">
     <span class="label">📋 Participa</span>
     <h2>¿Cómo participar?</h2>
@@ -231,47 +279,52 @@
         <div class="circle">{{ i + 1 }}</div>
         <div class="line" *ngIf="i < steps.length - 1"></div>
       </div>
+
       <div class="step-content">
         <h3>{{ step.title }}</h3>
         <p>{{ step.desc }}</p>
-        <span class="step-status" [class.active]="i < 3">● {{ i < 3 ? 'En progreso' : 'Pendiente' }}</span>
+
+        <span class="step-status" [class.active]="i < 3">
+          ● {{ i < 3 ? 'En progreso' : 'Pendiente' }}
+        </span>
       </div>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     CRONOGRAMA
+     CRONOGRAMA · HTML 2.0
 =========================================================== -->
-<section class="schedule-section">
-
+<section class="schedule-section" id="etapas-concurso">
   <div class="section-header">
     <span class="label">📅 Cronograma</span>
-    <h2>Fechas importantes</h2>
+    <h2>Etapas del Concurso HTML 2.0</h2>
+    <p>Para las fechas oficiales y sus cambios, consulta la ficha de la convocatoria activa.</p>
   </div>
 
   <div class="schedule-timeline">
     <div class="schedule-item" *ngFor="let item of schedule; let i = index">
       <div class="date-badge">{{ item.date }}</div>
+
       <div class="info">
         <h4>{{ item.title }}</h4>
         <p>{{ item.desc }}</p>
       </div>
-      <span class="status" [class.active]="i === 0">● {{ i === 0 ? 'Activo' : 'Próximo' }}</span>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     PREMIOS
+     PREMIOS · HTML 1.0
 =========================================================== -->
 <section class="prizes-section">
-
   <div class="section-header">
     <span class="label">🏅 Premios</span>
-    <h2>Recompensas exclusivas</h2>
+    <h2>Premios de la primera edición · HTML 1.0</h2>
+    <p>
+      Estos premios corresponden a la primera edición.
+      Los premios vigentes de HTML 2.0 se consultan en la ficha de la convocatoria activa.
+    </p>
   </div>
 
   <div class="prizes-grid">
@@ -279,28 +332,25 @@
       <div class="medal">{{ prize.icon }}</div>
       <h3>{{ prize.title }}</h3>
       <p class="amount">{{ prize.amount }}</p>
+
       <ul>
         <li *ngFor="let benefit of prize.benefits">{{ benefit }}</li>
       </ul>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     VIDEO – PROMOCIONAL + CONCURSO (ACTUALIZADO)
+     VIDEOS DESTACADOS
 =========================================================== -->
 <section class="video-section">
-
   <div class="section-header">
     <span class="label">🎬 Inspírate</span>
     <h2>Videos destacados</h2>
-    <p>Conoce Tellus y el primer concurso de aplicaciones web</p>
+    <p>Conoce Tellus y recuerda la primera edición del concurso.</p>
   </div>
 
   <div class="video-grid">
-
-    <!-- Video 1: Promocional Tellus -->
     <div class="video-card featured-video">
       <div class="video-iframe-wrapper">
         <iframe
@@ -311,14 +361,17 @@
           loading="lazy">
         </iframe>
       </div>
+
       <div class="video-info">
         <span class="video-badge">🎬 Promocional</span>
         <h4>¿Qué es Tellus?</h4>
-        <p>Descubre la plataforma educativa donde los estudiantes crean, comparten y votan aplicaciones web.</p>
+        <p>
+          Descubre la plataforma educativa donde los estudiantes crean,
+          comparten y votan aplicaciones web.
+        </p>
       </div>
     </div>
 
-    <!-- Video 2: Concurso 01 · 2026 -->
     <div class="video-card featured-video">
       <div class="video-iframe-wrapper">
         <iframe
@@ -329,28 +382,30 @@
           loading="lazy">
         </iframe>
       </div>
+
       <div class="video-info">
         <span class="video-badge">📋 Concurso 01</span>
         <h4>Concurso 01 · 2026</h4>
-        <p>Entérate de las bases, fechas y premios del primer concurso de aplicaciones web de Tellus.</p>
+        <p>
+          Entérate de las bases, fechas y premios del primer concurso
+          de aplicaciones web de Tellus.
+        </p>
       </div>
     </div>
-
   </div>
 </section>
 
 <!-- ==========================================================
-     GALERÍA – CON ID PARA SCROLL
+     GALERÍA
 =========================================================== -->
 <section id="gallery" #gallerySection>
   <app-project-gallery></app-project-gallery>
 </section>
 
 <!-- ==========================================================
-     TARJETAS PRINCIPALES – ACCESO DIRECTO
+     ACCESOS DIRECTOS
 =========================================================== -->
 <section class="main-cards-section">
-
   <div class="section-header">
     <span class="label">🔗 Acceso directo</span>
     <h2>Explora la Biblioteca Viva</h2>
@@ -358,95 +413,107 @@
 
   <div class="main-cards-grid">
     <div class="main-card">
-      <div class="icon">⬆️</div>
-      <h3>Subir Proyecto</h3>
-      <p>Publica tu aplicación y compite.</p>
-      <button class="primary small" routerLink="/biblioteca-viva/participar">Ir →</button>
+      <div class="icon">🚀</div>
+      <h3>Participar · HTML 2.0</h3>
+      <p>Envía tu aplicación a la convocatoria activa.</p>
+      <button class="primary small" routerLink="/biblioteca-viva/participar">
+        Participar →
+      </button>
     </div>
+
     <div class="main-card">
-      <div class="icon">👀</div>
-      <h3>Ver Proyectos</h3>
-      <p>Explora creaciones de otros estudiantes.</p>
-      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+      <div class="icon">🌐</div>
+      <h3>Todas las aplicaciones</h3>
+      <p>Abre la galería y selecciona la edición que quieras consultar.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ver galería →</button>
     </div>
+
     <div class="main-card">
       <div class="icon">🗳️</div>
-      <h3>Votar</h3>
-      <p>Apoya los proyectos que más te gusten.</p>
-      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+      <h3>Votar por aplicaciones</h3>
+      <p>Consulta la galería. Para registrar un voto debes iniciar sesión.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ir a votar →</button>
     </div>
+
     <div class="main-card">
       <div class="icon">🏆</div>
-      <h3>Ganadores</h3>
-      <p>Conoce los proyectos galardonados.</p>
-      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+      <h3>Ganadores · HTML 1.0</h3>
+      <p>Consulta el espacio destinado a los resultados oficiales de la primera edición.</p>
+      <a class="primary small" href="#hall-of-fame">Ver resultados →</a>
     </div>
-    <!-- 🔥 Botón Tutoriales ahora abre el modal -->
+
     <div class="main-card">
       <div class="icon">📘</div>
-      <h3>Tutoriales</h3>
-      <p>Aprende con guías paso a paso.</p>
-      <button class="primary small" (click)="openResourcesModal()">Ir →</button>
+      <h3>Guías para participar</h3>
+      <p>Consulta los recursos disponibles para estudiantes y docentes.</p>
+      <button class="primary small" (click)="openResourcesModal()">Abrir guías →</button>
     </div>
+
     <div class="main-card">
-      <div class="icon">👨‍💻</div>
-      <h3>Developer</h3>
-      <p>Accede a tu perfil de desarrollador.</p>
-      <button class="primary small" routerLink="/biblioteca-viva/participar">Ir →</button>
+      <div class="icon">🧭</div>
+      <h3>Cómo participar</h3>
+      <p>Revisa los pasos de participación explicados en esta página.</p>
+      <a class="primary small" href="#steps">Ver pasos →</a>
     </div>
+
     <div class="main-card">
-      <div class="icon">🏅</div>
-      <h3>Hall of Fame</h3>
-      <p>Los mejores de la historia.</p>
-      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+      <div class="icon">📚</div>
+      <h3>Historia · HTML 1.0</h3>
+      <p>Explora las aplicaciones publicadas en la primera edición desde la galería.</p>
+      <button class="primary small" (click)="scrollToGallery()">Ver aplicaciones →</button>
     </div>
+
     <div class="main-card">
       <div class="icon">📢</div>
-      <h3>Convocatorias</h3>
-      <p>Consulta concursos activos.</p>
-      <button class="primary small" (click)="scrollToGallery()">Ir →</button>
+      <h3>Convocatoria activa · HTML 2.0</h3>
+      <p>Consulta la ficha oficial con las fechas y condiciones registradas.</p>
+      <a class="primary small" href="#convocatorias">Ver convocatoria →</a>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     PROYECTO DESTACADO – DINÁMICO
+     PROYECTO DESTACADO
 =========================================================== -->
 <section class="featured-section" *ngIf="(featuredProject$ | async) as project">
   <div class="section-header">
-    <span class="label">🌟 Proyecto de la semana</span>
-    <h2>Destacado</h2>
+    <span class="label">🌟 Biblioteca Viva</span>
+    <h2>Proyecto destacado del catálogo</h2>
   </div>
 
   <div class="featured-card">
     <div class="featured-image">🖼️</div>
+
     <div class="featured-info">
       <h3>{{ project.title }}</h3>
+
       <div class="stars">
         <span>{{ getStars(project.rating || 0) }}</span>
         <span class="rating-number">{{ (project.rating || 0).toFixed(1) }}</span>
       </div>
+
       <p>{{ project.description }}</p>
+
       <div class="author">👤 {{ project.studentName }} · {{ project.institution }}</div>
+
       <button class="primary small" (click)="verProyecto(project)">Ver proyecto →</button>
     </div>
   </div>
 </section>
 
 <!-- ==========================================================
-     INSTITUCIONES – DASHBOARD PREMIUM
+     INSTITUCIONES PARTICIPANTES
 =========================================================== -->
 <section class="institutions-premium-section">
-
-  <!-- Encabezado -->
   <div class="section-header">
     <span class="label">🏛️ Comunidad educativa</span>
     <h2>Instituciones participantes</h2>
-    <p class="subtitle">Descubre las instituciones que ya forman parte del ecosistema Tellus</p>
+    <p class="subtitle">
+      Descubre las instituciones que ya forman parte del ecosistema Tellus.
+    </p>
   </div>
 
-  <!-- Resumen general -->
+  <!-- ESTADÍSTICAS GENERALES DE LA BIBLIOTECA -->
   <div class="stats-overview" *ngIf="stats$ | async as stats">
     <div class="overview-card">
       <div class="overview-icon">🏛️</div>
@@ -455,6 +522,7 @@
         <span class="overview-label">Instituciones</span>
       </div>
     </div>
+
     <div class="overview-card">
       <div class="overview-icon">👨‍💻</div>
       <div class="overview-info">
@@ -462,6 +530,7 @@
         <span class="overview-label">Developers</span>
       </div>
     </div>
+
     <div class="overview-card">
       <div class="overview-icon">📁</div>
       <div class="overview-info">
@@ -469,6 +538,7 @@
         <span class="overview-label">Proyectos publicados</span>
       </div>
     </div>
+
     <div class="overview-card">
       <div class="overview-icon">⭐</div>
       <div class="overview-info">
@@ -478,13 +548,10 @@
     </div>
   </div>
 
-  <!-- Grid de instituciones -->
   <div class="institutions-grid" *ngIf="institutions$ | async as institutions">
     <div class="institution-card" *ngFor="let inst of institutions; let i = index">
-      <!-- Glow decorativo -->
       <div class="card-glow"></div>
 
-      <!-- Logo / Icono (centrado) -->
       <div class="card-icon-wrapper">
         <div class="card-icon">
           <span *ngIf="inst.logoUrl; else fallbackIcon">
@@ -494,22 +561,20 @@
         </div>
       </div>
 
-      <!-- Información principal (centrada) -->
       <div class="card-body">
         <h3 class="institution-name">{{ inst.name }}</h3>
+
         <p class="institution-location">
           <span class="location-pin">📍</span>
           {{ inst.municipality }}, {{ inst.department }}
         </p>
 
-        <!-- Estado (centrado) -->
         <div class="institution-status" [class.active]="inst.active">
           <span class="status-dot"></span>
           {{ inst.active ? 'Activa' : 'Inactiva' }}
         </div>
       </div>
 
-      <!-- Footer con botón (centrado) -->
       <div class="card-footer">
         <button class="btn-view-projects" (click)="scrollToGallery()">
           Ver proyectos →
@@ -517,114 +582,254 @@
       </div>
     </div>
 
-    <!-- Estado vacío -->
     <div *ngIf="institutions.length === 0" class="empty-institutions">
       <span class="empty-icon">📭</span>
       <p>No hay instituciones registradas aún.</p>
       <span class="empty-sub">Pronto más instituciones se unirán a Tellus.</span>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     CONVOCATORIAS – DINÁMICAS
+     CONVOCATORIA ACTIVA · HTML 2.0 Y EDICIÓN ANTERIOR
 =========================================================== -->
-<section class="calls-section">
+<section class="calls-section" id="convocatorias">
   <div class="section-header">
-    <span class="label">🏫 Multi‑institucional</span>
-    <h2>Convocatorias activas</h2>
+    <span class="label">🟢 Edición vigente</span>
+    <h2>Convocatorias y ediciones</h2>
+    <p>HTML 2.0 es la convocatoria actual; HTML 1.0 queda disponible como historial.</p>
   </div>
 
-  <!-- Cargando -->
-  <div *ngIf="(convocatorias$ | async) === undefined" class="calls-loading">
-    <div class="spinner"></div>
-    <p>Cargando convocatorias...</p>
-  </div>
+  <div class="calls-grid" *ngIf="convocatorias$ | async as convocatorias">
+    <!-- TARJETA ACTUAL DE RESPALDO -->
+    <div class="call-card call-card-current" *ngIf="convocatorias.length === 0">
+      <div class="call-header">
+        <span class="logo">🏆</span>
+        <h4>Concurso de Aplicaciones Web HTML 2.0</h4>
+      </div>
 
-  <!-- Con datos -->
-  <div class="calls-grid" *ngIf="(convocatorias$ | async) as convocatorias">
-    <div *ngIf="convocatorias.length === 0" class="empty-calls">
-      <span class="empty-icon">📭</span>
-      <p>No hay convocatorias activas en este momento.</p>
-      <span class="empty-sub">Vuelve pronto para conocer las próximas convocatorias.</span>
+      <p>
+        Convocatoria para presentar aplicaciones web desarrolladas con HTML,
+        CSS y JavaScript.
+      </p>
+
+      <div class="call-meta">
+        <span class="status active">● Convocatoria vigente</span>
+        <span class="participants">📅 Cierre de inscripciones: 01/11/2026</span>
+        <span class="participants">🏆 Premiación: 06/11/2026</span>
+      </div>
+
+      <div class="call-actions">
+        <button class="primary small" routerLink="/biblioteca-viva/participar">
+          Participar en HTML 2.0 →
+        </button>
+        <button class="secondary small" (click)="scrollToGallery()">Ver aplicaciones →</button>
+      </div>
     </div>
 
-    <div class="call-card" *ngFor="let convocatoria of convocatorias">
+    <!-- CONVOCATORIA HTML 2.0 REGISTRADA -->
+    <div class="call-card call-card-current" *ngFor="let convocatoria of convocatorias">
       <div class="call-header">
-        <span class="logo">🏛️</span>
+        <span class="logo">🏆</span>
         <h4>{{ convocatoria.title }}</h4>
       </div>
-      <p>{{ convocatoria.description | slice:0:100 }}{{ convocatoria.description?.length > 100 ? '...' : '' }}</p>
+
+      <p>
+        {{ convocatoria.description | slice:0:180 }}
+        {{ convocatoria.description?.length > 180 ? '...' : '' }}
+      </p>
+
       <div class="call-meta">
-        <span class="status active">● Activa</span>
-        <span class="participants">📅 {{ convocatoria.startDate | date:'dd/MM/yyyy' }} - {{ convocatoria.endDate | date:'dd/MM/yyyy' }}</span>
+        <span class="status active">● Convocatoria vigente</span>
+        <span class="participants">
+          📅 {{ convocatoria.startDate | date:'dd/MM/yyyy' }}
+          - {{ convocatoria.endDate | date:'dd/MM/yyyy' }}
+        </span>
       </div>
+
       <div class="call-prizes" *ngIf="convocatoria.prizes && convocatoria.prizes.length > 0">
-        <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">🏆 {{ prize }}</span>
+        <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">
+          🏆 {{ prize }}
+        </span>
       </div>
-      <button class="secondary small" (click)="scrollToGallery()">Ver proyectos →</button>
+
+      <div class="call-actions">
+        <button class="primary small" routerLink="/biblioteca-viva/participar">Participar →</button>
+        <button class="secondary small" (click)="scrollToGallery()">Ver aplicaciones →</button>
+      </div>
     </div>
   </div>
-</section>
 
-<!-- ==========================================================
-     TESTIMONIOS
-=========================================================== -->
-<section class="testimonials-section">
+  <!-- EDICIONES ANTERIORES -->
+  <div class="historical-calls-block" *ngIf="historicalConvocatorias$ | async as historicalConvocatorias">
+    <div class="section-header historical-calls-heading" *ngIf="historicalConvocatorias.length > 0">
+      <span class="label">📚 Archivo de convocatorias</span>
+      <h3>Ediciones anteriores</h3>
+    </div>
 
-  <div class="section-header">
-    <span class="label">💬 Testimonios</span>
-    <h2>Lo que dicen de Tellus</h2>
-  </div>
+    <div class="calls-grid">
+      <div class="call-card historical-call-card" *ngFor="let convocatoria of historicalConvocatorias">
+        <div class="call-header">
+          <span class="logo">📚</span>
+          <h4>{{ convocatoria.title }}</h4>
+        </div>
 
-  <div class="testimonials-grid">
-    <div class="testimonial-card" *ngFor="let t of testimonials">
-      <p>“{{ t.text }}”</p>
-      <div class="author">
-        <span class="avatar">{{ t.avatar }}</span>
-        <div>
-          <strong>{{ t.name }}</strong>
-          <span>{{ t.role }}</span>
+        <p>
+          {{ convocatoria.description | slice:0:180 }}
+          {{ convocatoria.description?.length > 180 ? '...' : '' }}
+        </p>
+
+        <div class="call-meta">
+          <span class="status">● Edición anterior · no vigente</span>
+          <span class="participants">
+            📅 {{ convocatoria.startDate | date:'dd/MM/yyyy' }}
+            - {{ convocatoria.endDate | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <div class="call-prizes" *ngIf="convocatoria.prizes && convocatoria.prizes.length > 0">
+          <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">
+            🏆 {{ prize }}
+          </span>
+        </div>
+
+        <div class="call-actions">
+          <button class="secondary small" (click)="scrollToGallery()">
+            Consultar aplicaciones →
+          </button>
         </div>
       </div>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     HALL OF FAME
+     BIBLIOTECA VIVA · INFORMACIÓN
 =========================================================== -->
-<section class="hall-of-fame-section">
-
+<section class="testimonials-section">
   <div class="section-header">
-    <span class="label">🏆 Hall of Fame</span>
-    <h2>Ganadores históricos</h2>
+    <span class="label">🧭 Biblioteca Viva</span>
+    <h2>Un espacio para crear y explorar</h2>
+    <p>Estas son las acciones disponibles en la plataforma.</p>
   </div>
 
-  <div class="hall-grid">
-    <div class="hall-item" *ngFor="let winner of hallOfFame">
-      <div class="avatar">{{ winner.avatar }}</div>
-      <h4>{{ winner.name }}</h4>
-      <p>{{ winner.project }}</p>
-      <span class="year">{{ winner.year }}</span>
-      <span class="prize">{{ winner.prize }}</span>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <p>Registra tu aplicación web mediante el formulario de participación de HTML 2.0.</p>
+      <div class="author">
+        <span class="avatar">🚀</span>
+        <div>
+          <strong>Crear</strong>
+          <span>Enviar una aplicación</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <p>Explora las aplicaciones publicadas y utiliza los filtros para consultar cada edición.</p>
+      <div class="author">
+        <span class="avatar">📚</span>
+        <div>
+          <strong>Explorar</strong>
+          <span>HTML 1.0 y HTML 2.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <p>Consulta la ficha de la convocatoria activa para revisar fechas, condiciones y premios.</p>
+      <div class="author">
+        <span class="avatar">📢</span>
+        <div>
+          <strong>Consultar</strong>
+          <span>Convocatoria vigente</span>
+        </div>
+      </div>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     FAQ
+     HALL OF FAME · HTML 1.0
+=========================================================== -->
+<section class="hall-of-fame-section" id="hall-of-fame">
+  <div class="section-header">
+    <span class="label">🏆 Primera edición</span>
+    <h2>Ganadores · Concurso HTML 1.0</h2>
+    <p>
+      Podio calculado con la misma puntuación utilizada en la galería:
+      promedio de estrellas por número de votos.
+    </p>
+  </div>
+
+  <ng-container *ngIf="hallOfFame$ | async as winners">
+    <div class="hall-grid" *ngIf="winners.length > 0; else noWinners">
+      <div class="hall-item" *ngFor="let winner of winners; let i = index">
+        <div class="avatar">{{ winner.avatar }}</div>
+        <span class="winner-position">{{ winner.prize }}</span>
+        <h4>{{ winner.name }}</h4>
+        <p>{{ winner.project }}</p>
+        <span class="year">HTML 1.0 · {{ winner.year }}</span>
+        <span class="prize">
+          {{ winner.rating | number:'1.1-1' }} / 5 · {{ winner.votes }} votos
+        </span>
+      </div>
+    </div>
+
+    <ng-template #noWinners>
+      <div class="empty-state">
+        <span class="empty-icon">🏅</span>
+        <p>Aún no hay proyectos publicados con votos para formar el podio.</p>
+        <span class="empty-sub">
+          Cuando existan votos registrados, los tres primeros proyectos aparecerán aquí automáticamente.
+        </span>
+        <button class="secondary small" type="button" (click)="scrollToGallery()">
+          Consultar aplicaciones →
+        </button>
+      </div>
+    </ng-template>
+  </ng-container>
+</section>
+
+<!-- ==========================================================
+     REGISTRO FOTOGRÁFICO · PREMIACIÓN HTML 1.0
+=========================================================== -->
+<section class="awards-photo-section" id="registro-premiacion">
+  <div class="section-header">
+    <span class="label">📸 Memorias Tellus</span>
+    <h2>Registro fotográfico de la premiación</h2>
+    <p>
+      Primer Concurso HTML · Tellus 2026 · Talento e innovación.
+      Un recuerdo del talento y la creatividad de nuestra comunidad educativa.
+    </p>
+  </div>
+
+  <figure class="awards-photo-card">
+    <img
+      src="/assets/premiacion/premiacion-tellus-html-1-0.png"
+      alt="Registro fotográfico de la premiación del Primer Concurso HTML de Tellus 2026"
+      loading="lazy"
+      decoding="async" />
+
+    <figcaption>
+      Premiación del Primer Concurso HTML · Tellus 2026
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ==========================================================
+     PREGUNTAS FRECUENTES
 =========================================================== -->
 <section class="faq-section">
-
   <div class="section-header">
     <span class="label">❓ Preguntas</span>
     <h2>Preguntas frecuentes</h2>
+
     <div class="faq-search">
-      <input type="text" placeholder="Buscar pregunta..." (input)="filterFaqs($event)">
+      <input
+        type="text"
+        placeholder="Buscar pregunta..."
+        (input)="filterFaqs($event)">
     </div>
   </div>
 
@@ -634,41 +839,47 @@
         <span>{{ faq.question }}</span>
         <span class="arrow">{{ faq.open ? '−' : '+' }}</span>
       </div>
+
       <div class="faq-answer" [class.open]="faq.open">
         <p>{{ faq.answer }}</p>
       </div>
     </div>
   </div>
-
 </section>
 
 <!-- ==========================================================
      CTA FINAL
 =========================================================== -->
 <section class="cta-section">
-
   <div class="cta-glow"></div>
+
   <div class="cta-container">
     <h2>¿Listo para crear tu primera aplicación web?</h2>
-    <p>Únete a la comunidad de desarrolladores de Tellus y gana premios increíbles.</p>
-    <button class="primary large" routerLink="/biblioteca-viva/participar">🚀 ¡Participa ahora!</button>
+    <p>Únete a la comunidad de desarrolladores de Tellus y participa en la convocatoria vigente.</p>
+    <button class="primary large" routerLink="/biblioteca-viva/participar">
+      🚀 ¡Participa ahora!
+    </button>
   </div>
-
 </section>
 
 <!-- ==========================================================
-     CENTRO DE RECURSOS – MODAL PREMIUM
+     CENTRO DE RECURSOS · MODAL
 =========================================================== -->
-<div class="resources-modal-overlay" *ngIf="showResourcesModal" (click)="closeResourcesModal()">
+<div
+  class="resources-modal-overlay"
+  *ngIf="showResourcesModal"
+  (click)="closeResourcesModal()">
+
   <div class="resources-modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>📘 Centro de Recursos Tellus</h2>
       <p>Selecciona el recurso que deseas consultar</p>
+
       <button class="modal-close" (click)="closeResourcesModal()">✕</button>
     </div>
 
     <div class="modal-body">
-      <!-- Tarjeta Estudiantes -->
+      <!-- GUÍA PARA ESTUDIANTES -->
       <div class="resource-card">
         <div class="resource-icon">
           <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -679,14 +890,16 @@
             <path d="M6 10l6 3 6-3"/>
           </svg>
         </div>
+
         <h3>Guía para estudiantes</h3>
         <p>Paso a paso para participar en el concurso.</p>
+
         <button class="btn-resource" (click)="openStudentGuide()">
-          <span class="btn-icon">📄</span> Ver Infografía
+          <span class="btn-icon">📄</span> Ver infografía
         </button>
       </div>
 
-      <!-- Tarjeta Docentes -->
+      <!-- GUÍA PARA DOCENTES -->
       <div class="resource-card">
         <div class="resource-icon">
           <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -696,18 +909,21 @@
             <path d="M16 3.13a4 4 0 010 7.75"/>
           </svg>
         </div>
+
         <h3>Guía para docentes</h3>
         <p>Cómo orientar y gestionar proyectos en el aula.</p>
+
         <button class="btn-resource" (click)="openTeacherGuide()">
-          <span class="btn-icon">📄</span> Ver Infografía
+          <span class="btn-icon">📄</span> Ver infografía
         </button>
       </div>
     </div>
 
-    <!-- Pie premium -->
     <div class="modal-footer">
       <div class="footer-line"></div>
-      <p class="footer-message">Estas guías te ayudarán a aprovechar al máximo el Primer Concurso HTML.</p>
+      <p class="footer-message">
+        Estas guías son recursos de apoyo para participar en Biblioteca Viva.
+      </p>
     </div>
   </div>
 </div>

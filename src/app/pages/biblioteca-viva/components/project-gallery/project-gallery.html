@@ -1,26 +1,100 @@
 <div class="project-gallery">
 
-  <!-- HEADER con contador real -->
+  <!-- ENCABEZADO DE LA GALERÍA -->
   <div class="gallery-header">
     <div>
-      <span class="badge">📸 Proyectos</span>
+      <span class="badge">📸 PROYECTOS</span>
       <h2>Galería de creaciones</h2>
-      <p class="subtitle" *ngIf="!isLoading">{{ allProjects.length }} proyectos publicados</p>
+      <p class="subtitle" *ngIf="!isLoading">
+        {{ visibleProjects.length }} proyectos publicados
+      </p>
     </div>
+
     <div class="header-controls">
-      <button class="toggle-view-btn" (click)="toggleView()">
+      <button class="toggle-view-btn" type="button" (click)="toggleView()">
         {{ viewMode === 'slider' ? '⊞ Ver todos los proyectos' : '🎠 Volver al carrusel' }}
       </button>
-      <p class="view-hint" *ngIf="viewMode === 'slider' && allProjects.length > 8">
-        ¿Prefieres comparar todos los proyectos? Cambia a la vista en cuadrícula para explorar y votar de forma más cómoda.
+
+      <p class="view-hint" *ngIf="viewMode === 'slider' && visibleProjects.length > 8">
+        Cambia a la cuadrícula para comparar y explorar las aplicaciones.
       </p>
     </div>
   </div>
 
-  <!-- SKELETON LOADING -->
+  <!-- FILTROS PROMINENTES POR EDICIÓN -->
+  <section class="edition-filter-panel" aria-label="Filtrar biblioteca por edición">
+    <div class="edition-filter-heading">
+      <div class="edition-filter-heading-icon" aria-hidden="true">🗂️</div>
+
+      <div>
+        <span class="edition-filter-eyebrow">BIBLIOTECA VIVA</span>
+        <h3>Explora las aplicaciones</h3>
+        <p>
+          Elige una edición para explorar sus aplicaciones.
+          Las creaciones publicadas se conservan al abrir nuevas convocatorias.
+        </p>
+      </div>
+    </div>
+
+    <div class="edition-filter-options" role="group" aria-label="Ediciones disponibles">
+      <button
+        *ngFor="let edition of editionOptions"
+        type="button"
+        class="edition-filter-card"
+        [class.is-active]="selectedEdition === edition.value"
+        [attr.aria-pressed]="selectedEdition === edition.value"
+        (click)="setEditionFilter(edition.value)">
+
+        <span class="edition-filter-icon" aria-hidden="true">
+          <ng-container [ngSwitch]="edition.value">
+            <span *ngSwitchCase="'all'">🌐</span>
+            <span *ngSwitchCase="'html-1-0'">🥇</span>
+            <span *ngSwitchCase="'html-2-0'">🏆</span>
+            <span *ngSwitchDefault>🧩</span>
+          </ng-container>
+        </span>
+
+        <span class="edition-filter-copy">
+          <span class="edition-filter-title">{{ edition.label }}</span>
+
+          <span
+            class="edition-filter-description"
+            *ngIf="edition.value === 'all'">
+            Explora todo el catálogo
+          </span>
+
+          <span
+            class="edition-filter-description"
+            *ngIf="edition.value === 'html-1-0'">
+            Primera edición del concurso
+          </span>
+
+          <span
+            class="edition-filter-description"
+            *ngIf="edition.value === 'html-2-0'">
+            Nuevas aplicaciones del concurso
+          </span>
+
+          <span
+            class="edition-filter-description"
+            *ngIf="edition.value !== 'all'
+              && edition.value !== 'html-1-0'
+              && edition.value !== 'html-2-0'">
+            Aplicaciones de esta edición
+          </span>
+        </span>
+
+        <span class="edition-filter-count">
+          {{ getEditionCount(edition.value) }}
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- CARGA -->
   <div *ngIf="isLoading" class="skeleton-wrapper">
     <div class="skeleton-track">
-      <div class="skeleton-card" *ngFor="let _ of [].constructor(8)">
+      <div class="skeleton-card" *ngFor="let item of [].constructor(8)">
         <div class="skeleton-image shimmer"></div>
         <div class="skeleton-line shimmer"></div>
         <div class="skeleton-line short shimmer"></div>
@@ -29,97 +103,219 @@
     </div>
   </div>
 
-  <!-- ==========================================================
-       VISTA: SLIDER (todos los proyectos, sin límite)
-  ========================================================== -->
-  <div *ngIf="!isLoading && viewMode === 'slider' && allProjects.length > 0" class="slider-wrapper"
-       (mousedown)="onMouseDown($event)"
-       (mousemove)="onMouseMove($event)"
-       (mouseup)="onMouseUp($event)"
-       (mouseleave)="onMouseUp($event)"
-       (touchstart)="onTouchStart($event)"
-       (touchmove)="onTouchMove($event)"
-       (touchend)="onTouchEnd($event)"
-       (wheel)="onWheel($event)">
-    <button class="nav-btn prev" (click)="prev()" [disabled]="currentIndex === 0">‹</button>
+  <!-- CARRUSEL -->
+  <div
+    *ngIf="!isLoading && viewMode === 'slider' && visibleProjects.length > 0"
+    class="slider-wrapper"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseUp($event)"
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)"
+    (wheel)="onWheel($event)">
+
+    <button
+      class="nav-btn prev"
+      type="button"
+      (click)="prev()"
+      [disabled]="currentIndex === 0"
+      aria-label="Proyecto anterior">
+      ‹
+    </button>
+
     <div class="slider-container">
       <div class="slider-track" #sliderTrack>
-        <!-- ✅ Slider usa getRankedProjects() para el orden -->
-        <div class="project-card" *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
-          <!-- ✅ Medallas según ranking -->
-          <div class="medal" *ngIf="i < 3">{{ getRankMedal(project, i) }}</div>
-          <div class="badges">
-            <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
+
+        <div
+          class="project-card"
+          *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
+
+          <div class="medal" *ngIf="i < 3">
+            {{ getRankMedal(project, i) }}
           </div>
-          <div class="category-icon">{{ getIcon(project.category) }}</div>
+
+          <div class="badges">
+            <span class="badge-item edition-badge">
+              {{ getEditionLabel(project) }}
+            </span>
+
+            <span class="badge-item" *ngFor="let badge of getBadges(project)">
+              {{ badge }}
+            </span>
+          </div>
+
+          <div class="category-icon">
+            {{ getIcon(project.category) }}
+          </div>
+
           <h3>{{ project.title }}</h3>
+
           <div class="author">
             <span class="developer">👤 {{ project.studentName }}</span>
             <span class="institution">🏫 {{ project.institution }}</span>
           </div>
-          <!-- Estrellas interactivas -->
+
+          <!-- VOTACIÓN -->
           <div class="stars" *ngIf="isAuthenticated">
-            <span *ngFor="let star of [1,2,3,4,5]" 
-                  (click)="votar(project, star, $event)"
-                  [class.active]="(userVotes[project.id!] || 0) >= star">
+            <span
+              *ngFor="let star of [1, 2, 3, 4, 5]"
+              (click)="votar(project, star, $event)"
+              [class.active]="(userVotes[project.id!] || 0) >= star">
               ★
             </span>
-            <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
-            <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+
+            <span class="score">
+              {{ (project.rating || 0) | number:'1.1-1' }}
+            </span>
+
+            <span class="count">
+              ({{ project.ratingCount || 0 }} votos)
+            </span>
           </div>
+
           <div class="stars-static" *ngIf="!isAuthenticated">
-            <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
-            <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
-            <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+            <span
+              *ngFor="let star of [1, 2, 3, 4, 5]"
+              [class.active]="(project.rating || 0) >= star">
+              ★
+            </span>
+
+            <span class="score">
+              {{ (project.rating || 0) | number:'1.1-1' }}
+            </span>
+
+            <span class="count">
+              ({{ project.ratingCount || 0 }} votos)
+            </span>
           </div>
-          <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
+
+          <button
+            class="view-btn"
+            type="button"
+            (click)="verProyecto(project)">
+            Ver proyecto →
+          </button>
+
         </div>
       </div>
     </div>
-    <button class="nav-btn next" (click)="next()" [disabled]="currentIndex >= allProjects.length - 1">›</button>
+
+    <button
+      class="nav-btn next"
+      type="button"
+      (click)="next()"
+      [disabled]="currentIndex >= visibleProjects.length - 1"
+      aria-label="Proyecto siguiente">
+      ›
+    </button>
   </div>
 
-  <!-- ==========================================================
-       VISTA: GRID (todos los proyectos)
-  ========================================================== -->
-  <div *ngIf="!isLoading && viewMode === 'grid' && allProjects.length > 0" class="grid-wrapper">
+  <!-- FILTRO SIN RESULTADOS -->
+  <div
+    *ngIf="!isLoading && allProjects.length > 0 && visibleProjects.length === 0"
+    class="empty-state">
+
+    <span class="empty-icon">📚</span>
+    <p>Aún no hay aplicaciones publicadas en esta edición.</p>
+
+    <span class="empty-sub">
+      Los demás proyectos siguen guardados.
+      Selecciona «Todas las ediciones» para ver el catálogo completo.
+    </span>
+  </div>
+
+  <!-- CUADRÍCULA -->
+  <div
+    *ngIf="!isLoading && viewMode === 'grid' && visibleProjects.length > 0"
+    class="grid-wrapper">
+
     <div class="grid-container">
-      <!-- ✅ Grid usa getRankedProjects() para el orden -->
-      <div class="project-card-grid" *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
-        <div class="medal" *ngIf="i < 3">{{ getRankMedal(project, i) }}</div>
-        <div class="badges">
-          <span class="badge-item" *ngFor="let b of getBadges(project)">{{ b }}</span>
+      <div
+        class="project-card-grid"
+        *ngFor="let project of getRankedProjects(); let i = index; trackBy: trackByProjectId">
+
+        <div class="medal" *ngIf="i < 3">
+          {{ getRankMedal(project, i) }}
         </div>
-        <div class="category-icon">{{ getIcon(project.category) }}</div>
+
+        <div class="badges">
+          <span class="badge-item edition-badge">
+            {{ getEditionLabel(project) }}
+          </span>
+
+          <span class="badge-item" *ngFor="let badge of getBadges(project)">
+            {{ badge }}
+          </span>
+        </div>
+
+        <div class="category-icon">
+          {{ getIcon(project.category) }}
+        </div>
+
         <h3>{{ project.title }}</h3>
+
         <div class="author">
           <span class="developer">👤 {{ project.studentName }}</span>
           <span class="institution">🏫 {{ project.institution }}</span>
         </div>
+
         <div class="stars" *ngIf="isAuthenticated">
-          <span *ngFor="let star of [1,2,3,4,5]" 
-                (click)="votar(project, star, $event)"
-                [class.active]="(userVotes[project.id!] || 0) >= star">
+          <span
+            *ngFor="let star of [1, 2, 3, 4, 5]"
+            (click)="votar(project, star, $event)"
+            [class.active]="(userVotes[project.id!] || 0) >= star">
             ★
           </span>
-          <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
-          <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+
+          <span class="score">
+            {{ (project.rating || 0) | number:'1.1-1' }}
+          </span>
+
+          <span class="count">
+            ({{ project.ratingCount || 0 }} votos)
+          </span>
         </div>
+
         <div class="stars-static" *ngIf="!isAuthenticated">
-          <span *ngFor="let star of [1,2,3,4,5]" [class.active]="(project.rating || 0) >= star">★</span>
-          <span class="score">{{ (project.rating || 0) | number:'1.1-1' }}</span>
-          <span class="count">({{ project.ratingCount || 0 }} votos)</span>
+          <span
+            *ngFor="let star of [1, 2, 3, 4, 5]"
+            [class.active]="(project.rating || 0) >= star">
+            ★
+          </span>
+
+          <span class="score">
+            {{ (project.rating || 0) | number:'1.1-1' }}
+          </span>
+
+          <span class="count">
+            ({{ project.ratingCount || 0 }} votos)
+          </span>
         </div>
-        <button class="view-btn" (click)="verProyecto(project)">Ver proyecto →</button>
+
+        <button
+          class="view-btn"
+          type="button"
+          (click)="verProyecto(project)">
+          Ver proyecto →
+        </button>
+
       </div>
     </div>
   </div>
 
-  <!-- EMPTY STATE -->
-  <div *ngIf="!isLoading && allProjects.length === 0" class="empty-state">
+  <!-- BIBLIOTECA SIN PROYECTOS PUBLICADOS -->
+  <div
+    *ngIf="!isLoading && allProjects.length === 0"
+    class="empty-state">
+
     <span class="empty-icon">📭</span>
     <p>No hay proyectos publicados aún.</p>
-    <span class="empty-sub">Sé el primero en publicar tu aplicación.</span>
+
+    <span class="empty-sub">
+      Sé el primero en publicar tu aplicación.
+    </span>
   </div>
 
 </div>

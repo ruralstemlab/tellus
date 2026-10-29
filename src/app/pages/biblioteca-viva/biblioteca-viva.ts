@@ -56,6 +56,16 @@ interface HeroStats {
   latestProjects: Project[];
 }
 
+interface HallOfFameEntry {
+  name: string;
+  project: string;
+  year: string;
+  prize: string;
+  avatar: string;
+  rating: number;
+  votes: number;
+}
+
 @Component({
   selector: 'app-biblioteca-viva',
   standalone: true,
@@ -76,8 +86,13 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
   profile$: Observable<UserProfile | null>;
   featuredProject$: Observable<Project | null>;
+  /** Estadísticas generales de Biblioteca Viva (todas las ediciones). */
   stats$: Observable<HeroStats>;
+  /** Estadísticas exclusivas de la edición HTML 2.0. */
+  contestStats$: Observable<HeroStats>;
   convocatorias$: Observable<Convocatoria[]>;
+  historicalConvocatorias$: Observable<Convocatoria[]>;
+  hallOfFame$: Observable<HallOfFameEntry[]>;
   institutions$: Observable<Institution[]>;
 
   // ---------- CONTADOR ----------
@@ -158,27 +173,19 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     }
   ];
 
-  // ---------- CRONOGRAMA ----------
+  // ---------- CRONOGRAMA OFICIAL HTML 2.0 ----------
+  // Fechas confirmadas: cierre de inscripciones 1 nov. 2026 y premiación 6 nov. 2026.
+  // No se agregan etapas intermedias porque no se han confirmado sus fechas.
   schedule = [
     {
-      date: '31 Jul',
+      date: '1 nov. 2026',
       title: 'Cierre de inscripciones',
-      desc: 'Último día para publicar proyectos.'
+      desc: 'Último día para enviar aplicaciones al Concurso HTML 2.0.'
     },
     {
-      date: '1–12 Ago',
-      title: 'Revisión y evaluación',
-      desc: 'Jurado califica los proyectos.'
-    },
-    {
-      date: '13 Ago',
-      title: 'Votación popular',
-      desc: 'La comunidad vota por sus favoritos.'
-    },
-    {
-      date: '14 Ago',
+      date: '6 nov. 2026',
       title: 'Premiación',
-      desc: 'Gran evento de premiación en vivo.'
+      desc: 'Ceremonia de reconocimiento del Concurso HTML 2.0.'
     }
   ];
 
@@ -294,37 +301,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     }
   ];
 
-  // ---------- HALL OF FAME ----------
-  hallOfFame = [
-    {
-      name: 'Ana García',
-      project: 'EcoSim',
-      year: '2025',
-      prize: '🥇',
-      avatar: '👩‍💻'
-    },
-    {
-      name: 'Luis Martínez',
-      project: 'MathQuest',
-      year: '2025',
-      prize: '🥈',
-      avatar: '👨‍💻'
-    },
-    {
-      name: 'Sofía Torres',
-      project: 'Finanzas 360',
-      year: '2024',
-      prize: '🥇',
-      avatar: '👩‍💻'
-    },
-    {
-      name: 'Jorge Ramírez',
-      project: 'Robot Sim',
-      year: '2024',
-      prize: '🥉',
-      avatar: '👨‍💻'
-    }
-  ];
+  // Los ganadores de HTML 1.0 se calculan desde los proyectos publicados y sus votos.
 
   // ---------- FAQ ----------
   faqs = [
@@ -355,7 +332,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
     {
       question: '¿Qué premios hay?',
       answer:
-        'Primer lugar: $50.000, Segundo: $20.000, Tercero: Onces en cafetería. Todos reciben diploma.',
+        'Los premios de HTML 2.0 deben consultarse en la convocatoria vigente. Los premios de la edición HTML 1.0 corresponden a la edición anterior.',
       open: false
     }
   ];
@@ -379,19 +356,175 @@ export class BibliotecaViva implements OnInit, OnDestroy {
   ) {
     this.profile$ = this.profileService.profile$;
 
+    // Métricas generales: se conservan para las secciones de comunidad.
     this.stats$ = this.loadHeroStats().pipe(
       shareReplay(1)
     );
 
-    this.featuredProject$ = this.stats$.pipe(
+    // El panel superior y el proyecto destacado corresponden solo a HTML 2.0.
+    this.contestStats$ = this.loadContestStats().pipe(
+      shareReplay(1)
+    );
+
+    this.featuredProject$ = this.contestStats$.pipe(
       map(stats => stats.featured)
     );
 
-    this.convocatorias$ =
-      this.convocatoriaService.getActiveConvocatorias();
+    // Cargamos una sola vez las convocatorias que devuelve el servicio.
+    // HTML 2.0 se presenta como edición vigente; las demás se conservan
+    // en una sección separada como convocatorias anteriores.
+    const allConvocatorias$ = this.convocatoriaService
+      .getAllConvocatorias()
+      .pipe(shareReplay(1));
+
+    this.convocatorias$ = allConvocatorias$.pipe(
+      map(items => items.filter(item => item.active && this.isHtml20Convocatoria(item)))
+    );
+
+    this.historicalConvocatorias$ = allConvocatorias$.pipe(
+      map(items => items.filter(item => !this.isHtml20Convocatoria(item)))
+    );
+
+    this.hallOfFame$ = this.loadHallOfFame().pipe(shareReplay(1));
 
     this.institutions$ =
       this.institutionService.getActiveInstitutions();
+  }
+
+  /**
+   * Evita confundir "HTML 2026" (la edición anterior) con "HTML 2.0".
+   */
+  private isHtml20Convocatoria(convocatoria: Convocatoria): boolean {
+    const text = `${convocatoria.title || ''} ${convocatoria.description || ''}`.toLowerCase();
+    return /\bhtml\s*2\.0\b/.test(text)
+      || /\bhtml[-_\s]+2[-_.]0\b/.test(text)
+      || /\bhtml\s+2\b/.test(text);
+  }
+
+  /**
+   * Calcula el podio de HTML 1.0 a partir de los proyectos publicados.
+   * Usa la misma puntuación de la galería: promedio de estrellas × cantidad de votos.
+   * Los documentos antiguos sin campo edition se consideran parte de HTML 1.0;
+   * los identificados explícitamente como HTML 2.0 quedan excluidos.
+   */
+  private loadHallOfFame(): Observable<HallOfFameEntry[]> {
+    const asDate = (value: unknown): Date | null => {
+      if (value instanceof Date) return value;
+      if (value && typeof value === 'object' && 'toDate' in value) {
+        const converter = (value as { toDate?: () => Date }).toDate;
+        if (typeof converter === 'function') return converter.call(value);
+      }
+      return null;
+    };
+
+    return this.projectService.getProjects('published').pipe(
+      map(projects => {
+        const html10Projects = projects.filter(project => {
+          const record = project as Project & { edition?: string; contestEdition?: string };
+          const rawEdition = String(record.edition ?? record.contestEdition ?? '').trim().toLowerCase();
+
+          if (!rawEdition) return true;
+
+          const normalized = rawEdition.replace(/[\s_.]/g, '-');
+          return normalized === 'html-1-0'
+            || normalized === 'concurso-html-1-0'
+            || /\bhtml\s*1\.0\b/.test(rawEdition)
+            || /\bhtml[-_\s]+1[-_.]0\b/.test(rawEdition);
+        });
+
+        return html10Projects
+          .filter(project => (project.ratingCount || 0) > 0)
+          .sort((a, b) => {
+            const scoreA = (a.rating || 0) * (a.ratingCount || 0);
+            const scoreB = (b.rating || 0) * (b.ratingCount || 0);
+            if (scoreA !== scoreB) return scoreB - scoreA;
+            if ((a.ratingCount || 0) !== (b.ratingCount || 0)) {
+              return (b.ratingCount || 0) - (a.ratingCount || 0);
+            }
+            const dateA = asDate(a.publishedAt) || asDate(a.uploadedAt);
+            const dateB = asDate(b.publishedAt) || asDate(b.uploadedAt);
+            return (dateB?.getTime() || 0) - (dateA?.getTime() || 0);
+          })
+          .slice(0, 3)
+          .map((project, index) => {
+            const date = asDate(project.publishedAt) || asDate(project.uploadedAt);
+            const medals = ['🥇', '🥈', '🥉'];
+            return {
+              name: project.studentName || 'Desarrollador Tellus',
+              project: project.title || 'Proyecto sin título',
+              year: String(date?.getFullYear() || 2026),
+              prize: medals[index],
+              avatar: '💻',
+              rating: project.rating || 0,
+              votes: project.ratingCount || 0
+            };
+          });
+      })
+    );
+  }
+
+  /**
+   * Estadísticas exclusivamente de proyectos publicados en Concurso HTML 2.0.
+   * Los proyectos históricos sin edition no se incluyen aquí.
+   */
+  private loadContestStats(): Observable<HeroStats> {
+    return this.projectService.getProjects('published').pipe(
+      map(allProjects => {
+        const projects = allProjects.filter(project => {
+          const record = project as Project & {
+            edition?: string;
+            contestEdition?: string;
+          };
+          const edition = String(
+            record.edition ?? record.contestEdition ?? ''
+          ).trim().toLowerCase();
+          const normalized = edition.replace(/[\s_.]/g, '-');
+          return normalized === 'html-2-0'
+            || normalized === 'concurso-html-2-0'
+            || /\bhtml\s*2\.0\b/.test(edition)
+            || /\bhtml[-_\s]+2[-_.]0\b/.test(edition);
+        });
+
+        const developers = new Set(
+          projects
+            .map(project => String(
+              (project as Project & { studentEmail?: string }).studentEmail ||
+              project.studentName || ''
+            ).trim().toLowerCase())
+            .filter(Boolean)
+        );
+
+        const institutions = new Set(
+          projects
+            .map(project => String(project.institution || '').trim().toLowerCase())
+            .filter(Boolean)
+        );
+
+        const latestProjects = [...projects].sort((a, b) => {
+          const dateA = a.publishedAt || a.uploadedAt;
+          const dateB = b.publishedAt || b.uploadedAt;
+          return (dateB?.getTime() || 0) - (dateA?.getTime() || 0);
+        }).slice(0, 5);
+
+        const ranked = [...projects].sort((a, b) => {
+          const ratingDifference = (b.rating || 0) - (a.rating || 0);
+          if (ratingDifference !== 0) return ratingDifference;
+          const voteDifference = (b.ratingCount || 0) - (a.ratingCount || 0);
+          if (voteDifference !== 0) return voteDifference;
+          return (b.uploadedAt?.getTime() || 0) - (a.uploadedAt?.getTime() || 0);
+        });
+
+        return {
+          projects: projects.length,
+          developers: developers.size,
+          institutions: institutions.size,
+          votes: projects.reduce((total, project) => total + (project.ratingCount || 0), 0),
+          published: projects.length,
+          featured: ranked[0] || null,
+          latestProjects
+        };
+      })
+    );
   }
 
   private loadHeroStats(): Observable<HeroStats> {
@@ -673,7 +806,7 @@ export class BibliotecaViva implements OnInit, OnDestroy {
 
     const target =
       new Date(
-        '2026-07-31T23:59:59'
+        '2026-11-01T23:59:59-05:00'
       ).getTime();
 
     this.timer =

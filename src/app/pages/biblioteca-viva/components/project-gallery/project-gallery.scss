@@ -50,6 +50,7 @@
      CONTENIDO POR ENCIMA DE LA AURORA
   ========================================================= */
   .gallery-header,
+  .edition-filter-panel,
   .slider-wrapper,
   .grid-wrapper,
   .empty-state,
@@ -123,6 +124,237 @@
         max-width: 300px;
         line-height: 1.4;
       }
+    }
+  }
+
+
+  /* ==========================================================
+     FILTROS DESTACADOS POR EDICIÓN — CONCURSO HTML 2.0
+     ========================================================== */
+  .edition-filter-panel {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: -8px auto 36px;
+    padding: clamp(22px, 3vw, 34px);
+    overflow: hidden;
+    border: 1px solid rgba(76, 255, 156, 0.24);
+    border-radius: 28px;
+    background: linear-gradient(
+      135deg,
+      rgba(9, 57, 39, 0.94) 0%,
+      rgba(5, 35, 26, 0.94) 55%,
+      rgba(7, 47, 33, 0.92) 100%
+    );
+    box-shadow:
+      0 22px 55px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 45px rgba(76, 255, 156, 0.05);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 360px;
+      height: 260px;
+      top: -150px;
+      right: -70px;
+      border-radius: 50%;
+      background: rgba(76, 255, 156, 0.09);
+      filter: blur(35px);
+      pointer-events: none;
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .edition-filter-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .edition-filter-heading-icon {
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(76, 255, 156, 0.25);
+      border-radius: 18px;
+      background: rgba(76, 255, 156, 0.10);
+      box-shadow: inset 0 0 22px rgba(76, 255, 156, 0.05);
+      font-size: 1.8rem;
+    }
+
+    .edition-filter-eyebrow {
+      display: inline-block;
+      margin: 0 0 6px;
+      color: #4cff9c;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      line-height: 1.4;
+    }
+
+    .edition-filter-heading h3 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.45px;
+    }
+
+    .edition-filter-heading p {
+      max-width: 760px;
+      margin: 0;
+      color: rgba(235, 255, 244, 0.68);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .edition-filter-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .edition-filter-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      min-width: 0;
+      min-height: 126px;
+      padding: 20px 18px;
+      overflow: hidden;
+      text-align: left;
+      color: #fff;
+      border: 1px solid rgba(143, 255, 190, 0.16);
+      border-radius: 20px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.055),
+        rgba(255, 255, 255, 0.018)
+      );
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        box-shadow 0.22s ease;
+      font: inherit;
+
+      &:hover {
+        transform: translateY(-4px);
+        border-color: rgba(76, 255, 156, 0.52);
+        background: linear-gradient(
+          145deg,
+          rgba(76, 255, 156, 0.12),
+          rgba(255, 255, 255, 0.035)
+        );
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      &:focus-visible {
+        outline: 3px solid #4cff9c;
+        outline-offset: 4px;
+      }
+
+      &.is-active {
+        border-color: #4cff9c;
+        background: linear-gradient(
+          145deg,
+          rgba(76, 255, 156, 0.17),
+          rgba(76, 255, 156, 0.055)
+        );
+        box-shadow:
+          0 0 0 1px rgba(76, 255, 156, 0.12),
+          0 12px 30px rgba(0, 0, 0, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+        .edition-filter-icon {
+          border-color: rgba(76, 255, 156, 0.45);
+          background: rgba(76, 255, 156, 0.16);
+          box-shadow: 0 0 28px rgba(76, 255, 156, 0.10);
+        }
+
+        .edition-filter-title {
+          color: #71ffb0;
+        }
+
+        .edition-filter-count {
+          color: #04140d;
+          border-color: #4cff9c;
+          background: #4cff9c;
+        }
+      }
+    }
+
+    .edition-filter-icon {
+      flex: 0 0 52px;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(143, 255, 190, 0.16);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.14);
+      font-size: 1.8rem;
+      transition: background 0.22s ease, border-color 0.22s ease;
+    }
+
+    .edition-filter-copy {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .edition-filter-title {
+      display: block;
+      color: #f4fff8;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      transition: color 0.22s ease;
+    }
+
+    .edition-filter-description {
+      display: block;
+      color: rgba(235, 255, 244, 0.58);
+      font-size: 0.82rem;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .edition-filter-count {
+      flex: 0 0 auto;
+      min-width: 40px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      color: #baffd5;
+      border: 1px solid rgba(143, 255, 190, 0.18);
+      border-radius: 13px;
+      background: rgba(0, 0, 0, 0.16);
+      font-size: 0.92rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
     }
   }
 
@@ -255,6 +487,11 @@
           border: 1px solid rgba(255,215,0,0.1);
           font-weight: 600;
           letter-spacing: 0.3px;
+        }
+        .edition-badge {
+          background: rgba(76, 255, 156, 0.12);
+          color: #72ffb0;
+          border-color: rgba(76, 255, 156, 0.24);
         }
       }
 
@@ -412,6 +649,11 @@
             border: 1px solid rgba(255,215,0,0.08);
             font-weight: 600;
           }
+          .edition-badge {
+            background: rgba(76, 255, 156, 0.12);
+            color: #72ffb0;
+            border-color: rgba(76, 255, 156, 0.24);
+          }
         }
 
         .category-icon {
@@ -524,11 +766,30 @@
 
   @media (max-width: 1024px) {
     .grid-container { grid-template-columns: repeat(3, 1fr); }
+    .edition-filter-panel .edition-filter-options {
+      grid-template-columns: 1fr;
+    }
+    .edition-filter-panel .edition-filter-card {
+      min-height: 104px;
+    }
   }
   @media (max-width: 768px) {
     .gallery-header { flex-direction: column; align-items: flex-start; gap: 16px; }
     .gallery-header .header-controls { align-items: flex-start; width: 100%; }
     .gallery-header .header-controls .view-hint { text-align: left; max-width: 100%; }
+    .edition-filter-panel {
+      margin: 0 auto 28px;
+      padding: 22px 18px;
+      border-radius: 22px;
+    }
+    .edition-filter-panel .edition-filter-heading { gap: 12px; margin-bottom: 20px; }
+    .edition-filter-panel .edition-filter-heading-icon { flex-basis: 48px; width: 48px; height: 48px; border-radius: 14px; }
+    .edition-filter-panel .edition-filter-heading p { font-size: 0.88rem; }
+    .edition-filter-panel .edition-filter-card { padding: 16px 14px; gap: 12px; }
+    .edition-filter-panel .edition-filter-icon { flex-basis: 44px; width: 44px; height: 44px; font-size: 1.5rem; border-radius: 13px; }
+    .edition-filter-panel .edition-filter-title { font-size: 0.94rem; }
+    .edition-filter-panel .edition-filter-description { font-size: 0.78rem; }
+    .edition-filter-panel .edition-filter-count { min-width: 36px; min-height: 36px; }
     .grid-container { grid-template-columns: repeat(2, 1fr); }
     .project-card { flex: 0 0 260px; padding: 20px 16px; }
     .project-card .category-icon { width: 60px; height: 60px; font-size: 2.2rem; }
@@ -536,6 +797,11 @@
     .skeleton-card { flex: 0 0 260px; }
   }
   @media (max-width: 480px) {
+    .edition-filter-panel .edition-filter-options { gap: 10px; }
+    .edition-filter-panel .edition-filter-card { min-height: 92px; }
+    .edition-filter-panel .edition-filter-heading { align-items: center; }
+    .edition-filter-panel .edition-filter-heading h3 { font-size: 1.25rem; }
+    .edition-filter-panel .edition-filter-description { max-width: 190px; }
     .grid-container { grid-template-columns: 1fr; }
     .project-card { flex: 0 0 100%; }
     .skeleton-card { flex: 0 0 100%; }

@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import {
   collection,
@@ -32,10 +33,14 @@ export class ProjectService {
   }
 
   /**
-   * 🔥 Convierte un documento de Firestore a un objeto Project
-   * con los campos Timestamp transformados a Date.
+   * Convierte un documento de Firestore a Project.
+   * Los campos Timestamp se convierten a Date.
+   * Los demás campos, incluida edition, se conservan.
    */
-  private mapProject(docSnap: QueryDocumentSnapshot<DocumentData>): Project {
+  private mapProject(
+    docSnap: QueryDocumentSnapshot<DocumentData>
+  ): Project {
+
     const data = docSnap.data();
 
     const toDate = (value: any): any => {
@@ -45,7 +50,6 @@ export class ProjectService {
       return value;
     };
 
-    // Construir el objeto y hacer cast con 'unknown' para evitar errores de tipo
     const project = {
       id: docSnap.id,
       ...data,
@@ -54,12 +58,18 @@ export class ProjectService {
       submittedAt: toDate(data['submittedAt']),
     } as unknown as Project;
 
-    console.log('✅ mapProject: fecha convertida =>', project.uploadedAt);
+    console.log(
+      '✅ mapProject: fecha convertida =>',
+      project.uploadedAt
+    );
+
     return project;
   }
 
   /**
-   * Crear proyecto
+   * Crea un proyecto nuevo.
+   * addDoc genera un ID independiente para cada envío.
+   * No sobrescribe los documentos existentes.
    */
   createProject(
     project: Omit<Project, 'id' | 'uploadedAt' | 'updatedAt'>
@@ -67,8 +77,14 @@ export class ProjectService {
 
     const now = new Date();
 
+    // Conserva la edición enviada por el formulario.
+    // Si no existe, clasifica el nuevo envío como HTML 2.0.
+    const projectWithEdition =
+      project as typeof project & { edition?: string };
+
     const data = {
-      ...project,
+      ...projectWithEdition,
+      edition: projectWithEdition.edition ?? 'html-2-0',
       uploadedAt: now,
       updatedAt: now,
       status: project.status || 'pending',
@@ -80,11 +96,10 @@ export class ProjectService {
     return from(
       addDoc(this.getCollection(), data)
     );
-
   }
 
   /**
-   * Actualizar proyecto
+   * Actualiza un proyecto existente.
    */
   updateProject(
     id: string,
@@ -100,11 +115,10 @@ export class ProjectService {
         }
       )
     );
-
   }
 
   /**
-   * Actualizar estado
+   * Actualiza el estado de un proyecto existente.
    */
   updateStatus(
     id: string,
@@ -127,11 +141,10 @@ export class ProjectService {
         updateData
       )
     );
-
   }
 
   /**
-   * Proyectos publicados
+   * Obtiene los proyectos publicados.
    */
   getPublished(): Observable<Project[]> {
 
@@ -142,32 +155,39 @@ export class ProjectService {
     );
 
     return from(getDocs(q)).pipe(
-      map(snapshot => {
-        return snapshot.docs.map(docSnap => this.mapProject(docSnap));
-      })
+      map(snapshot =>
+        snapshot.docs.map(
+          docSnap => this.mapProject(docSnap)
+        )
+      )
     );
-
   }
 
   /**
-   * Obtener un proyecto por ID
+   * Obtiene un proyecto por ID.
    */
-  getProject(id: string): Observable<Project | undefined> {
+  getProject(
+    id: string
+  ): Observable<Project | undefined> {
 
     return from(
       getDoc(doc(db, this.collectionName, id))
     ).pipe(
       map(docSnap => {
+
         if (!docSnap.exists()) {
           return undefined;
         }
+
         const data = docSnap.data();
+
         const toDate = (value: any): any => {
           if (value instanceof Timestamp) {
             return value.toDate();
           }
           return value;
         };
+
         return {
           id: docSnap.id,
           ...data,
@@ -177,11 +197,11 @@ export class ProjectService {
         } as unknown as Project;
       })
     );
-
   }
 
   /**
-   * Obtener todos los proyectos (con filtro opcional por estado)
+   * Obtiene todos los proyectos,
+   * opcionalmente filtrados por estado.
    */
   getProjects(status?: string): Observable<Project[]> {
 
@@ -200,11 +220,11 @@ export class ProjectService {
     );
 
     return from(getDocs(q)).pipe(
-      map(snapshot => {
-        return snapshot.docs.map(docSnap => this.mapProject(docSnap));
-      })
+      map(snapshot =>
+        snapshot.docs.map(
+          docSnap => this.mapProject(docSnap)
+        )
+      )
     );
-
   }
-
 }

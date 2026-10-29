@@ -1,5 +1,10 @@
+
 export interface Project {
   id?: string;
+
+  // Edición del concurso. Campo opcional para compatibilidad histórica.
+  edition?: string;
+
   title: string;
   description: string;
   category: string;
@@ -7,12 +12,14 @@ export interface Project {
   studentEmail: string;
   grade: string;
   institution: string;
-  // Ya no usamos storagePath ni htmlFileName (pero los mantenemos por compatibilidad)
+
+  // Información del archivo HTML
   htmlFileName: string;
   htmlSize: number;
   htmlLines: number;
-  htmlContent: string; // ← NUEVO: contenido completo del HTML
-  storagePath?: string; // Opcional, ya no se usa
+  htmlContent: string;
+  storagePath?: string;
+
   uploadedAt: Date;
   updatedAt: Date;
   status: 'pending' | 'approved' | 'rejected' | 'published';

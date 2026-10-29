@@ -11,6 +11,8 @@ import { CredentialService } from '../../../../core/services/credential.service'
 import { Credential } from '../../../../core/models/credential.model';
 import { EmailService, CredentialEmailData } from '../../../../core/services/email.service';
 
+type EditionFilter = 'all' | 'html-1-0' | 'html-2-0';
+
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
@@ -34,6 +36,9 @@ export class AdminPanelComponent implements OnInit {
   credentials: Credential[] = [];
   credentialMap = new Map<string, Credential>();
 
+  /** El panel abre por defecto en la convocatoria vigente: HTML 2.0. */
+  selectedEdition: EditionFilter = 'html-2-0';
+
   reviewNotes: Record<string, string> = {};
 
   // ============================
@@ -41,8 +46,80 @@ export class AdminPanelComponent implements OnInit {
   // ============================
   get pendingCount(): number { return this.pendingProjects.length; }
   get publishedCount(): number { return this.publishedProjects.length; }
-  get issuedCount(): number { return this.credentials.filter(c => c.status === 'issued' || c.status === 'sent').length; }
-  get pendingEmissionCount(): number { return this.publishedProjects.filter(p => !this.hasCredential(p.id)).length; }
+  get issuedCount(): number {
+    const projectIds = new Set(
+      this.projectsForSelectedEdition()
+        .map(project => project.id)
+        .filter((id): id is string => Boolean(id))
+    );
+    return this.credentials.filter(credential => {
+      const projectId = credential.projectId;
+      return typeof projectId === 'string' &&
+        projectIds.has(projectId) &&
+        (credential.status === 'issued' || credential.status === 'sent');
+    }).length;
+  }
+  get pendingEmissionCount(): number {
+    return this.publishedProjects.filter(project => !this.hasCredential(project.id)).length;
+  }
+
+  get selectedEditionLabel(): string {
+    switch (this.selectedEdition) {
+      case 'html-1-0': return 'Concurso HTML 1.0';
+      case 'html-2-0': return 'Concurso HTML 2.0';
+      default: return 'Todas las ediciones';
+    }
+  }
+
+  /** Cuenta proyectos de cada edición, sin importar si están pendientes o publicados. */
+  getEditionCount(edition: EditionFilter): number {
+    if (edition === 'all') return this.allProjects.length;
+    return this.allProjects.filter(project => this.getProjectEdition(project) === edition).length;
+  }
+
+  /** Normaliza el valor usado en Firestore y conserva los registros históricos sin edición como HTML 1.0. */
+  getProjectEdition(project: Project): Exclude<EditionFilter, 'all'> {
+    const record = project as Project & { edition?: unknown; contestEdition?: unknown };
+    const rawValue = record.edition ?? record.contestEdition ?? '';
+    const normalized = String(rawValue)
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '');
+
+    // Acepta valores como "html-2.0", "html-2-0" o "Concurso HTML 2.0".
+    if (normalized.includes('html20') || normalized === '20' || normalized.includes('concurso20')) {
+      return 'html-2-0';
+    }
+
+    // Los documentos anteriores a la separación de convocatorias no tienen edition.
+    return 'html-1-0';
+  }
+
+  getProjectEditionLabel(project: Project): string {
+    return this.getProjectEdition(project) === 'html-2-0'
+      ? 'Concurso HTML 2.0'
+      : 'Concurso HTML 1.0';
+  }
+
+  setEdition(value: string): void {
+    if (value === 'all' || value === 'html-1-0' || value === 'html-2-0') {
+      this.selectedEdition = value;
+      this.applyEditionFilter();
+    }
+  }
+
+  private projectsForSelectedEdition(): Project[] {
+    if (this.selectedEdition === 'all') return this.allProjects;
+    return this.allProjects.filter(project => this.getProjectEdition(project) === this.selectedEdition);
+  }
+
+  private applyEditionFilter(): void {
+    const projects = this.projectsForSelectedEdition();
+    this.pendingProjects = projects.filter(project => project.status === 'pending');
+    this.publishedProjects = projects.filter(project => project.status === 'published');
+  }
 
   // ============================
   //  MODAL DE EMISIÓN
@@ -105,8 +182,6 @@ export class AdminPanelComponent implements OnInit {
         }));
 
         this.allProjects = converted;
-        this.pendingProjects = converted.filter(p => p.status === 'pending');
-        this.publishedProjects = converted.filter(p => p.status === 'published');
 
         this.credentials = credentials;
         this.credentialMap = new Map();
@@ -114,6 +189,7 @@ export class AdminPanelComponent implements OnInit {
           if (c.projectId) this.credentialMap.set(c.projectId, c);
         });
 
+        this.applyEditionFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },

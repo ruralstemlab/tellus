@@ -1,5 +1,5 @@
 ﻿/* ==========================================================
-   BIBLIOTECA VIVA â€“ ESTILOS PREMIUM (CORREGIDO)
+   BIBLIOTECA VIVA – ESTILOS PREMIUM (CORREGIDO)
    (basados en identidad Tellus)
 =========================================================== */
 
@@ -99,7 +99,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   HERO â€“ CORREGIDO CON PADDING-TOP
+   HERO – CORREGIDO CON PADDING-TOP
 =========================================================== */
 .hero {
   position: relative;
@@ -284,6 +284,33 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
       }
     }
   }
+
+  .edition-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 34px;
+    max-width: 560px;
+    padding: 18px 22px;
+    border: 1px solid rgba(76,255,156,0.24);
+    border-radius: 18px;
+    background: rgba(5, 30, 20, 0.62);
+    color: #bcebd0;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 34px rgba(0,0,0,0.15);
+
+    strong {
+      color: #72ffab;
+      font-size: 1rem;
+    }
+
+    span {
+      color: #d3d3d3;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+  }
+
 }
 
 @keyframes pulseNumber {
@@ -292,7 +319,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   DASHBOARD DERECHO â€“ PROFESIONAL
+   DASHBOARD DERECHO – PROFESIONAL
 =========================================================== */
 .hero-image {
   display: flex;
@@ -463,7 +490,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   ESTADÃSTICAS â€“ NUEVA SECCIÃ“N
+   ESTADÍSTICAS – NUEVA SECCIÓN
 =========================================================== */
 .stats-section {
   background: #071b12;
@@ -500,7 +527,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   QUÃ‰ PUEDES CONSTRUIR â€“ MEJORADO
+   QUÉ PUEDES CONSTRUIR – MEJORADO
 =========================================================== */
 .build-section {
   background: #04140d;
@@ -548,7 +575,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   APRENDE DESDE CERO â€“ MEJORADO
+   APRENDE DESDE CERO – MEJORADO
 =========================================================== */
 .learn-section {
   background: #071b12;
@@ -599,7 +626,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   CÃ“MO PARTICIPAR â€“ TIMELINE PREMIUM
+   CÓMO PARTICIPAR – TIMELINE PREMIUM
 =========================================================== */
 .steps-section {
   background: #04140d;
@@ -658,7 +685,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   CRONOGRAMA â€“ MEJORADO
+   CRONOGRAMA – MEJORADO
 =========================================================== */
 .schedule-section {
   background: #071b12;
@@ -700,7 +727,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   PREMIOS â€“ MEJORADO
+   PREMIOS – MEJORADO
 =========================================================== */
 .prizes-section {
   background: #04140d;
@@ -739,7 +766,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
       .amount { font-size: 2rem; font-weight: 800; color: $green; margin: 8px 0 16px; }
       ul {
         list-style: none; padding: 0; margin: 0; color: #ccc; font-size: 0.95rem; line-height: 2;
-        li::before { content: 'âœ“ '; color: $green; font-weight: 600; }
+        li::before { content: '✓ '; color: $green; font-weight: 600; }
       }
     }
     .prize-card.gold { border-color: #f5d742; .amount { color: #f5d742; } }
@@ -749,7 +776,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   VIDEO â€“ MEJORADO (CON IFRAME RESPONSIVO)
+   VIDEO – MEJORADO (CON IFRAME RESPONSIVO)
 =========================================================== */
 .video-section {
   background: #071b12;
@@ -892,11 +919,11 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   GALERÃA ELIMINADA â€“ Reemplazada por ProjectGalleryComponent
+   GALERÍA ELIMINADA – Reemplazada por ProjectGalleryComponent
 =========================================================== */
 
 /* ==========================================================
-   TARJETAS PRINCIPALES â€“ MEJORADAS
+   TARJETAS PRINCIPALES – MEJORADAS
 =========================================================== */
 .main-cards-section {
   background: #071b12;
@@ -929,7 +956,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   PROYECTO DESTACADO â€“ NUEVA SECCIÃ“N
+   PROYECTO DESTACADO – NUEVA SECCIÓN
 =========================================================== */
 .featured-section {
   background: #04140d;
@@ -971,7 +998,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   ðŸ†• INSTITUCIONES â€“ DASHBOARD PREMIUM
+   NUEVAS INSTITUCIONES – DASHBOARD PREMIUM
 =========================================================== */
 
 .institutions-premium-section {
@@ -1254,7 +1281,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
           letter-spacing: 0.3px;
 
           &::after {
-            content: 'â†’';
+            content: '→';
             display: inline-block;
             transition: transform 0.3s ease;
           }
@@ -1379,7 +1406,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   CONVOCATORIAS â€“ MEJORADAS
+   CONVOCATORIAS – MEJORADAS
 =========================================================== */
 .calls-section {
   background: #071b12;
@@ -1475,7 +1502,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   TESTIMONIOS â€“ NUEVA SECCIÃ“N
+   TESTIMONIOS – NUEVA SECCIÓN
 =========================================================== */
 .testimonials-section {
   background: #04140d;
@@ -1531,7 +1558,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   HALL OF FAME â€“ NUEVA SECCIÃ“N
+   HALL OF FAME – NUEVA SECCIÓN
 =========================================================== */
 .hall-of-fame-section {
   background: #071b12;
@@ -1586,7 +1613,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   FAQ â€“ MEJORADO
+   FAQ – MEJORADO
 =========================================================== */
 .faq-section {
   background: #04140d;
@@ -1652,7 +1679,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   CTA FINAL â€“ ESPECTACULAR
+   CTA FINAL – ESPECTACULAR
 =========================================================== */
 .cta-section {
   position: relative;
@@ -1760,7 +1787,7 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* ==========================================================
-   CENTRO DE RECURSOS â€“ MODAL PREMIUM
+   CENTRO DE RECURSOS – MODAL PREMIUM
 =========================================================== */
 .resources-modal-overlay {
   position: fixed;
@@ -2010,3 +2037,208 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
   0%, 100% { opacity: 0.4; transform: scaleX(0.8); }
   50% { opacity: 1; transform: scaleX(1.2); }
 }
+
+
+/* ==========================================================
+   CONCURSO HTML 2.0 · TARJETA DE CONVOCATORIA VIGENTE
+   Ajustes complementarios sin reemplazar los estilos existentes.
+=========================================================== */
+.calls-section {
+  .calls-grid {
+    .call-card.call-card-current {
+      grid-column: 1 / -1;
+      width: min(100%, 820px);
+      justify-self: center;
+      border-color: rgba(76, 255, 156, 0.38);
+      background: linear-gradient(
+        135deg,
+        rgba(76, 255, 156, 0.10),
+        rgba(255, 255, 255, 0.035)
+      );
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.20);
+
+      .call-header h4 {
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+      }
+
+      .call-meta {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px 20px;
+      }
+
+      .call-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+    }
+  }
+}
+
+.countdown-caption {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .calls-section {
+    .calls-grid {
+      .call-card.call-card-current {
+        width: 100%;
+        padding: 20px;
+
+        .call-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    }
+  }
+
+  .countdown-caption {
+    font-size: 0.78rem;
+  }
+}
+
+/* ==========================================================
+   REGISTRO FOTOGRÁFICO · PREMIACIÓN DEL CONCURSO HTML 1.0
+   Imagen servida desde public/assets/premiacion/
+=========================================================== */
+.awards-photo-section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3.5rem, 6vw, 5.5rem) 1.25rem;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(76, 255, 156, 0.055), transparent 62%),
+    #04140d;
+
+  .section-header {
+    width: min(100%, 900px);
+    margin: 0 auto 2.25rem;
+    text-align: center;
+
+    .label {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 20px;
+      border: 1px solid rgba(76, 255, 156, 0.15);
+      border-radius: 30px;
+      background: rgba(76, 255, 156, 0.1);
+      color: $green;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 55%, $green);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      max-width: 760px;
+      margin: 0 auto;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+  }
+
+  .awards-photo-card {
+    width: min(100%, 1120px);
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid rgba(76, 255, 156, 0.26);
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow:
+      0 24px 70px rgba(0, 0, 0, 0.32),
+      0 0 50px rgba(76, 255, 156, 0.045);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      border-color: rgba(76, 255, 156, 0.48);
+      box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.36),
+        0 0 55px rgba(76, 255, 156, 0.075);
+      transform: translateY(-3px);
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 760px;
+      object-fit: contain;
+      object-position: center;
+      margin: 0 auto;
+      background: #04140d;
+    }
+
+    figcaption {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid rgba(76, 255, 156, 0.13);
+      color: rgba(255, 255, 255, 0.72);
+      text-align: center;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.018);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .awards-photo-section {
+    padding: 3rem 1rem;
+
+    .section-header {
+      margin-bottom: 1.5rem;
+
+      h2 {
+        font-size: clamp(1.75rem, 7vw, 2.25rem);
+      }
+
+      p {
+        font-size: 0.94rem;
+      }
+    }
+
+    .awards-photo-card {
+      border-radius: 18px;
+
+      img {
+        max-height: none;
+      }
+
+      figcaption {
+        padding: 0.85rem 1rem;
+        font-size: 0.82rem;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .awards-photo-section .awards-photo-card {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
