@@ -87,9 +87,7 @@
   <!-- CONTENIDO PRINCIPAL -->
   <div *ngIf="!loading">
 
-    <!-- ========================================== -->
-    <!-- PESTAÑA: PROYECTOS EN REVISIÓN             -->
-    <!-- ========================================== -->
+    <!-- PROYECTOS EN REVISIÓN -->
     <div *ngIf="activeTab === 'pending'">
 
       <div *ngIf="pendingProjects.length === 0" class="empty-state">
@@ -156,15 +154,17 @@
               <button class="btn btn-reject" (click)="requestChanges(p)">
                 🔄 Solicitar cambios
               </button>
+
+              <button class="btn btn-delete" (click)="deleteApplication(p)">
+                🗑️ Eliminar
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- PESTAÑA: PROYECTOS PUBLICADOS              -->
-    <!-- ========================================== -->
+    <!-- PROYECTOS PUBLICADOS -->
     <div *ngIf="activeTab === 'published'">
 
       <div *ngIf="publishedProjects.length === 0" class="empty-state">
@@ -245,6 +245,10 @@
                   📜 Emitir credencial
                 </button>
               </ng-template>
+
+              <button class="btn btn-delete" (click)="deleteApplication(p)">
+                🗑️ Eliminar
+              </button>
             </div>
           </div>
         </div>
@@ -252,9 +256,7 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL PARA EMITIR CREDENCIAL               -->
-  <!-- ========================================== -->
+  <!-- MODAL PARA EMITIR CREDENCIAL -->
   <div
     *ngIf="showEmitModal && selectedProjectForEmit"
     class="modal-overlay"
@@ -269,7 +271,6 @@
 
       <div class="modal-body">
 
-        <!-- RESUMEN DEL PROYECTO -->
         <div class="project-summary">
           <div class="summary-row">
             <span class="label">Proyecto:</span>
@@ -287,7 +288,6 @@
           </div>
         </div>
 
-        <!-- RECONOCIMIENTOS -->
         <div class="recognition-section">
           <label>Reconocimientos</label>
 
@@ -304,7 +304,6 @@
           </div>
         </div>
 
-        <!-- VISTA PREVIA DEL DIPLOMA -->
         <div class="preview-trigger">
           <button class="btn btn-preview" (click)="toggleFullPreview()">
             {{
@@ -400,9 +399,7 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL PARA VISUALIZAR CREDENCIAL            -->
-  <!-- ========================================== -->
+  <!-- MODAL PARA VISUALIZAR CREDENCIAL -->
   <div
     *ngIf="
       showViewCredentialModal &&
@@ -421,7 +418,6 @@
 
       <div class="modal-body">
 
-        <!-- RESUMEN DE LA CREDENCIAL -->
         <div class="project-summary">
 
           <div class="summary-row">

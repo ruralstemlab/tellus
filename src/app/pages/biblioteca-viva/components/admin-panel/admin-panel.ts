@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project.model';
+import { ProjectService } from '../../../../core/services/project.service';
+import { Project } from '../../../../core/models/project.model';
 import { CredentialService } from '../../../../core/services/credential.service';
 import { Credential } from '../../../../core/models/credential.model';
 import { EmailService, CredentialEmailData } from '../../../../core/services/email.service';
@@ -754,6 +754,42 @@ export class AdminPanelComponent implements OnInit {
       console.error('Error al generar certificado:', error);
       this.showNotification('❌ Error al generar el certificado. Intenta de nuevo.', 'error');
     }
+  }
+
+  // ============================
+  //  ELIMINAR APLICACIÓN
+  // ============================
+  deleteApplication(project: Project): void {
+    if (!project.id) {
+      this.showNotification(
+        'No se puede eliminar: falta el ID del proyecto.',
+        'error'
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Eliminar definitivamente esta aplicación?\n\n` +
+      `Título: ${project.title || 'Sin título'}\n` +
+      `Autor: ${project.studentName || 'No especificado'}\n\n` +
+      'Esta acción no se puede deshacer.'
+    );
+
+    if (!confirmed) return;
+
+    this.projectService.deleteProject(project.id).subscribe({
+      next: () => {
+        this.showNotification('Aplicación eliminada correctamente.', 'success');
+        this.loadData();
+      },
+      error: (error: unknown) => {
+        console.error('[AdminPanel] Error al eliminar la aplicación:', error);
+        this.showNotification(
+          'No se pudo eliminar la aplicación. Verifica los permisos de Firestore.',
+          'error'
+        );
+      }
+    });
   }
 
   // ============================

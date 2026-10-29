@@ -471,6 +471,17 @@ $notif-info: #6495ed;
             border-color: rgba($status-published, 0.4);
           }
         }
+
+        &.btn-delete {
+          background: rgba($status-rejected, 0.12);
+          color: #ff8a8a;
+          border-color: rgba($status-rejected, 0.25);
+
+          &:hover {
+            background: rgba($status-rejected, 0.22);
+            border-color: rgba($status-rejected, 0.45);
+          }
+        }
       }
     }
   }
