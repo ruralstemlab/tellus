@@ -3,33 +3,24 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ============================================================
-    // FUNCIONES DE AUTENTICACIÓN Y ROLES
-    // ============================================================
-
+    // AUTENTICACION Y ROLES
     function signedIn() {
       return request.auth != null;
     }
 
     function isAdmin() {
       return signedIn()
-        && get(
-          /databases/$(database)/documents/users/$(request.auth.uid)
-        ).data.role == 'admin';
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
     function isTeacher() {
       return signedIn()
-        && get(
-          /databases/$(database)/documents/users/$(request.auth.uid)
-        ).data.role == 'teacher';
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
     }
 
     function isStudent() {
       return signedIn()
-        && get(
-          /databases/$(database)/documents/users/$(request.auth.uid)
-        ).data.role == 'student';
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
     }
 
     function isTeacherOrAdmin() {
@@ -40,320 +31,177 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == userId;
     }
 
+    // Actualizacion limitada a los campos agregados de votacion.
+    function isVoteOnlyProjectUpdate() {
+      return signedIn()
+        && resource.data.status == 'published'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rating', 'ratingCount', 'updatedAt'])
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.ratingCount is int
+        && request.resource.data.ratingCount >= 1;
+    }
 
-    // ============================================================
     // USUARIOS
-    // ============================================================
-
     match /users/{userId} {
-
-      allow read: if signedIn()
-        && (
-          isOwner(userId)
-          || isTeacherOrAdmin()
-        );
-
+      allow read: if signedIn() && (isOwner(userId) || isTeacherOrAdmin());
       allow create: if signedIn()
         && isOwner(userId)
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.role in ['student', 'teacher'];
-
       allow update: if isOwner(userId)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.role == resource.data.role;
-
       allow delete: if isAdmin();
     }
 
-
-    // ============================================================
     // INSTITUCIONES
-    // ============================================================
-
     match /institutions/{institutionId} {
-
       allow read: if true;
-
       allow create, update, delete: if isAdmin();
     }
 
-
-    // ============================================================
-    // BIBLIOTECA VIVA — PROYECTOS
-    // ============================================================
-
+    // BIBLIOTECA VIVA: PROYECTOS
     match /projects/{projectId} {
-
-      allow read: if
-        resource.data.status == 'published'
-        || isTeacherOrAdmin();
-
+      allow read: if resource.data.status == 'published' || isTeacherOrAdmin();
       allow create: if signedIn();
-
-      allow update: if signedIn();
-
+      allow update: if isTeacherOrAdmin() || isVoteOnlyProjectUpdate();
       allow delete: if isAdmin();
     }
 
-
-    // ============================================================
-    // BIBLIOTECA VIVA — VOTACIONES
-    // ============================================================
-
+    // BIBLIOTECA VIVA: VOTOS
+    // Un voto por usuario/proyecto; el usuario puede cambiar su calificacion.
     match /project_votes/{voteId} {
+      allow get: if signedIn()
+        && (!exists(/databases/$(database)/documents/project_votes/$(voteId))
+          || resource.data.userId == request.auth.uid);
 
-      allow read: if signedIn()
-        && resource.data.userId == request.auth.uid;
+      allow list: if signedIn() && resource.data.userId == request.auth.uid;
 
       allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
+        && request.resource.data.projectId is string
+        && request.resource.data.rating is int
         && request.resource.data.rating >= 1
-        && request.resource.data.rating <= 5;
+        && request.resource.data.rating <= 5
+        && voteId == request.resource.data.projectId + '_' + request.auth.uid
+        && exists(/databases/$(database)/documents/projects/$(request.resource.data.projectId))
+        && get(/databases/$(database)/documents/projects/$(request.resource.data.projectId)).data.status == 'published';
 
       allow update: if signedIn()
         && resource.data.userId == request.auth.uid
-        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.projectId == resource.data.projectId
+        && request.resource.data.rating is int
         && request.resource.data.rating >= 1
-        && request.resource.data.rating <= 5;
+        && request.resource.data.rating <= 5
+        && voteId == resource.data.projectId + '_' + request.auth.uid
+        && exists(/databases/$(database)/documents/projects/$(resource.data.projectId))
+        && get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data.status == 'published';
 
       allow delete: if isAdmin();
     }
 
-
-    // ============================================================
     // CONVOCATORIAS
-    // ============================================================
-
     match /convocatorias/{convocatoriaId} {
-
       allow read: if true;
-
       allow create, update, delete: if isAdmin();
     }
 
-
-    // ============================================================
     // CREDENCIALES Y DIPLOMAS
-    // ============================================================
-
     match /credentials/{credentialId} {
-
-      // Las credenciales completas solo son consultables
-      // por administradores autenticados.
       allow read: if isAdmin();
-
-      // Solo el administrador puede crear credenciales.
-      // Se comprueba que exista el título y el ID del proyecto.
       allow create: if isAdmin()
         && request.resource.data.title is string
         && request.resource.data.projectId is string;
-
-      // Solo el administrador puede emitir, actualizar,
-      // revocar o modificar el estado de una credencial.
       allow update: if isAdmin();
-
-      // Se conservan los registros para mantener la trazabilidad.
-      // Las credenciales no se eliminan físicamente desde el cliente.
       allow delete: if false;
     }
 
-
-    // ============================================================
-    // TELLUS LEARNING — EXPERIENCIAS
-    // ============================================================
-
+    // TELLUS LEARNING: EXPERIENCIAS
     match /experiences/{experienceId} {
-
-      allow read: if
-        resource.data.status == 'published'
-        || isTeacherOrAdmin();
-
+      allow read: if resource.data.status == 'published' || isTeacherOrAdmin();
       allow create: if isTeacherOrAdmin()
         && request.resource.data.createdBy == request.auth.uid;
-
-      allow update: if isAdmin()
-        || (
-          isTeacher()
-          && resource.data.createdBy == request.auth.uid
-        );
-
-      allow delete: if isAdmin()
-        || (
-          isTeacher()
-          && resource.data.createdBy == request.auth.uid
-        );
+      allow update: if isAdmin() || (isTeacher() && resource.data.createdBy == request.auth.uid);
+      allow delete: if isAdmin() || (isTeacher() && resource.data.createdBy == request.auth.uid);
     }
 
-
-    // ============================================================
     // ETAPAS
-    // ============================================================
-
     match /stages/{stageId} {
-
       allow read: if signedIn();
-
       allow create, update, delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
     // ACTIVIDADES
-    // ============================================================
-
     match /activities/{activityId} {
-
       allow read: if signedIn();
-
       allow create, update, delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
     // RECURSOS
-    // ============================================================
-
     match /resources/{resourceId} {
-
       allow read: if signedIn();
-
-      allow create: if isTeacherOrAdmin()
-        && request.resource.data.createdBy == request.auth.uid;
-
-      allow update, delete: if isAdmin()
-        || (
-          isTeacher()
-          && resource.data.createdBy == request.auth.uid
-        );
+      allow create: if isTeacherOrAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isAdmin() || (isTeacher() && resource.data.createdBy == request.auth.uid);
     }
 
-
-    // ============================================================
     // CLAVES DE RESPUESTAS
-    // ============================================================
-
     match /answerKeys/{answerKeyId} {
-
       allow read, create, update, delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
-    // ENTREGAS DE ACTIVIDADES
-    // ============================================================
-
+    // ENTREGAS
     match /submissions/{submissionId} {
-
-      allow read: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-        );
-
-      allow create: if
-        (
-          isStudent()
-          && request.resource.data.studentId == request.auth.uid
-        )
-        || isTeacherOrAdmin();
-
-      allow update: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-          && request.resource.data.studentId == resource.data.studentId
-          && request.resource.data.score == resource.data.score
-          && request.resource.data.evaluatedBy == resource.data.evaluatedBy
-          && request.resource.data.evaluatedAt == resource.data.evaluatedAt
-        );
-
+      allow read: if isTeacherOrAdmin() || (isStudent() && resource.data.studentId == request.auth.uid);
+      allow create: if (isStudent() && request.resource.data.studentId == request.auth.uid) || isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin() || (
+        isStudent()
+        && resource.data.studentId == request.auth.uid
+        && request.resource.data.studentId == resource.data.studentId
+        && request.resource.data.score == resource.data.score
+        && request.resource.data.evaluatedBy == resource.data.evaluatedBy
+        && request.resource.data.evaluatedAt == resource.data.evaluatedAt
+      );
       allow delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
     // EVALUACIONES
-    // ============================================================
-
     match /evaluations/{evaluationId} {
-
-      allow read: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-        );
-
-      allow create: if isTeacherOrAdmin();
-
-      allow update, delete: if isTeacherOrAdmin();
+      allow read: if isTeacherOrAdmin() || (isStudent() && resource.data.studentId == request.auth.uid);
+      allow create, update, delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
-    // RETROALIMENTACIÓN
-    // ============================================================
-
+    // RETROALIMENTACION
     match /feedback/{feedbackId} {
-
-      allow read: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-          && resource.data.visibility == 'student'
-        );
-
-      allow create: if isTeacherOrAdmin();
-
-      allow update, delete: if isTeacherOrAdmin();
+      allow read: if isTeacherOrAdmin() || (
+        isStudent()
+        && resource.data.studentId == request.auth.uid
+        && resource.data.visibility == 'student'
+      );
+      allow create, update, delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
-    // PROGRESO DE APRENDIZAJE
-    // ============================================================
-
+    // PROGRESO
     match /progress/{progressId} {
-
-      allow read: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-        );
-
-      allow create: if
-        (
-          isStudent()
-          && request.resource.data.studentId == request.auth.uid
-        )
-        || isTeacherOrAdmin();
-
-      allow update: if isTeacherOrAdmin()
-        || (
-          isStudent()
-          && resource.data.studentId == request.auth.uid
-          && request.resource.data.studentId == resource.data.studentId
-        );
-
+      allow read: if isTeacherOrAdmin() || (isStudent() && resource.data.studentId == request.auth.uid);
+      allow create: if (isStudent() && request.resource.data.studentId == request.auth.uid) || isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin() || (
+        isStudent()
+        && resource.data.studentId == request.auth.uid
+        && request.resource.data.studentId == resource.data.studentId
+      );
       allow delete: if isTeacherOrAdmin();
     }
 
-
-    // ============================================================
-    // ESTADÍSTICAS PÚBLICAS
-    // ============================================================
-
+    // ESTADISTICAS PUBLICAS
     match /publicStats/{documentId} {
-
       allow read: if true;
-
       allow write: if isAdmin();
     }
 
-
-    // ============================================================
-    // DENEGACIÓN POR DEFECTO
-    // ============================================================
-
+    // DENEGACION POR DEFECTO
     match /{document=**} {
       allow read, write: if false;
     }
