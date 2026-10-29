@@ -82,7 +82,7 @@ export class ParticiparComponent {
 
   warnings: string[] = [];
   isSubmitting = false;
-  maxFileSize = 2 * 1024 * 1024;
+  maxFileSize = 700 * 1024;
 
   constructor(
     private projectService: ProjectService,
@@ -104,7 +104,6 @@ export class ParticiparComponent {
         )
       );
 
-    // Log para depuración de instituciones.
     this.institutions$.subscribe({
       next: data =>
         console.log('✅ Instituciones en Participar:', data),
@@ -155,8 +154,8 @@ export class ParticiparComponent {
     if (file.size > this.maxFileSize) {
       this.warnings.push(
         `El archivo excede el tamaño máximo de ${
-          this.maxFileSize / 1024 / 1024
-        } MB`
+          Math.floor(this.maxFileSize / 1024)
+        } KB`
       );
     }
 
@@ -238,14 +237,16 @@ export class ParticiparComponent {
     const projectData = {
       ...this.project,
 
-      // Identifica los nuevos envíos de Concurso HTML 2.0.
-      edition: 'html-2-0',
-
       htmlFileName: this.selectedFile.name,
       htmlSize: this.selectedFile.size,
       htmlLines: this.fileInfo.lines,
       htmlContent: this.fileInfo.fullContent,
       storagePath: '',
+
+      // Edición explícita para el registro del proyecto.
+      edition: 'html-2.0',
+      contestEdition: 'html-2.0',
+
       status: 'pending' as const
     };
 
@@ -291,9 +292,7 @@ export class ParticiparComponent {
     }
 
     if (!this.project.studentName.trim()) {
-      errors.push(
-        'El nombre del estudiante es obligatorio'
-      );
+      errors.push('El nombre del estudiante es obligatorio');
     }
 
     if (!this.project.studentEmail.trim()) {
@@ -315,9 +314,7 @@ export class ParticiparComponent {
     }
 
     if (!this.selectedFile) {
-      errors.push(
-        'Debes seleccionar un archivo index.html'
-      );
+      errors.push('Debes seleccionar un archivo index.html');
     }
 
     if (
@@ -330,14 +327,14 @@ export class ParticiparComponent {
     ) {
       errors.push(
         'El archivo HTML tiene problemas críticos: ' +
-          this.warnings.join(', ')
+        this.warnings.join(', ')
       );
     }
 
     if (errors.length > 0) {
       alert(
         'Por favor corrige los siguientes errores:\n- ' +
-          errors.join('\n- ')
+        errors.join('\n- ')
       );
 
       return false;

@@ -76,7 +76,13 @@ export class AdminPanelComponent implements OnInit {
     return this.allProjects.filter(project => this.getProjectEdition(project) === edition).length;
   }
 
-  /** Normaliza el valor usado en Firestore y conserva los registros históricos sin edición como HTML 1.0. */
+  /**
+   * Clasifica el proyecto considerando todos los campos históricos de edición.
+   * Prioriza HTML 2.0 si cualquiera de los campos indica esa convocatoria.
+   * Esto corrige documentos que tienen edition='html-1-0' pero
+   * contestEdition='html-2.0' (o viceversa por datos heredados).
+   * Los registros sin una edición reconocible se conservan como HTML 1.0.
+   */
   getProjectEdition(project: Project): Exclude<EditionFilter, 'all'> {
     const record = project as Project & {
       edition?: unknown;
@@ -85,35 +91,40 @@ export class AdminPanelComponent implements OnInit {
       contestEditionLabel?: unknown;
     };
 
-    // Elegir el primer campo de edición que tenga un valor real.
-    const rawValue =
-      record.edition ||
-      record.contestEdition ||
-      record.editionId ||
-      record.contestEditionLabel ||
-      '';
+    const values = [
+      record.edition,
+      record.contestEdition,
+      record.editionId,
+      record.contestEditionLabel
+    ]
+      .filter((value): value is string | number =>
+        typeof value === 'string' || typeof value === 'number'
+      )
+      .map(value =>
+        String(value)
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]/g, '')
+      );
 
-    const normalized = String(rawValue)
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]/g, '');
+    // Revisar TODOS los campos antes de clasificar como HTML 1.0.
+    // Así un valor histórico incorrecto en "edition" no oculta
+    // un valor válido "html-2.0" en "contestEdition".
+    const isHtml20 = values.some(value =>
+      value.includes('html20') ||
+      value.includes('html2') ||
+      value === '20' ||
+      value === '2' ||
+      value.includes('concurso20') ||
+      value.includes('convocatoria20')
+    );
 
-    // Acepta "html-2-0", "html-2.0", "HTML 2.0",
-    // "Concurso HTML 2.0" y variantes equivalentes.
-    if (
-      normalized.includes('html20') ||
-      normalized.includes('html2') ||
-      normalized === '20' ||
-      normalized === '2' ||
-      normalized.includes('concurso20') ||
-      normalized.includes('convocatoria20')
-    ) {
+    if (isHtml20) {
       return 'html-2-0';
     }
 
-    // Los registros históricos sin edición se conservan como HTML 1.0.
     return 'html-1-0';
   }
 

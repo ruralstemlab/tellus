@@ -3,6 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ============================================================
+    // FUNCIONES DE AUTENTICACIÓN Y ROLES
+    // ============================================================
+
     function signedIn() {
       return request.auth != null;
     }
@@ -37,6 +41,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // USUARIOS
+    // ============================================================
+
     match /users/{userId} {
 
       allow read: if signedIn()
@@ -58,6 +66,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // INSTITUCIONES
+    // ============================================================
+
     match /institutions/{institutionId} {
 
       allow read: if true;
@@ -65,6 +77,10 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+
+    // ============================================================
+    // BIBLIOTECA VIVA — PROYECTOS
+    // ============================================================
 
     match /projects/{projectId} {
 
@@ -79,6 +95,10 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+
+    // ============================================================
+    // BIBLIOTECA VIVA — VOTACIONES
+    // ============================================================
 
     match /project_votes/{voteId} {
 
@@ -100,6 +120,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // CONVOCATORIAS
+    // ============================================================
+
     match /convocatorias/{convocatoriaId} {
 
       allow read: if true;
@@ -107,6 +131,36 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+
+    // ============================================================
+    // CREDENCIALES Y DIPLOMAS
+    // ============================================================
+
+    match /credentials/{credentialId} {
+
+      // Las credenciales completas solo son consultables
+      // por administradores autenticados.
+      allow read: if isAdmin();
+
+      // Solo el administrador puede crear credenciales.
+      // Se comprueba que exista el título y el ID del proyecto.
+      allow create: if isAdmin()
+        && request.resource.data.title is string
+        && request.resource.data.projectId is string;
+
+      // Solo el administrador puede emitir, actualizar,
+      // revocar o modificar el estado de una credencial.
+      allow update: if isAdmin();
+
+      // Se conservan los registros para mantener la trazabilidad.
+      // Las credenciales no se eliminan físicamente desde el cliente.
+      allow delete: if false;
+    }
+
+
+    // ============================================================
+    // TELLUS LEARNING — EXPERIENCIAS
+    // ============================================================
 
     match /experiences/{experienceId} {
 
@@ -131,6 +185,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // ETAPAS
+    // ============================================================
+
     match /stages/{stageId} {
 
       allow read: if signedIn();
@@ -139,6 +197,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // ACTIVIDADES
+    // ============================================================
+
     match /activities/{activityId} {
 
       allow read: if signedIn();
@@ -146,6 +208,10 @@ service cloud.firestore {
       allow create, update, delete: if isTeacherOrAdmin();
     }
 
+
+    // ============================================================
+    // RECURSOS
+    // ============================================================
 
     match /resources/{resourceId} {
 
@@ -162,11 +228,19 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // CLAVES DE RESPUESTAS
+    // ============================================================
+
     match /answerKeys/{answerKeyId} {
 
       allow read, create, update, delete: if isTeacherOrAdmin();
     }
 
+
+    // ============================================================
+    // ENTREGAS DE ACTIVIDADES
+    // ============================================================
 
     match /submissions/{submissionId} {
 
@@ -197,6 +271,10 @@ service cloud.firestore {
     }
 
 
+    // ============================================================
+    // EVALUACIONES
+    // ============================================================
+
     match /evaluations/{evaluationId} {
 
       allow read: if isTeacherOrAdmin()
@@ -210,6 +288,10 @@ service cloud.firestore {
       allow update, delete: if isTeacherOrAdmin();
     }
 
+
+    // ============================================================
+    // RETROALIMENTACIÓN
+    // ============================================================
 
     match /feedback/{feedbackId} {
 
@@ -225,6 +307,10 @@ service cloud.firestore {
       allow update, delete: if isTeacherOrAdmin();
     }
 
+
+    // ============================================================
+    // PROGRESO DE APRENDIZAJE
+    // ============================================================
 
     match /progress/{progressId} {
 
@@ -252,9 +338,10 @@ service cloud.firestore {
     }
 
 
-    // Estadísticas públicas de Biblioteca Viva.
-    // Cualquier visitante puede leerlas.
-    // Solo un administrador puede modificarlas.
+    // ============================================================
+    // ESTADÍSTICAS PÚBLICAS
+    // ============================================================
+
     match /publicStats/{documentId} {
 
       allow read: if true;
@@ -263,7 +350,10 @@ service cloud.firestore {
     }
 
 
-    // Regla de seguridad por defecto.
+    // ============================================================
+    // DENEGACIÓN POR DEFECTO
+    // ============================================================
+
     match /{document=**} {
       allow read, write: if false;
     }
