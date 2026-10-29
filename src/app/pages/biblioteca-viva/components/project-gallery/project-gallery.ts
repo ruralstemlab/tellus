@@ -210,46 +210,87 @@ export class ProjectGalleryComponent implements OnInit, OnDestroy {
    */
   private getEditionKey(project: Project): string {
     const record = project as Project & {
-      edition?: string;
-      contestEdition?: string;
+      edition?: unknown;
+      contestEdition?: unknown;
+      editionId?: unknown;
+      contestEditionLabel?: unknown;
     };
 
-    const rawEdition = record.edition ?? record.contestEdition ?? '';
-    const normalized = typeof rawEdition === 'string'
-      ? rawEdition.trim().toLowerCase()
-      : '';
+    // Revisar todos los campos posibles evita que un valor antiguo en
+    // "edition" oculte una edición correcta guardada en otro campo.
+    const fields = [
+      record.edition,
+      record.contestEdition,
+      record.editionId,
+      record.contestEditionLabel
+    ];
 
-    // Los documentos anteriores a HTML 2.0 pertenecen a la primera edición.
-    if (!normalized) return 'html-1-0';
+    const values = fields
+      .filter((value): value is string => typeof value === 'string')
+      .map(value => value
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '')
+      )
+      .filter(value => value.length > 0);
 
-    const compact = normalized
-      .replace(/concurso/g, '')
-      .replace(/\s+/g, '')
-      .replace(/_/g, '-');
-
-    if (
-      compact === 'html-1.0' ||
-      compact === 'html-1-0' ||
-      compact === 'html1.0' ||
-      compact === 'html1-0' ||
-      compact === '1.0' ||
-      compact === '1-0'
-    ) {
-      return 'html-1-0';
-    }
-
-    if (
-      compact === 'html-2.0' ||
-      compact === 'html-2-0' ||
-      compact === 'html2.0' ||
-      compact === 'html2-0' ||
-      compact === '2.0' ||
-      compact === '2-0'
-    ) {
+    // Priorizar HTML 2.0 si cualquiera de los campos lo identifica.
+    // "html-2-0", "html-2.0", "Concurso HTML 2.0" y "2.0"
+    // se normalizan a valores reconocibles como html20 o 20.
+    if (values.some(value =>
+      value === 'html20' ||
+      value === 'html2' ||
+      value === '2' ||
+      value === '20' ||
+      value === 'concurso20' ||
+      value === 'convocatoria20' ||
+      value === 'concursohtml20' ||
+      value === 'convocatoriahtml20'
+    )) {
       return 'html-2-0';
     }
 
-    return compact;
+    if (values.some(value =>
+      value === 'html10' ||
+      value === 'html1' ||
+      value === '1' ||
+      value === '10' ||
+      value === 'concurso10' ||
+      value === 'convocatoria10' ||
+      value === 'concursohtml10' ||
+      value === 'convocatoriahtml10'
+    )) {
+      return 'html-1-0';
+    }
+
+    // Mantener compatibilidad: proyectos históricos sin edición son HTML 1.0.
+    if (values.length === 0) return 'html-1-0';
+
+    // Conservar identificadores de futuras ediciones si no son 1.0 o 2.0.
+    const original = fields.find(
+      value => typeof value === 'string' && value.trim().length > 0
+    );
+
+    if (typeof original === 'string') {
+      const compact = original
+        .trim()
+        .toLowerCase()
+        .replace(/concurso/g, '')
+        .replace(/convocatoria/g, '')
+        .replace(/\s+/g, '')
+        .replace(/_/g, '-');
+
+      const futureEdition = compact.match(/^(?:html)?(\d+)[.-](\d+)$/i);
+      if (futureEdition) {
+        return `html-${futureEdition[1]}-${futureEdition[2]}`;
+      }
+
+      return compact;
+    }
+
+    return 'html-1-0';
   }
 
   getEditionLabel(project: Project): string {
