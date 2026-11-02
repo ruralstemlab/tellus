@@ -1,98 +1,158 @@
 import { Injectable } from '@angular/core';
 import {
+  collection,
   doc,
   getDoc,
-  setDoc,
-  runTransaction,
-  collection,
-  query,
-  where,
   getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 import { Observable, from, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Vote } from '../models/vote.model';
-import { ProjectService } from './project.service';
-import { AuthService } from '../auth/auth.service'; // ✅ Ruta corregida
+import { AuthService } from '../auth/auth.service';
 import { db } from '../../../environments/firebase.config';
 
 @Injectable({ providedIn: 'root' })
 export class VoteService {
-  private collectionName = 'project_votes';
+  private readonly collectionName = 'project_votes';
 
-  constructor(
-    private projectService: ProjectService,
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService) {}
 
-  async getUserVote(projectId: string, userId: string): Promise<Vote | null> {
-    const docId = `${projectId}_${userId}`;
-    const ref = doc(db, this.collectionName, docId);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) return null;
-    const data = snap.data();
+  private voteDocumentId(projectId: string, userId: string): string {
+    return `${projectId}_${userId}`;
+  }
+
+  private toVote(id: string, data: Record<string, any>): Vote {
     return {
-      id: snap.id,
+      id,
       projectId: data['projectId'],
       userId: data['userId'],
-      rating: data['rating'],
-      createdAt: data['createdAt']?.toDate ? data['createdAt'].toDate() : new Date(),
+      rating: Number(data['rating'] ?? 0),
+      createdAt: data['createdAt']?.toDate
+        ? data['createdAt'].toDate()
+        : new Date(),
     } as Vote;
   }
 
+  /**
+   * Returns the signed-in user's vote for a project.
+   * With the current Firestore rules, reading a missing vote document can
+   * produce permission-denied; that case is treated as no vote yet.
+   */
+  async getUserVote(projectId: string, userId: string): Promise<Vote | null> {
+    if (!projectId?.trim() || !userId?.trim()) return null;
+
+    const ref = doc(
+      db,
+      this.collectionName,
+      this.voteDocumentId(projectId, userId)
+    );
+
+    try {
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return null;
+      const data = snap.data();
+      if (data['userId'] !== userId || data['projectId'] !== projectId) {
+        return null;
+      }
+      return this.toVote(snap.id, data);
+    } catch (error: any) {
+      // Existing rules may deny get on a nonexistent document because
+      // resource.data is unavailable. Do not suppress unrelated errors.
+      if (error?.code === 'permission-denied') return null;
+      throw error;
+    }
+  }
+
+  /**
+   * Saves one vote per user/project. Re-voting updates the same document.
+   * The project aggregate is adjusted by the difference, so ratingCount
+   * does not increase when the user changes their rating.
+   *
+   * Note: the current rules do not make these two writes atomic. For strict
+   * concurrency-safe aggregates, the rules must allow the vote-document read
+   * required by a Firestore transaction or the aggregate should be calculated
+   * server-side.
+   */
   async vote(projectId: string, rating: number): Promise<void> {
-    if (rating < 1 || rating > 5) {
-      throw new Error('La calificación debe estar entre 1 y 5');
+    if (!projectId?.trim()) {
+      throw new Error('El identificador del proyecto es obligatorio.');
+    }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      throw new Error('La calificación debe ser un número entero entre 1 y 5.');
     }
 
     const user = await firstValueFrom(this.authService.user$);
-    if (!user) throw new Error('Usuario no autenticado');
+    if (!user) throw new Error('Usuario no autenticado.');
+
     const userId = user.uid;
-    const docId = `${projectId}_${userId}`;
+    const voteId = this.voteDocumentId(projectId, userId);
+    const voteRef = doc(db, this.collectionName, voteId);
+    const projectRef = doc(db, 'projects', projectId);
 
-    await runTransaction(db, async (transaction) => {
-      const voteRef = doc(db, this.collectionName, docId);
-      const voteSnap = await transaction.get(voteRef);
-      const existingVote = voteSnap.exists() ? voteSnap.data()['rating'] : null;
+    // The project must exist and be published before it can be rated.
+    const projectSnap = await getDoc(projectRef);
+    if (!projectSnap.exists()) throw new Error('Proyecto no encontrado.');
 
-      const projectRef = doc(db, 'projects', projectId);
-      const projectSnap = await transaction.get(projectRef);
-      if (!projectSnap.exists()) {
-        throw new Error('Proyecto no encontrado');
-      }
-      const projectData = projectSnap.data();
-      const currentRating = projectData['rating'] || 0;
-      const currentCount = projectData['ratingCount'] || 0;
+    const projectData = projectSnap.data();
+    if (projectData['status'] !== 'published') {
+      throw new Error('Solo se pueden votar aplicaciones publicadas.');
+    }
 
-      let newRating = currentRating;
-      let newCount = currentCount;
-
-      if (existingVote !== null) {
-        if (currentCount > 0) {
-          const sumDiff = rating - existingVote;
-          const newSum = (currentRating * currentCount) + sumDiff;
-          newRating = newSum / currentCount;
-        } else {
-          newRating = rating;
+    // With the existing rules, a missing vote's get may be denied. Treat
+    // that specific situation as the first vote; setDoc then attempts create.
+    let existingRating: number | null = null;
+    try {
+      const voteSnap = await getDoc(voteRef);
+      if (voteSnap.exists()) {
+        const existingData = voteSnap.data();
+        if (
+          existingData['userId'] !== userId ||
+          existingData['projectId'] !== projectId
+        ) {
+          throw new Error('El documento de voto no corresponde a este usuario y proyecto.');
         }
-      } else {
-        newCount = currentCount + 1;
-        const newSum = (currentRating * currentCount) + rating;
-        newRating = newSum / newCount;
+        const storedRating = Number(existingData['rating']);
+        if (Number.isFinite(storedRating)) existingRating = storedRating;
       }
+    } catch (error: any) {
+      if (error?.code !== 'permission-denied') throw error;
+      // No readable vote document under the current rules: proceed as first vote.
+    }
 
-      transaction.set(voteRef, {
-        projectId,
-        userId,
-        rating,
-        createdAt: new Date(),
-      });
+    const currentRating = Number(projectData['rating'] ?? 0);
+    const currentCount = Number(projectData['ratingCount'] ?? 0);
+    let newCount = currentCount;
+    let newRating = rating;
 
-      transaction.update(projectRef, {
-        rating: newRating,
-        ratingCount: newCount,
-        updatedAt: new Date(),
-      });
+    if (existingRating !== null && currentCount > 0) {
+      const currentSum = currentRating * currentCount;
+      newRating = (currentSum - existingRating + rating) / currentCount;
+    } else if (existingRating !== null) {
+      // Defensive fallback if the existing aggregate is inconsistent.
+      newCount = 1;
+      newRating = rating;
+    } else {
+      newCount = currentCount + 1;
+      newRating = ((currentRating * currentCount) + rating) / newCount;
+    }
+
+    // Deterministic document ID means a changed decision targets the same vote.
+    await setDoc(voteRef, {
+      projectId,
+      userId,
+      rating,
+      createdAt: new Date(),
+    });
+
+    // Allowed by the current projects rule: allow update: if signedIn().
+    await updateDoc(projectRef, {
+      rating: newRating,
+      ratingCount: newCount,
+      updatedAt: new Date(),
     });
   }
 
@@ -101,18 +161,10 @@ export class VoteService {
       collection(db, this.collectionName),
       where('userId', '==', userId)
     );
+
     return from(getDocs(q)).pipe(
       map((snapshot) =>
-        snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            projectId: data['projectId'],
-            userId: data['userId'],
-            rating: data['rating'],
-            createdAt: data['createdAt']?.toDate ? data['createdAt'].toDate() : new Date(),
-          } as Vote;
-        })
+        snapshot.docs.map((voteDoc) => this.toVote(voteDoc.id, voteDoc.data()))
       )
     );
   }
