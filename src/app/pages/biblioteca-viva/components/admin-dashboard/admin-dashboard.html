@@ -1,3 +1,4 @@
+
 <div class="admin-dashboard">
   <div class="dashboard-header">
     <div class="header-left">
@@ -23,6 +24,7 @@
       </div>
       <div class="stat-trend up">▲</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-icon">📱</div>
       <div class="stat-info">
@@ -31,6 +33,7 @@
       </div>
       <div class="stat-trend up">▲</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-icon">👥</div>
       <div class="stat-info">
@@ -39,6 +42,7 @@
       </div>
       <div class="stat-trend up">▲</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-icon">🏫</div>
       <div class="stat-info">
@@ -50,28 +54,46 @@
   </div>
 
   <div class="quick-actions">
-    <a routerLink="/biblioteca-viva/admin/revision" class="action-btn primary">
+    <a
+      routerLink="/biblioteca-viva/admin/revision"
+      class="action-btn primary">
       <span>⚙</span> Centro de Revisión
     </a>
-    <button class="action-btn secondary" (click)="toggleDevelopers()">
+
+    <button
+      class="action-btn secondary"
+      (click)="toggleDevelopers()">
       <span>👥</span> Developers
     </button>
-    <button class="action-btn secondary" (click)="toggleConvocatorias()">
+
+    <button
+      class="action-btn secondary"
+      (click)="toggleConvocatorias()">
       <span>🏆</span> Convocatorias
     </button>
   </div>
 
   <div *ngIf="showDevelopers" class="expandable-section">
     <h3>👥 Desarrolladores registrados</h3>
+
     <div class="developer-list">
-      <div *ngIf="(developersList$ | async)?.length === 0" class="empty-message">
+      <div
+        *ngIf="(developersList$ | async)?.length === 0"
+        class="empty-message">
         No hay desarrolladores registrados aún.
       </div>
-      <div *ngFor="let dev of (developersList$ | async)" class="developer-item">
+
+      <div
+        *ngFor="let dev of (developersList$ | async)"
+        class="developer-item">
         <div class="dev-info">
           <strong>{{ dev.name }}</strong>
-          <span class="dev-institution">{{ dev.institution }}</span>
-          <span class="dev-meta">📱 {{ dev.projectCount }} apps publicadas</span>
+          <span class="dev-institution">
+            {{ dev.institution }}
+          </span>
+          <span class="dev-meta">
+            📱 {{ dev.projectCount }} apps publicadas
+          </span>
           <span class="dev-meta" *ngIf="dev.lastPublished">
             🕒 Última: {{ dev.lastPublished | date:'dd/MM/yyyy' }}
           </span>
@@ -82,21 +104,39 @@
 
   <div *ngIf="showConvocatorias" class="expandable-section">
     <h3>🏆 Convocatoria actual</h3>
+
     <div class="convocatoria-info">
-      <div class="convocatoria-badge">🏆 Convocatoria 001 · 2026</div>
-      <h4>Concurso de Aplicaciones Web HTML 2026</h4>
-      <p>
-        Diseña una aplicación web utilizando HTML, CSS y JavaScript. Puedes crear juegos, 
-        simuladores, aplicaciones educativas, herramientas financieras, proyectos de 
-        emprendimiento, sistemas administrativos o cualquier idea innovadora. Los mejores 
-        proyectos harán parte de la Biblioteca Viva de Tellus.
-      </p>
-      <div class="convocatoria-meta">
-        <span>📅 Inscripciones: hasta 31 Jul 2026</span>
-        <span>👥 Participantes: {{ (stats$ | async)?.users || 0 }}</span>
-        <span>📊 Proyectos publicados: {{ (stats$ | async)?.published || 0 }}</span>
+      <div class="convocatoria-badge">
+        🏆 Concurso HTML 2.0 · 2026
       </div>
-      <button class="btn-crear-convocatoria" (click)="crearConvocatoria()">
+
+      <h4>Concurso de Aplicaciones Web HTML 2026</h4>
+
+      <p>
+        Diseña una aplicación web utilizando HTML, CSS y JavaScript.
+        Puedes crear juegos, simuladores, aplicaciones educativas,
+        herramientas financieras, proyectos de emprendimiento,
+        sistemas administrativos o cualquier idea innovadora.
+        Los mejores proyectos harán parte de la Biblioteca Viva de Tellus.
+      </p>
+
+      <div class="convocatoria-meta">
+        <span>📅 Inscripciones: hasta el 6 de noviembre de 2026 · 12:00 m.</span>
+
+        <span>
+          👥 Participantes:
+          {{ (stats$ | async)?.users || 0 }}
+        </span>
+
+        <span>
+          📊 Proyectos publicados:
+          {{ (stats$ | async)?.published || 0 }}
+        </span>
+      </div>
+
+      <button
+        class="btn-crear-convocatoria"
+        (click)="crearConvocatoria()">
         ➕ Crear nueva convocatoria
       </button>
     </div>

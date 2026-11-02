@@ -2242,3 +2242,82 @@ $shadow: 0 20px 50px rgba(0,0,0,0.5);
   }
 }
 
+/* ==========================================================
+   ESTADO DE INSCRIPCIONES CERRADAS · HTML 2.0
+   Mantiene visibles los accesos, pero comunica que el registro
+   ya no está disponible.
+=========================================================== */
+
+button.primary:disabled,
+button.primary.small:disabled,
+button.primary.large:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  filter: grayscale(0.25);
+  transform: none;
+  box-shadow: none;
+}
+
+button.primary:disabled:hover,
+button.primary.small:disabled:hover,
+button.primary.large:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Evita que los textos largos de la convocatoria desborden las tarjetas. */
+.call-card .call-meta {
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+}
+
+.call-card .call-meta .participants {
+  overflow-wrap: anywhere;
+}
+
+/* Los distintivos de premios pueden ocupar varias líneas en móvil. */
+.call-card .call-prizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.call-card .prize-badge {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Ajustes de accesibilidad y adaptación para pantallas pequeñas. */
+@media (max-width: 600px) {
+  .hero .buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero .buttons button {
+    width: 100%;
+  }
+
+  .countdown {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .countdown .box {
+    min-width: 68px;
+  }
+
+  .call-card .call-actions {
+    flex-wrap: wrap;
+  }
+
+  .call-card .call-actions button {
+    max-width: 100%;
+  }
+
+  .awards-photo-card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}

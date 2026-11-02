@@ -32,9 +32,18 @@
       </p>
 
       <div class="buttons">
-        <button class="primary" routerLink="/biblioteca-viva/participar">
+        <button
+          *ngIf="!registrationClosed; else heroRegistrationClosed"
+          class="primary"
+          routerLink="/biblioteca-viva/participar">
           🚀 Participar en HTML 2.0
         </button>
+
+        <ng-template #heroRegistrationClosed>
+          <button class="primary" type="button" disabled>
+            🔒 Inscripciones cerradas
+          </button>
+        </ng-template>
 
         <button class="secondary" (click)="scrollToGallery()">
           📂 Ver aplicaciones
@@ -58,14 +67,17 @@
           <h2>{{ days }}</h2>
           <span>Días</span>
         </div>
+
         <div class="box">
           <h2>{{ hours }}</h2>
           <span>Horas</span>
         </div>
+
         <div class="box">
           <h2>{{ minutes }}</h2>
           <span>Minutos</span>
         </div>
+
         <div class="box">
           <h2>{{ seconds }}</h2>
           <span>Segundos</span>
@@ -73,8 +85,8 @@
       </div>
 
       <p class="countdown-caption">
-        Cierre de inscripciones: 1 de noviembre de 2026 ·
-        Premiación: 6 de noviembre de 2026
+        Cierre de inscripciones: 6 de noviembre de 2026 · 12:00 m. ·
+        Premiación: 6 de noviembre de 2026 · 12:01 p. m.
       </p>
     </div>
 
@@ -416,9 +428,19 @@
       <div class="icon">🚀</div>
       <h3>Participar · HTML 2.0</h3>
       <p>Envía tu aplicación a la convocatoria activa.</p>
-      <button class="primary small" routerLink="/biblioteca-viva/participar">
+
+      <button
+        *ngIf="!registrationClosed; else accessRegistrationClosed"
+        class="primary small"
+        routerLink="/biblioteca-viva/participar">
         Participar →
       </button>
+
+      <ng-template #accessRegistrationClosed>
+        <button class="primary small" type="button" disabled>
+          🔒 Inscripciones cerradas
+        </button>
+      </ng-template>
     </div>
 
     <div class="main-card">
@@ -615,14 +637,24 @@
 
       <div class="call-meta">
         <span class="status active">● Convocatoria vigente</span>
-        <span class="participants">📅 Cierre de inscripciones: 01/11/2026</span>
-        <span class="participants">🏆 Premiación: 06/11/2026</span>
+        <span class="participants">📅 Cierre de inscripciones: 06/11/2026 · 12:00 m.</span>
+        <span class="participants">🏆 Premiación: 06/11/2026 · 12:01 p. m.</span>
       </div>
 
       <div class="call-actions">
-        <button class="primary small" routerLink="/biblioteca-viva/participar">
+        <button
+          *ngIf="!registrationClosed; else fallbackRegistrationClosed"
+          class="primary small"
+          routerLink="/biblioteca-viva/participar">
           Participar en HTML 2.0 →
         </button>
+
+        <ng-template #fallbackRegistrationClosed>
+          <button class="primary small" type="button" disabled>
+            🔒 Inscripciones cerradas
+          </button>
+        </ng-template>
+
         <button class="secondary small" (click)="scrollToGallery()">Ver aplicaciones →</button>
       </div>
     </div>
@@ -647,14 +679,26 @@
         </span>
       </div>
 
-      <div class="call-prizes" *ngIf="convocatoria.prizes && convocatoria.prizes.length > 0">
-        <span class="prize-badge" *ngFor="let prize of convocatoria.prizes">
+      <div class="call-prizes" *ngIf="contestPrizes && contestPrizes.length > 0">
+        <span class="prize-badge" *ngFor="let prize of contestPrizes">
           🏆 {{ prize }}
         </span>
       </div>
 
       <div class="call-actions">
-        <button class="primary small" routerLink="/biblioteca-viva/participar">Participar →</button>
+        <button
+          *ngIf="!registrationClosed; else convocatoriaRegistrationClosed"
+          class="primary small"
+          routerLink="/biblioteca-viva/participar">
+          Participar →
+        </button>
+
+        <ng-template #convocatoriaRegistrationClosed>
+          <button class="primary small" type="button" disabled>
+            🔒 Inscripciones cerradas
+          </button>
+        </ng-template>
+
         <button class="secondary small" (click)="scrollToGallery()">Ver aplicaciones →</button>
       </div>
     </div>
@@ -856,9 +900,19 @@
   <div class="cta-container">
     <h2>¿Listo para crear tu primera aplicación web?</h2>
     <p>Únete a la comunidad de desarrolladores de Tellus y participa en la convocatoria vigente.</p>
-    <button class="primary large" routerLink="/biblioteca-viva/participar">
+
+    <button
+      *ngIf="!registrationClosed; else finalRegistrationClosed"
+      class="primary large"
+      routerLink="/biblioteca-viva/participar">
       🚀 ¡Participa ahora!
     </button>
+
+    <ng-template #finalRegistrationClosed>
+      <button class="primary large" type="button" disabled>
+        🔒 Inscripciones cerradas
+      </button>
+    </ng-template>
   </div>
 </section>
 
